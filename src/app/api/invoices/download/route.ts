@@ -1,13 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db, invoices, subscriptions, tenants } from '@/db';
+import { db, subscriptions, tenants } from '@/db';
 import { eq } from 'drizzle-orm';
 import { generateInvoiceHTML, generateInvoiceFilename } from '@/lib/invoice-generator';
 
+export const runtime = 'nodejs';
+
 /**
+ * TODO: Add invoices table to schema
  * Download invoice as HTML (can be printed to PDF client-side)
  * GET /api/invoices/download?invoiceId=xxx&format=html
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
+  return NextResponse.json(
+    { error: 'Invoices feature not yet implemented - invoices table missing from schema' },
+    { status: 501 }
+  );
+  /*
   try {
     const searchParams = request.nextUrl.searchParams;
     const invoiceId = searchParams.get('invoiceId');
@@ -125,4 +133,5 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       { status: 500 }
     );
   }
+  */
 }

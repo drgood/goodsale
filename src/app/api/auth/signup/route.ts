@@ -3,6 +3,8 @@ import { db, tenants, users, auditLogs, subscriptions } from '@/db';
 import { eq } from 'drizzle-orm';
 import { hash } from 'bcryptjs';
 
+export const runtime = 'nodejs';
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -102,7 +104,7 @@ export async function POST(request: NextRequest) {
         startDate: new Date(),
         endDate: trialEndDate,
         autoRenewal: false,
-        amount: 0,
+        amount: '0',
       })
       .returning();
 

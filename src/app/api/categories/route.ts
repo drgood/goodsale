@@ -5,6 +5,8 @@ import { getCategoriesByTenant, createCategory } from '@/lib/queries';
 import { db, categories as categoriesTable } from '@/db';
 import { and, eq } from 'drizzle-orm';
 
+export const runtime = 'nodejs';
+
 export async function GET(request: Request) {
   const session = await getServerSession(authOptions);
   

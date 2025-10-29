@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { getCustomersByTenant, createCustomer, updateCustomer } from '@/lib/queries';
 
+export const runtime = 'nodejs';
+
 export async function GET(request: Request) {
   const session = await getServerSession(authOptions);
   

@@ -8,7 +8,7 @@ import {
   planPricing,
   auditLogs,
 } from '@/db';
-import { eq, desc } from 'drizzle-orm';
+import { eq, desc, and } from 'drizzle-orm';
 
 /**
  * GET /api/admin/billing
@@ -28,13 +28,16 @@ export async function GET(request: NextRequest) {
     const tenantId = searchParams.get('tenantId');
     const offset = (page - 1) * limit;
 
-    let query = db.select().from(billingLedger);
-
-    if (tenantId) {
-      query = query.where(eq(billingLedger.tenantId, tenantId));
-    }
-
-    const allRecords = await query.orderBy(desc(billingLedger.paidAt));
+    const allRecords = tenantId
+      ? await db
+          .select()
+          .from(billingLedger)
+          .where(eq(billingLedger.tenantId, tenantId))
+          .orderBy(desc(billingLedger.paidAt))
+      : await db
+          .select()
+          .from(billingLedger)
+          .orderBy(desc(billingLedger.paidAt));
     const total = allRecords.length;
 
     const records = await db
@@ -140,9 +143,9 @@ export async function POST(request: NextRequest) {
       .select()
       .from(planPricing)
       .where(
-        db.and(
-          db.eq(planPricing.planId, planId),
-          db.eq(planPricing.billingPeriod, billingPeriod)
+        and(
+          eq(planPricing.planId, planId),
+          eq(planPricing.billingPeriod, billingPeriod)
         )
       )
       .limit(1);
@@ -178,7 +181,7 @@ export async function POST(request: NextRequest) {
         startDate,
         endDate,
         autoRenewal: false,
-        amount: parseFloat(amount),
+        amount: parseFloat(amount).toString(),
       })
       .returning();
 
@@ -192,7 +195,7 @@ export async function POST(request: NextRequest) {
       .values({
         tenantId,
         subscriptionId: newSubscription[0].id,
-        amount: parseFloat(amount),
+        amount: parseFloat(amount).toString(),
         paymentMethod,
         status: 'completed',
         invoiceNumber,

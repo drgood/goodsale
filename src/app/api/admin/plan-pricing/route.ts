@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 import { db, planPricing, auditLogs } from '@/db';
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 
 /**
  * GET /api/admin/plan-pricing?planId=xxx
@@ -84,9 +84,9 @@ export async function POST(request: NextRequest) {
       .select()
       .from(planPricing)
       .where(
-        db.and(
-          db.eq(planPricing.planId, planId),
-          db.eq(planPricing.billingPeriod, billingPeriod)
+        and(
+          eq(planPricing.planId, planId),
+          eq(planPricing.billingPeriod, billingPeriod)
         )
       )
       .limit(1);
@@ -98,8 +98,8 @@ export async function POST(request: NextRequest) {
       result = await db
         .update(planPricing)
         .set({
-          price: parseFloat(price),
-          discountPercent: discountPercent ? parseFloat(discountPercent) : 0,
+          price: parseFloat(price).toString(),
+          discountPercent: discountPercent ? parseFloat(discountPercent).toString() : '0',
         })
         .where(eq(planPricing.id, existing[0].id))
         .returning();
@@ -110,8 +110,8 @@ export async function POST(request: NextRequest) {
         .values({
           planId,
           billingPeriod,
-          price: parseFloat(price),
-          discountPercent: discountPercent ? parseFloat(discountPercent) : 0,
+          price: parseFloat(price).toString(),
+          discountPercent: discountPercent ? parseFloat(discountPercent).toString() : '0',
         })
         .returning();
     }

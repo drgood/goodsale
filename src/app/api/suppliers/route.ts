@@ -5,6 +5,8 @@ import { getSuppliersByTenant, createSupplier } from '@/lib/queries';
 import { db, suppliers as suppliersTable } from '@/db';
 import { and, eq } from 'drizzle-orm';
 
+export const runtime = 'nodejs';
+
 export async function GET(request: Request) {
   const session = await getServerSession(authOptions);
   

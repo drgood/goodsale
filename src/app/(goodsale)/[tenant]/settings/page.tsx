@@ -388,12 +388,12 @@ export default function SettingsPage() {
                                         {String(nameChangeRequest.status).replace('_', ' ').toUpperCase()}
                                     </span>
                                 </div>
-                                {nameChangeRequest.status === 'rejected' && nameChangeRequest.rejectionReason && (
+                                {nameChangeRequest.status === 'rejected' && nameChangeRequest.rejectionReason ? (
                                     <div className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900 rounded p-2">
                                         <p className="text-xs font-medium text-red-800 dark:text-red-200">Reason:</p>
                                         <p className="text-xs text-red-700 dark:text-red-300">{String(nameChangeRequest.rejectionReason)}</p>
                                     </div>
-                                )}
+                                ) : null}
                             </div>
                         ) : (
                             <Button 

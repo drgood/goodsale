@@ -1,11 +1,10 @@
 // Mock database for testing
-import { vi } from 'vitest'
 
 export const mockDb = {
-  select: vi.fn(),
-  insert: vi.fn(),
-  update: vi.fn(),
-  delete: vi.fn(),
+  select: jest.fn(),
+  insert: jest.fn(),
+  update: jest.fn(),
+  delete: jest.fn(),
 }
 
 export const mockSubscriptions = {

@@ -21,31 +21,43 @@ export async function GET(request: NextRequest) {
     const status = searchParams.get('status'); // Filter by status
     const offset = (page - 1) * limit;
 
-    // Build query
-    let query = db
-      .select({
-        id: tenantNameChangeRequests.id,
-        tenantId: tenantNameChangeRequests.tenantId,
-        oldName: tenantNameChangeRequests.oldName,
-        newName: tenantNameChangeRequests.newName,
-        reason: tenantNameChangeRequests.reason,
-        status: tenantNameChangeRequests.status,
-        requestedBy: tenantNameChangeRequests.requestedBy,
-        requestedAt: tenantNameChangeRequests.requestedAt,
-        reviewedBy: tenantNameChangeRequests.reviewedBy,
-        reviewedAt: tenantNameChangeRequests.reviewedAt,
-        rejectionReason: tenantNameChangeRequests.rejectionReason,
-        scheduledApprovalDate: tenantNameChangeRequests.scheduledApprovalDate,
-        appliedAt: tenantNameChangeRequests.appliedAt,
-      })
-      .from(tenantNameChangeRequests);
-
-    if (status) {
-      query = query.where(eq(tenantNameChangeRequests.status, status));
-    }
-
     // Get count
-    const countResult = await query;
+    const countResult = status
+      ? await db
+          .select({
+            id: tenantNameChangeRequests.id,
+            tenantId: tenantNameChangeRequests.tenantId,
+            oldName: tenantNameChangeRequests.oldName,
+            newName: tenantNameChangeRequests.newName,
+            reason: tenantNameChangeRequests.reason,
+            status: tenantNameChangeRequests.status,
+            requestedBy: tenantNameChangeRequests.requestedBy,
+            requestedAt: tenantNameChangeRequests.requestedAt,
+            reviewedBy: tenantNameChangeRequests.reviewedBy,
+            reviewedAt: tenantNameChangeRequests.reviewedAt,
+            rejectionReason: tenantNameChangeRequests.rejectionReason,
+            scheduledApprovalDate: tenantNameChangeRequests.scheduledApprovalDate,
+            appliedAt: tenantNameChangeRequests.appliedAt,
+          })
+          .from(tenantNameChangeRequests)
+          .where(eq(tenantNameChangeRequests.status, status))
+      : await db
+          .select({
+            id: tenantNameChangeRequests.id,
+            tenantId: tenantNameChangeRequests.tenantId,
+            oldName: tenantNameChangeRequests.oldName,
+            newName: tenantNameChangeRequests.newName,
+            reason: tenantNameChangeRequests.reason,
+            status: tenantNameChangeRequests.status,
+            requestedBy: tenantNameChangeRequests.requestedBy,
+            requestedAt: tenantNameChangeRequests.requestedAt,
+            reviewedBy: tenantNameChangeRequests.reviewedBy,
+            reviewedAt: tenantNameChangeRequests.reviewedAt,
+            rejectionReason: tenantNameChangeRequests.rejectionReason,
+            scheduledApprovalDate: tenantNameChangeRequests.scheduledApprovalDate,
+            appliedAt: tenantNameChangeRequests.appliedAt,
+          })
+          .from(tenantNameChangeRequests);
     const total = countResult.length;
 
     // Get paginated results

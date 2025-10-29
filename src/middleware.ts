@@ -8,12 +8,7 @@ export const config = {
     '/admin/:path*',
     '/api/admin/:path*',
     '/api/cron/:path*',
-    '/:tenant/dashboard',
-    '/:tenant/pos',
-    '/:tenant/products',
-    '/:tenant/customers',
-    '/:tenant/settings',
-    '/:tenant/billing',
+    '/:tenant/:path*', // Protect all tenant routes
   ],
 };
 

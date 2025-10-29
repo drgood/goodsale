@@ -60,7 +60,6 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const result = await handleTrialExpirations();
 
     return NextResponse.json({
-      success: result.success,
       message: 'Manual trigger - development only',
       ...result,
     });

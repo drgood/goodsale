@@ -6,6 +6,8 @@ import { db } from '@/db';
 import * as schema from '@/db/schema';
 import { eq } from 'drizzle-orm';
 
+export const runtime = 'nodejs';
+
 export async function GET(request: Request) {
   const session = await getServerSession(authOptions);
   

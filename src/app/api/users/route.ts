@@ -7,6 +7,8 @@ import { eq, and } from 'drizzle-orm';
 import { hash } from 'bcryptjs';
 import { notifyTeamManagers } from '@/lib/notification-helpers';
 
+export const runtime = 'nodejs';
+
 export async function GET(request: Request) {
   const session = await getServerSession(authOptions);
   

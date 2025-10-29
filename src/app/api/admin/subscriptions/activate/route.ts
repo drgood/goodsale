@@ -66,12 +66,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     // Calculate new end date based on billing period
     const newEndDate = new Date();
-    const periodMonths = {
+    const periodMonths = ({
       '1_month': 1,
       '6_months': 6,
       '12_months': 12,
       '24_months': 24,
-    }[billingPeriod] || 1;
+    } as Record<string, number>)[billingPeriod] || 1;
 
     newEndDate.setMonth(newEndDate.getMonth() + periodMonths);
 
@@ -84,7 +84,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         billingPeriod: billingPeriod as any,
         startDate: new Date(),
         endDate: newEndDate,
-        amount: parseFloat(amount.toString()),
+        amount: parseFloat(amount.toString()).toString(),
         updatedAt: new Date(),
       })
       .where(eq(subscriptions.id, currentSub.id))
