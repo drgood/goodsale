@@ -8,7 +8,7 @@ import { notifyTeamManagers } from '@/lib/notification-helpers';
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  props: { params: Promise<{ id: string }> }
 ) {
   const session = await getServerSession(authOptions);
   
@@ -17,6 +17,7 @@ export async function PATCH(
   }
 
   try {
+    const params = await props.params;
     const body = await request.json();
     const updatedProduct = await updateProduct(params.id, body);
 
@@ -47,7 +48,7 @@ export async function PATCH(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  props: { params: Promise<{ id: string }> }
 ) {
   const session = await getServerSession(authOptions);
   
@@ -56,6 +57,7 @@ export async function DELETE(
   }
 
   try {
+    const params = await props.params;
     await deleteProduct(params.id);
     return NextResponse.json({ success: true });
   } catch (error) {
