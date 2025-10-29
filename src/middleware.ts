@@ -1,17 +1,44 @@
 import { withAuth } from 'next-auth/middleware';
+import { NextResponse } from 'next/server';
+import type { NextRequestWithAuth } from 'next-auth/middleware';
+import { getSubscriptionStatus } from '@/lib/trial-validation';
 
 export const config = {
   matcher: [
     '/admin/:path*',
     '/api/admin/:path*',
     '/api/cron/:path*',
+    '/:tenant/dashboard',
+    '/:tenant/pos',
+    '/:tenant/products',
+    '/:tenant/customers',
+    '/:tenant/settings',
+    '/:tenant/billing',
   ],
 };
 
 export default withAuth(
-  function middleware(req) {
-    // Token is automatically checked by withAuth
-    // If no token, user is redirected to login
+  async function middleware(req: NextRequestWithAuth) {
+    // Check trial status for tenant routes
+    if (req.nextUrl.pathname.match(/^\/[^\/]+\/(dashboard|pos|products|customers|settings|billing)/)) {
+      const tenantId = req.nextauth.token?.tenantId as string | undefined;
+      
+      if (tenantId) {
+        try {
+          const subscriptionStatus = await getSubscriptionStatus(tenantId);
+          
+          // If trial has expired, redirect to trial-expired page
+          if (subscriptionStatus.status === 'expired') {
+            const tenant = req.nextUrl.pathname.split('/')[1];
+            return NextResponse.redirect(new URL(`/${tenant}/trial-expired`, req.url));
+          }
+        } catch (error) {
+          console.error('Error checking trial status in middleware:', error);
+          // Continue on error to not block access
+        }
+      }
+    }
+    
     return;
   },
   {

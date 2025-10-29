@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db, tenants, users, auditLogs } from '@/db';
+import { db, tenants, users, auditLogs, subscriptions } from '@/db';
 import { eq } from 'drizzle-orm';
 import { hash } from 'bcryptjs';
 
@@ -88,6 +88,28 @@ export async function POST(request: NextRequest) {
       throw new Error('Failed to create user');
     }
 
+    // Create trial subscription (14 days)
+    const trialEndDate = new Date();
+    trialEndDate.setDate(trialEndDate.getDate() + 14);
+
+    const newSubscription = await db
+      .insert(subscriptions)
+      .values({
+        tenantId: tenant.id,
+        planId: planId,
+        billingPeriod: '1_month',
+        status: 'trial',
+        startDate: new Date(),
+        endDate: trialEndDate,
+        autoRenewal: false,
+        amount: 0,
+      })
+      .returning();
+
+    if (newSubscription.length === 0) {
+      throw new Error('Failed to create trial subscription');
+    }
+
     // Log the signup
     await db
       .insert(auditLogs)
@@ -101,6 +123,8 @@ export async function POST(request: NextRequest) {
           tenantName: shopName,
           subdomain: subdomain,
           email: email,
+          trialEndDate: trialEndDate,
+          subscriptionId: newSubscription[0].id,
         },
       })
       .catch((err) => console.error('Audit log error:', err));
