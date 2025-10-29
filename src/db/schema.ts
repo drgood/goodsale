@@ -42,7 +42,7 @@ export const plans = pgTable("plans", {
 // =====================================================
 export const tenants = pgTable("tenants", {
   id: uuid("id").defaultRandom().primaryKey(),
-  name: varchar("name", { length: 255 }).notNull(),
+  name: varchar("name", { length: 255 }).unique().notNull(),
   subdomain: varchar("subdomain", { length: 255 }).unique().notNull(),
   plan: varchar("plan", { length: 50 }).default("starter").notNull(),
   status: varchar("status", { length: 50 }).default("active").notNull(),
@@ -50,6 +50,7 @@ export const tenants = pgTable("tenants", {
   userCount: integer("user_count").default(0),
   productCount: integer("product_count").default(0),
   totalSales: numeric("total_sales", { precision: 12, scale: 2 }).default("0"),
+  pendingNameChangeId: uuid("pending_name_change_id"),
 });
 
 // =====================================================
@@ -322,6 +323,83 @@ export const notifications = pgTable("notifications", {
   description: text("description"),
   isRead: boolean("is_read").default(false),
   data: jsonb("data"), // Store additional context like saleId, productId, etc.
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+});
+
+// =====================================================
+// TENANT NAME CHANGE REQUESTS
+// =====================================================
+export const tenantNameChangeRequests = pgTable("tenant_name_change_requests", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  tenantId: uuid("tenant_id")
+    .references(() => tenants.id, { onDelete: "cascade" })
+    .notNull(),
+  oldName: varchar("old_name", { length: 255 }).notNull(),
+  newName: varchar("new_name", { length: 255 }).notNull(),
+  reason: text("reason"),
+  status: varchar("status", { length: 50 }).default("pending").notNull(), // pending, approved, rejected, auto_approved, scheduled, applied
+  requestedBy: uuid("requested_by")
+    .references(() => users.id, { onDelete: "set null" })
+    .notNull(),
+  requestedAt: timestamp("requested_at", { withTimezone: true }).defaultNow(),
+  reviewedBy: uuid("reviewed_by").references(() => superAdmins.id, { onDelete: "set null" }),
+  reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
+  rejectionReason: text("rejection_reason"),
+  scheduledApprovalDate: timestamp("scheduled_approval_date", { withTimezone: true }),
+  appliedAt: timestamp("applied_at", { withTimezone: true }),
+});
+
+// =====================================================
+// SUBSCRIPTIONS
+// =====================================================
+export const subscriptions = pgTable("subscriptions", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  tenantId: uuid("tenant_id")
+    .references(() => tenants.id, { onDelete: "cascade" })
+    .notNull(),
+  planId: uuid("plan_id")
+    .references(() => plans.id, { onDelete: "set null" }),
+  billingPeriod: varchar("billing_period", { length: 50 }).notNull(), // "1_month", "6_months", "12_months", "24_months"
+  status: varchar("status", { length: 50 }).default("active").notNull(), // active, canceled, expired, suspended
+  startDate: timestamp("start_date", { withTimezone: true }).notNull(),
+  endDate: timestamp("end_date", { withTimezone: true }).notNull(),
+  autoRenewal: boolean("auto_renewal").default(false).notNull(),
+  amount: numeric("amount", { precision: 12, scale: 2 }).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
+});
+
+// =====================================================
+// BILLING LEDGER (For tracking cash and all payments)
+// =====================================================
+export const billingLedger = pgTable("billing_ledger", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  tenantId: uuid("tenant_id")
+    .references(() => tenants.id, { onDelete: "cascade" })
+    .notNull(),
+  subscriptionId: uuid("subscription_id")
+    .references(() => subscriptions.id, { onDelete: "set null" }),
+  amount: numeric("amount", { precision: 12, scale: 2 }).notNull(),
+  paymentMethod: varchar("payment_method", { length: 50 }).notNull(), // "cash", "card", "mobile_money", "bank_transfer"
+  status: varchar("status", { length: 50 }).default("completed").notNull(), // completed, pending, failed
+  invoiceNumber: varchar("invoice_number", { length: 100 }).unique(),
+  notes: text("notes"),
+  recordedBy: uuid("recorded_by").references(() => superAdmins.id, { onDelete: "set null" }),
+  paidAt: timestamp("paid_at", { withTimezone: true }).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+});
+
+// =====================================================
+// PLAN PRICING (Pricing for different billing periods)
+// =====================================================
+export const planPricing = pgTable("plan_pricing", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  planId: uuid("plan_id")
+    .references(() => plans.id, { onDelete: "cascade" })
+    .notNull(),
+  billingPeriod: varchar("billing_period", { length: 50 }).notNull(), // "1_month", "6_months", "12_months", "24_months"
+  price: numeric("price", { precision: 12, scale: 2 }).notNull(),
+  discountPercent: numeric("discount_percent", { precision: 5, scale: 2 }).default("0"), // e.g., 10 for 10% discount
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
 

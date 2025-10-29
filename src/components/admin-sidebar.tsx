@@ -19,6 +19,8 @@ import {
   ShieldCheck,
   UserCircle,
   Users,
+  FileText,
+  DollarSign,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -29,6 +31,8 @@ import { GoodSaleLogo } from "./goodsale-logo";
 const menuItems = [
   { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/tenants", label: "Tenants", icon: Building2 },
+  { href: "/admin/billing", label: "Billing", icon: DollarSign },
+  { href: "/admin/tenant-name-changes", label: "Name Changes", icon: FileText },
   { href: "/admin/plans", label: "Plans", icon: CreditCard },
   { href: "/admin/users", label: "Admin Users", icon: Users },
   { href: "/admin/settings", label: "System Settings", icon: Settings },

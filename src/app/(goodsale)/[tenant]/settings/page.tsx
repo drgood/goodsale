@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ImageUpload } from "@/components/image-upload";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 export default function SettingsPage() {
   const { toast } = useToast();
@@ -34,6 +35,15 @@ export default function SettingsPage() {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showNavigationWarning, setShowNavigationWarning] = useState(false);
   const [pendingNavigation, setPendingNavigation] = useState<string | null>(null);
+  
+  // Name change request state
+  const [showNameChangeDialog, setShowNameChangeDialog] = useState(false);
+  const [newTenantName, setNewTenantName] = useState("");
+  const [nameChangeReason, setNameChangeReason] = useState("");
+  const [isSubmittingNameChange, setIsSubmittingNameChange] = useState(false);
+  const [nameChangeRequest, setNameChangeRequest] = useState<Record<string, unknown> | null>(null);
+  const [isLoadingNameChangeStatus, setIsLoadingNameChangeStatus] = useState(false);
+  const [currentTenantName, setCurrentTenantName] = useState("");
   
   // Detect unsaved changes
   useEffect(() => {
@@ -59,6 +69,28 @@ export default function SettingsPage() {
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [hasUnsavedChanges]);
 
+  // Fetch name change request status
+  useEffect(() => {
+    const fetchNameChangeStatus = async () => {
+      try {
+        setIsLoadingNameChangeStatus(true);
+        const response = await fetch('/api/tenants/name-change-request');
+        if (response.ok) {
+          const data = await response.json();
+          setNameChangeRequest(data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching name change status:', error);
+      } finally {
+        setIsLoadingNameChangeStatus(false);
+      }
+    };
+    
+    if (session) {
+      fetchNameChangeStatus();
+    }
+  }, [session]);
+
   useEffect(() => {
     const fetchSettings = async () => {
       try {
@@ -72,6 +104,7 @@ export default function SettingsPage() {
           setTaxRate(data.taxRate?.toString() || '0');
           setReceiptHeader(data.receiptHeader || '');
           setReceiptFooter(data.receiptFooter || '');
+          setCurrentTenantName(data.shopName || '');
           setInitialValues({
             shopName: data.shopName || '',
             shopLogo: data.logoUrl || '',
@@ -175,6 +208,88 @@ export default function SettingsPage() {
     setHasUnsavedChanges(false);
   };
 
+  const handleSubmitNameChange = async () => {
+    if (!newTenantName.trim()) {
+      toast({
+        variant: 'destructive',
+        title: 'Validation Error',
+        description: 'Please enter a new tenant name'
+      });
+      return;
+    }
+
+    if (newTenantName.trim() === currentTenantName) {
+      toast({
+        variant: 'destructive',
+        title: 'Validation Error',
+        description: 'New name must be different from current name'
+      });
+      return;
+    }
+
+    if (!nameChangeReason.trim()) {
+      toast({
+        variant: 'destructive',
+        title: 'Validation Error',
+        description: 'Please provide a reason for the name change'
+      });
+      return;
+    }
+
+    setIsSubmittingNameChange(true);
+    try {
+      const response = await fetch('/api/tenants/name-change-request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          newName: newTenantName.trim(),
+          reason: nameChangeReason.trim()
+        })
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to submit name change request');
+      }
+
+      const result = await response.json();
+      setNameChangeRequest(result);
+      setNewTenantName('');
+      setNameChangeReason('');
+      setShowNameChangeDialog(false);
+      toast({
+        title: 'Request Submitted',
+        description: 'Your name change request has been submitted for admin approval.'
+      });
+    } catch (error) {
+      console.error('Error submitting name change request:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: error instanceof Error ? error.message : 'Failed to submit name change request'
+      });
+    } finally {
+      setIsSubmittingNameChange(false);
+    }
+  };
+
+  const getStatusBadgeColor = (status: string) => {
+    switch (status) {
+      case 'pending':
+        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-950 dark:text-yellow-200';
+      case 'approved':
+      case 'scheduled':
+      case 'auto_approved':
+        return 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-200';
+      case 'applied':
+        return 'bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-200';
+      case 'rejected':
+        return 'bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-200';
+      default:
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-950 dark:text-gray-200';
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="grid gap-6">
@@ -252,6 +367,42 @@ export default function SettingsPage() {
                                 previewSize="sm"
                             />
                         </div>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="font-headline">Tenant Name</CardTitle>
+                        <CardDescription>Request to change your tenant name (requires admin approval).</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        {isLoadingNameChangeStatus ? (
+                            <Skeleton className="h-10 w-full" />
+                        ) : nameChangeRequest && nameChangeRequest.status && ['pending', 'approved', 'scheduled', 'auto_approved'].includes(String(nameChangeRequest.status)) ? (
+                            <div className="space-y-2">
+                                <div className="text-sm">
+                                    <p className="font-medium">Active Request</p>
+                                    <p className="text-muted-foreground text-xs">{currentTenantName} → {String(nameChangeRequest.newName)}</p>
+                                </div>
+                                <div>
+                                    <span className={`inline-block px-2 py-1 text-xs font-semibold rounded ${getStatusBadgeColor(String(nameChangeRequest.status))}`}>
+                                        {String(nameChangeRequest.status).replace('_', ' ').toUpperCase()}
+                                    </span>
+                                </div>
+                                {nameChangeRequest.status === 'rejected' && nameChangeRequest.rejectionReason && (
+                                    <div className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900 rounded p-2">
+                                        <p className="text-xs font-medium text-red-800 dark:text-red-200">Reason:</p>
+                                        <p className="text-xs text-red-700 dark:text-red-300">{String(nameChangeRequest.rejectionReason)}</p>
+                                    </div>
+                                )}
+                            </div>
+                        ) : (
+                            <Button 
+                                variant="outline" 
+                                onClick={() => setShowNameChangeDialog(true)}
+                            >
+                                Request Name Change
+                            </Button>
+                        )}
                     </CardContent>
                 </Card>
             </div>
@@ -355,6 +506,62 @@ export default function SettingsPage() {
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
+
+    <Dialog open={showNameChangeDialog} onOpenChange={setShowNameChangeDialog}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Request Tenant Name Change</DialogTitle>
+          <DialogDescription>
+            Submit a request to change your tenant name. An admin will review and approve or reject your request.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="current-name">Current Name</Label>
+            <Input 
+              id="current-name" 
+              value={currentTenantName}
+              disabled
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="new-name">New Name</Label>
+            <Input 
+              id="new-name" 
+              placeholder="Enter new tenant name"
+              value={newTenantName}
+              onChange={(e) => setNewTenantName(e.target.value)}
+              disabled={isSubmittingNameChange}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="reason">Reason for Change</Label>
+            <Textarea 
+              id="reason" 
+              placeholder="e.g., Rebranding, correcting spelling, company name change"
+              value={nameChangeReason}
+              onChange={(e) => setNameChangeReason(e.target.value)}
+              disabled={isSubmittingNameChange}
+            />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button 
+            variant="outline" 
+            onClick={() => setShowNameChangeDialog(false)}
+            disabled={isSubmittingNameChange}
+          >
+            Cancel
+          </Button>
+          <Button 
+            onClick={handleSubmitNameChange}
+            disabled={isSubmittingNameChange}
+          >
+            {isSubmittingNameChange ? 'Submitting...' : 'Submit Request'}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
     </>
   );
 }

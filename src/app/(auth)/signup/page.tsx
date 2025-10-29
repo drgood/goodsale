@@ -1,6 +1,6 @@
 
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -9,19 +9,46 @@ import { GoodSaleLogo } from "@/components/goodsale-logo"
 import Link from "next/link";
 import { useRouter } from "next/navigation"
 import { useToast } from '@/hooks/use-toast';
-import { useUserContext } from '@/context/user-context';
-import type { Tenant, User } from '@/lib/types';
 import { Separator } from '@/components/ui/separator';
+import { signIn } from 'next-auth/react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+
+interface Plan {
+  id: string;
+  name: string;
+}
 
 export default function SignupPage() {
   const router = useRouter();
   const { toast } = useToast();
-  const { tenants, setTenants, users, setUsers, setCurrentUser } = useUserContext();
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [plans, setPlans] = useState<Plan[]>([]);
+  const [selectedPlan, setSelectedPlan] = useState('');
 
-  const handleSignup = (e: React.FormEvent<HTMLFormElement>) => {
+  // Fetch plans on component mount
+  useEffect(() => {
+    const fetchPlans = async () => {
+      try {
+        const response = await fetch('/api/plans');
+        if (response.ok) {
+          const data = await response.json();
+          setPlans(data);
+          if (data.length > 0) {
+            setSelectedPlan(data[0].id);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching plans:', error);
+      }
+    };
+    fetchPlans();
+  }, []);
+
+  const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
+    setError('');
 
     const formData = new FormData(e.currentTarget);
     const name = formData.get('name') as string;
@@ -29,57 +56,68 @@ export default function SignupPage() {
     const password = formData.get('password') as string;
     const shopName = formData.get('shopName') as string;
     const subdomain = (formData.get('subdomain') as string).toLowerCase().replace(/[^a-z0-9]/g, '');
+    const planId = selectedPlan;
 
     // Basic validation
-    if (tenants.some(t => t.subdomain === subdomain)) {
-        toast({ variant: 'destructive', title: 'Subdomain taken', description: 'That subdomain is already in use. Please choose another.' });
-        setIsLoading(false);
-        return;
-    }
-    if (users.some(u => u.email === email)) {
-        toast({ variant: 'destructive', title: 'Email in use', description: 'An account with that email already exists.' });
-        setIsLoading(false);
-        return;
+    if (!name.trim() || !email.trim() || !password || !shopName.trim() || !subdomain) {
+      setError('All fields are required');
+      setIsLoading(false);
+      return;
     }
 
-    setTimeout(() => {
-      // Create new tenant
-      const newTenant: Tenant = {
-        id: `t${tenants.length + 10}`,
-        name: shopName,
-        subdomain: subdomain,
-        plan: 'Starter',
-        status: 'active',
-        createdAt: new Date().toISOString(),
-        userCount: 1,
-        productCount: 0,
-        totalSales: 0,
-      };
-      
-      // Create new user
-      const newUser: User = {
-        id: `u${users.length + 100}`,
-        tenantId: newTenant.id,
-        name: name,
-        email: email,
-        role: 'Owner',
-        avatarUrl: `https://picsum.photos/seed/user${users.length + 10}/100/100`,
-        status: 'active',
-      };
-      
-      // Update state
-      setTenants(prev => [newTenant, ...prev]);
-      setUsers(prev => [newUser, ...prev]);
-      setCurrentUser(newUser);
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters');
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      // Call signup API to create tenant and user in database
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+          shopName,
+          subdomain,
+          planId,
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to create account');
+      }
+
+      const result = await response.json();
 
       toast({
         title: "Account Created!",
-        description: "Welcome to GoodSale! We're redirecting you to your new dashboard.",
+        description: "Welcome to GoodSale! Signing you in now.",
       });
 
-      router.push(`/${newTenant.subdomain}/dashboard`);
+      // Sign in the new user
+      await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
+      });
 
-    }, 1000);
+      // Redirect to tenant dashboard
+      router.push(`/${result.subdomain}/dashboard`);
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Failed to create account';
+      setError(errorMsg);
+      toast({
+        variant: 'destructive',
+        title: 'Signup Failed',
+        description: errorMsg,
+      });
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -90,6 +128,11 @@ export default function SignupPage() {
         <CardDescription>Get started with GoodSale and manage your business in minutes.</CardDescription>
       </CardHeader>
       <CardContent>
+        {error && (
+          <div className="mb-4 p-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900 rounded text-sm text-red-800 dark:text-red-200">
+            {error}
+          </div>
+        )}
         <form onSubmit={handleSignup} className="space-y-4">
           <p className="text-sm font-medium">Your Details</p>
           <div className="space-y-2">
@@ -119,6 +162,23 @@ export default function SignupPage() {
                 <span className="flex items-center h-10 rounded-r-md border border-l-0 bg-muted px-3 text-sm text-muted-foreground">.goodsale.app</span>
             </div>
             <p className="text-xs text-muted-foreground">This will be your shop's unique web address.</p>
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="plan">Subscription Plan</Label>
+            <Select value={selectedPlan} onValueChange={setSelectedPlan}>
+              <SelectTrigger id="plan" disabled={isLoading}>
+                <SelectValue placeholder="Select a plan" />
+              </SelectTrigger>
+              <SelectContent>
+                {plans.map((plan) => (
+                  <SelectItem key={plan.id} value={plan.id}>
+                    {plan.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">You can change this later in your billing settings.</p>
           </div>
           
           <Button type="submit" className="w-full !mt-6" variant="default" disabled={isLoading}>
