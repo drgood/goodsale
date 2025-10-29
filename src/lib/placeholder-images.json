@@ -1,0 +1,82 @@
+{
+  "placeholderImages": [
+    {
+      "id": "user-avatar-1",
+      "description": "User avatar for John Doe",
+      "imageUrl": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjA3MzA4MTF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "user-avatar-2",
+      "description": "User avatar for Jane Smith",
+      "imageUrl": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjA3MzA4MTF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "user-avatar-3",
+      "description": "User avatar for Admin",
+      "imageUrl": "https://images.unsplash.com/photo-1535643302794-19c3804b874b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjA3MzA4MTF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "product-1",
+      "description": "A modern wireless headphone",
+      "imageUrl": "https://images.unsplash.com/photo-1565495055951-25a25e021cef?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxoZWFkcGhvbmVzJTIwZ2FkZ2V0fGVufDB8fHx8MTc2MDc0NTc3Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "headphones gadget"
+    },
+    {
+      "id": "product-2",
+      "description": "A sleek smartwatch",
+      "imageUrl": "https://images.unsplash.com/photo-1549032198-33a5063a06d9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxzbWFydHdhdGNoJTIwdGVjaHxlbnwwfHx8fDE3NjA3NzkwNjN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "smartwatch tech"
+    },
+    {
+      "id": "product-3",
+      "description": "A professional DSLR camera",
+      "imageUrl": "https://images.unsplash.com/photo-1695501374516-a67eac4e0dfe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxjYW1lcmElMjBwaG90b2dyYXBoeXxlbnwwfHx8fDE3NjA3NDU3NzJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "camera photography"
+    },
+    {
+      "id": "product-4",
+      "description": "A stylish leather backpack",
+      "imageUrl": "https://images.unsplash.com/photo-1575376653281-1632fc9c61f7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxiYWNrcGFjayUyMGZhc2hpb258ZW58MHx8fHwxNzYwNzQ1NzcyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "backpack fashion"
+    },
+    {
+      "id": "product-5",
+      "description": "A smart home speaker",
+      "imageUrl": "https://images.unsplash.com/photo-1675523796635-d6e4d8a127b1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxzcGVha2VyJTIwYXVkaW98ZW58MHx8fHwxNzYwNzY2NDUzfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "speaker audio"
+    },
+    {
+      "id": "product-6",
+      "description": "Ergonomic office chair",
+      "imageUrl": "https://images.unsplash.com/photo-1505797149-43b0069ec26b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxvZmZpY2UlMjBjaGFpcnxlbnwwfHx8fDE3NjA3MzIzOTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "office chair"
+    },
+    {
+      "id": "product-7",
+      "description": "Mechanical keyboard",
+      "imageUrl": "https://images.unsplash.com/photo-1703482771739-caef1f39797e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxrZXlib2FyZCUyMHRlY2h8ZW58MHx8fHwxNzYwNzc2MzQ4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "keyboard tech"
+    },
+    {
+      "id": "product-8",
+      "description": "Insulated water bottle",
+      "imageUrl": "https://images.unsplash.com/photo-1561041695-d2fadf9f318c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHx3YXRlciUyMGJvdHRsZXxlbnwwfHx8fDE3NjA3MzIxMDB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "water bottle"
+    },
+    {
+      "id": "product-9",
+      "description": "Yoga mat",
+      "imageUrl": "https://images.unsplash.com/photo-1626116444912-1f1feb09364a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx5b2dhJTIwZml0bmVzc3xlbnwwfHx8fDE3NjA3NTU3NzN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "yoga fitness"
+    },
+    {
+      "id": "product-10",
+      "description": "Gourmet coffee beans",
+      "imageUrl": "https://images.unsplash.com/photo-1580933073521-dc49ac0d4e6a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxjb2ZmZWUlMjBiZWFuc3xlbnwwfHx8fDE3NjA3MzIzOTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "coffee beans"
+    }
+  ]
+}

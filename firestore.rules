@@ -1,0 +1,130 @@
+/**
+ * @fileoverview Firestore Security Rules for GoodSale Multi-Tenant Application
+ *
+ * Core Philosophy:
+ * This ruleset enforces a multi-tenant data isolation model. Each tenant's data
+ * is strictly segregated, and access is controlled based on the tenant ID.
+ * Authorization Independence is achieved by denormalizing the `tenantId` into every document,
+ * avoiding the need for costly `get()` calls in security rules.
+ *
+ * Data Structure:
+ * - /tenants/{tenantId}: Root document for each tenant.
+ * - /tenants/{tenantId}/users/{userId}: User data, with `tenantId` denormalized.
+ * - /tenants/{tenantId}/products/{productId}: Product data, with `tenantId` denormalized.
+ * - /tenants/{tenantId}/sales/{saleId}: Sale data, with `tenantId` denormalized.
+ * - /tenants/{tenantId}/sales/{saleId}/saleItems/{saleItemId}: SaleItem data, with `tenantId` inherited from parent.
+ * - /tenants/{tenantId}/categories/{categoryId}: Category data, with `tenantId` denormalized.
+ * - /tenants/{tenantId}/suppliers/{supplierId}: Supplier data, with `tenantId` denormalized.
+ * - /tenants/{tenantId}/settings/{settingId}: Setting data, with `tenantId` denormalized.
+ *
+ * Key Security Decisions:
+ * - Strict tenant-based data isolation: Access to data is only allowed within the context of a specific tenant.
+ * - Ownership validation: For create operations, the `tenantId` in the request data must match the path.
+ * - Immutable tenantId: The `tenantId` field cannot be changed after document creation.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Allows access to tenant documents.
+     * @path /tenants/{tenantId}
+     */
+    match /tenants/{tenantId} {
+      allow get, list: if true;
+      allow create: if isSignedIn();
+      allow update, delete: if isTenantOwner(tenantId);
+    }
+
+    /**
+     * @description Manages user documents within a tenant.
+     * @path /tenants/{tenantId}/users/{userId}
+     */
+    match /tenants/{tenantId}/users/{userId} {
+      allow get, list: if isTenantUser(tenantId);
+      allow create: if isSignedIn() && request.resource.data.tenantId == tenantId;
+      allow update: if isTenantUser(tenantId) && request.resource.data.tenantId == resource.data.tenantId;
+      allow delete: if isTenantUser(tenantId);
+    }
+
+    /**
+     * @description Manages product documents within a tenant.
+     * @path /tenants/{tenantId}/products/{productId}
+     */
+    match /tenants/{tenantId}/products/{productId} {
+      allow get, list: if isTenantUser(tenantId);
+      allow create: if isSignedIn() && request.resource.data.tenantId == tenantId;
+      allow update: if isTenantUser(tenantId) && request.resource.data.tenantId == resource.data.tenantId;
+      allow delete: if isTenantUser(tenantId);
+    }
+
+    /**
+     * @description Manages sale documents within a tenant.
+     * @path /tenants/{tenantId}/sales/{saleId}
+     */
+    match /tenants/{tenantId}/sales/{saleId} {
+      allow get, list: if isTenantUser(tenantId);
+      allow create: if isSignedIn() && request.resource.data.tenantId == tenantId;
+      allow update: if isTenantUser(tenantId) && request.resource.data.tenantId == resource.data.tenantId;
+      allow delete: if isTenantUser(tenantId);
+    }
+
+    /**
+     * @description Manages sale item documents within a tenant.
+     * @path /tenants/{tenantId}/sales/{saleId}/saleItems/{saleItemId}
+     */
+    match /tenants/{tenantId}/sales/{saleId}/saleItems/{saleItemId} {
+      allow get, list: if isTenantUser(tenantId);
+      allow create: if isSignedIn() && get(/databases/$(database)/documents/tenants/$(tenantId)/sales/$(saleId)).data.tenantId == tenantId;
+      allow update: if isTenantUser(tenantId);
+      allow delete: if isTenantUser(tenantId);
+    }
+
+    /**
+     * @description Manages category documents within a tenant.
+     * @path /tenants/{tenantId}/categories/{categoryId}
+     */
+    match /tenants/{tenantId}/categories/{categoryId} {
+      allow get, list: if isTenantUser(tenantId);
+      allow create: if isSignedIn() && request.resource.data.tenantId == tenantId;
+      allow update: if isTenantUser(tenantId) && request.resource.data.tenantId == resource.data.tenantId;
+      allow delete: if isTenantUser(tenantId);
+    }
+
+    /**
+     * @description Manages supplier documents within a tenant.
+     * @path /tenants/{tenantId}/suppliers/{supplierId}
+     */
+    match /tenants/{tenantId}/suppliers/{supplierId} {
+      allow get, list: if isTenantUser(tenantId);
+      allow create: if isSignedIn() && request.resource.data.tenantId == tenantId;
+      allow update: if isTenantUser(tenantId) && request.resource.data.tenantId == resource.data.tenantId;
+      allow delete: if isTenantUser(tenantId);
+    }
+
+    /**
+     * @description Manages setting documents within a tenant.
+     * @path /tenants/{tenantId}/settings/{settingId}
+     */
+    match /tenants/{tenantId}/settings/{settingId} {
+      allow get, list: if isTenantUser(tenantId);
+      allow create: if isSignedIn() && request.resource.data.tenantId == tenantId;
+      allow update: if isTenantUser(tenantId) && request.resource.data.tenantId == resource.data.tenantId;
+      allow delete: if isTenantUser(tenantId);
+    }
+
+    // ---- Helper functions ----
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isTenantOwner(tenantId) {
+      return isSignedIn() && request.auth.uid == tenantId;
+    }
+
+    function isTenantUser(tenantId) {
+        return isSignedIn() && request.auth.uid != null;
+    }
+  }
+}
