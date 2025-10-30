@@ -173,5 +173,5 @@ export type AuditLog = {
     entity: string;
     entityId: string;
     timestamp: string;
-    details: Record<string, any>;
+    details: Record<string, unknown>;
 };

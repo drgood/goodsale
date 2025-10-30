@@ -80,7 +80,7 @@ export function FAQAndCTASection() {
               Frequently Asked <span className="bg-gradient-to-r from-purple-600 to-green-600 bg-clip-text text-transparent">Questions</span>
             </h2>
             <p className="text-lg text-gray-600 dark:text-gray-400">
-              Have a question? We have answers. Can't find what you're looking for?
+              Have a question? We have answers. Can&apos;t find what you&apos;re looking for?
             </p>
             <Link href="#" className="text-purple-600 hover:text-purple-700 font-semibold mt-2 inline-block">
               Contact our support team →

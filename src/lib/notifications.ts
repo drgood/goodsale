@@ -8,7 +8,7 @@ export type Notification = {
   description: string;
   createdAt: string;
   isRead: boolean;
-  data?: Record<string, any>;
+  data?: Record<string, unknown>;
   tenantId?: string;
   userId?: string;
 };

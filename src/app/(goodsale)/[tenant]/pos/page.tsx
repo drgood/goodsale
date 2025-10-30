@@ -328,7 +328,7 @@ export default function POSPage() {
           // Update customer data if customer is selected
           if (selectedCustomer) {
             const updatedTotalSpent = selectedCustomer.totalSpent + total;
-            let updateData: any = { 
+            const updateData: { id: string; totalSpent: number; balance?: number } = { 
               id: selectedCustomer.id, 
               totalSpent: updatedTotalSpent
             };

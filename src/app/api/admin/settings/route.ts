@@ -77,7 +77,7 @@ export async function PATCH(request: NextRequest) {
     } else {
       // Update existing settings
       settingsId = existingSettings[0].id;
-      const updateData: any = {};
+      const updateData: Record<string, string | number | boolean | Date> = {};
       if (platformName !== undefined) updateData.platformName = platformName;
       if (currency !== undefined) updateData.currency = currency;
       if (taxRate !== undefined) updateData.taxRate = taxRate.toString();

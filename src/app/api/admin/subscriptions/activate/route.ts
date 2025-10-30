@@ -81,7 +81,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       .set({
         status: 'active',
         planId: newPlanId,
-        billingPeriod: billingPeriod as any,
+        billingPeriod: billingPeriod as '1_month' | '6_months' | '12_months' | '24_months',
         startDate: new Date(),
         endDate: newEndDate,
         amount: parseFloat(amount.toString()).toString(),

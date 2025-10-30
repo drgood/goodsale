@@ -13,7 +13,7 @@ export interface UseQueryResult<T> {
  * React hook to fetch data from an API endpoint
  * This replaces useDoc for single document queries
  */
-export function useQuery<T = any>(
+export function useQuery<T = unknown>(
   endpoint: string | null | undefined,
 ): UseQueryResult<T> {
   const [data, setData] = useState<T | null>(null);
@@ -58,7 +58,7 @@ export function useQuery<T = any>(
  * React hook to fetch collection/list data from an API endpoint
  * This replaces useCollection for queries
  */
-export function useQueryList<T = any>(
+export function useQueryList<T = unknown>(
   endpoint: string | null | undefined,
 ): UseQueryResult<T[]> {
   const [data, setData] = useState<T[] | null>(null);
@@ -102,7 +102,7 @@ export function useQueryList<T = any>(
 /**
  * Mutation hook for creating, updating, or deleting data
  */
-export function useMutation<TData = any, TVariables = any>() {
+export function useMutation<TData = unknown, TVariables = unknown>() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 

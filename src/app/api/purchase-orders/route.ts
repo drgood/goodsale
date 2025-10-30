@@ -60,11 +60,11 @@ export async function POST(request: Request) {
     );
     
     return NextResponse.json(newPO);
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error creating purchase order:', error);
-    console.error('Error details:', error.message);
+    console.error('Error details:', error instanceof Error ? error.message : 'Unknown error');
     return NextResponse.json(
-      { error: 'Failed to create purchase order', details: error.message },
+      { error: 'Failed to create purchase order', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }

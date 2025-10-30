@@ -89,7 +89,7 @@ export async function PUT(request: Request) {
     const body = await request.json();
     const { id, ...updateData } = body;
     
-    const dataToUpdate: any = {};
+    const dataToUpdate: Record<string, string | Date> = {};
     if (updateData.endTime) dataToUpdate.endTime = new Date(updateData.endTime);
     if (updateData.status) dataToUpdate.status = updateData.status;
     if (updateData.cashSales !== undefined) dataToUpdate.cashSales = updateData.cashSales.toString();

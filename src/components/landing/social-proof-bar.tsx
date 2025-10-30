@@ -14,7 +14,7 @@ function AnimatedCounter({ target, duration, suffix = '', prefix = '' }: Counter
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    let start = 0;
+    const start = 0;
     const increment = target / (duration / 16); // 60fps
     let currentValue = start;
 

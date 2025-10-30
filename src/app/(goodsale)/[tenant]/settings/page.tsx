@@ -347,7 +347,7 @@ export default function SettingsPage() {
                 <Card>
                     <CardHeader>
                         <CardTitle className="font-headline">Shop Details</CardTitle>
-                        <CardDescription>Update your shop's name and contact information.</CardDescription>
+                        <CardDescription>Update your shop&apos;s name and contact information.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="space-y-2">

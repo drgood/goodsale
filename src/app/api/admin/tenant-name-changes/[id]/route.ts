@@ -60,7 +60,7 @@ export async function PATCH(
       );
     }
 
-    let updateData: Record<string, unknown> = {
+    const updateData: Record<string, unknown> = {
       status: action === 'approve' ? 'approved' : 'rejected',
       reviewedBy: token.id as string,
       reviewedAt: new Date(),

@@ -244,7 +244,7 @@ export default function TenantsPage() {
                                 className="pl-8"
                             />
                         </div>
-                        <Select value={statusFilter} onValueChange={(value: any) => setStatusFilter(value)}>
+                        <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value)}>
                             <SelectTrigger className="w-full sm:w-48">
                                 <SelectValue />
                             </SelectTrigger>

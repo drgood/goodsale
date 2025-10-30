@@ -88,7 +88,7 @@ export default function LoginPage() {
       <CardHeader className="text-center">
         <GoodSaleLogo className="mb-4" />
         <CardTitle className="font-headline text-2xl">Welcome Back</CardTitle>
-        <CardDescription>Enter your credentials to access your shop's dashboard.</CardDescription>
+        <CardDescription>Enter your credentials to access your shop&apos;s dashboard.</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleLogin} className="space-y-4">

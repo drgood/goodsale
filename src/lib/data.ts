@@ -26,7 +26,7 @@ export const users: User[] = [
   { id: '201', tenantId: '2', name: 'Alice Wonder', email: 'alice@globex.com', role: 'Owner', avatarUrl: 'https://picsum.photos/seed/user4/100/100', lastLogin: '2024-07-27T12:00:00Z', status: 'active' },
 ];
 
-// @ts-ignore - Temporary mock data with legacy structure for backward compatibility
+// @ts-expect-error - Temporary mock data with legacy structure for backward compatibility
 export const products: Product[] = [
   { id: 'p1', tenantId: '1', name: 'Wireless Headphones', sku: 'WH-1000XM4', categoryId: 'c1', categoryName: 'Electronics', supplierId: 'sup1', supplierName: 'Sony', price: 349.99, costPrice: 220.50, stock: 25, stockThreshold: 10, ...findImage('product-1'), status: 'active' },
   { id: 'p2', tenantId: '1', name: 'Smartwatch Series 7', sku: 'SW-S7-BLK', categoryId: 'c2', categoryName: 'Wearables', supplierId: 'sup2', supplierName: 'Apple', price: 429.00, costPrice: 310.00, stock: 15, stockThreshold: 5, ...findImage('product-2'), status: 'active' },

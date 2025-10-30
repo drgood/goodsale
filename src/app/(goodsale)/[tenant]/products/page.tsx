@@ -305,7 +305,7 @@ export default function ProductsPage() {
             + headers.join(",") + "\n"
             + filteredProducts.map(p => {
                 return headers.map(header => {
-                    // @ts-ignore
+                    // @ts-expect-error - Dynamic key access for CSV export
                     const value = p[header as keyof Product] ?? '';
                     return `"${String(value).replace(/"/g, '""')}"`;
                 }).join(",");

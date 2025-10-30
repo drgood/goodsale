@@ -94,7 +94,7 @@ export default function AdminSettingsPage() {
                  <Card>
                     <CardHeader>
                         <CardTitle className="font-headline">Platform Branding</CardTitle>
-                        <CardDescription>Update the platform's name and logo.</CardDescription>
+                        <CardDescription>Update the platform&apos;s name and logo.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="space-y-2">

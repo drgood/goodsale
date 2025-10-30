@@ -150,7 +150,7 @@ export default function SignupPage() {
 
           <Separator className="!my-6" />
 
-          <p className="text-sm font-medium">Your Shop's Details</p>
+          <p className="text-sm font-medium">Your Shop&apos;s Details</p>
            <div className="space-y-2">
             <Label htmlFor="shopName">Shop Name</Label>
             <Input id="shopName" name="shopName" placeholder="My Awesome Shop" required disabled={isLoading} />
@@ -161,7 +161,7 @@ export default function SignupPage() {
                 <Input id="subdomain" name="subdomain" placeholder="myshop" className="rounded-r-none" required disabled={isLoading} />
                 <span className="flex items-center h-10 rounded-r-md border border-l-0 bg-muted px-3 text-sm text-muted-foreground">.goodsale.app</span>
             </div>
-            <p className="text-xs text-muted-foreground">This will be your shop's unique web address.</p>
+            <p className="text-xs text-muted-foreground">This will be your shop&apos;s unique web address.</p>
           </div>
           
           <div className="space-y-2">

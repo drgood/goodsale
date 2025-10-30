@@ -57,16 +57,16 @@ export const mockAuditLog = {
 // Helper to create mock query builders
 export function createMockQueryBuilder<T>(data: T[]) {
   return {
-    where: jest.fn(function (this: any) {
+    where: jest.fn(function (this: unknown) {
       return this
     }),
-    limit: jest.fn(function (this: any) {
+    limit: jest.fn(function (this: unknown) {
       return this
     }),
-    offset: jest.fn(function (this: any) {
+    offset: jest.fn(function (this: unknown) {
       return this
     }),
-    orderBy: jest.fn(function (this: any) {
+    orderBy: jest.fn(function (this: unknown) {
       return this
     }),
     then: jest.fn((callback) => {

@@ -21,7 +21,7 @@ export async function notifyNewSale(
         saleId: sale.id,
         amount: sale.totalAmount,
         cashierName: sale.cashierName,
-      } as any,
+      } as Record<string, unknown>,
     });
   } catch (error) {
     console.error('Error creating sale notification:', error);
@@ -48,7 +48,7 @@ export async function notifyLowStock(
         productName: product.name,
         stock: product.stock,
         threshold: product.stockThreshold,
-      } as any,
+      } as Record<string, unknown>,
     });
   } catch (error) {
     console.error('Error creating stock notification:', error);
@@ -74,7 +74,7 @@ export async function notifyNewTeamMember(
         newUserId: newUser.id,
         newUserName: newUser.name,
         role: newUser.role,
-      } as any,
+      } as Record<string, unknown>,
     });
   } catch (error) {
     console.error('Error creating team member notification:', error);
@@ -89,7 +89,7 @@ export async function notifySystem(
   userId: string,
   title: string,
   description: string,
-  data?: Record<string, any>
+  data?: Record<string, unknown>
 ) {
   try {
     await db.insert(notifications).values({
@@ -98,7 +98,7 @@ export async function notifySystem(
       type: 'system',
       title,
       description,
-      data: data as any,
+      data: data as Record<string, unknown> | undefined,
     });
   } catch (error) {
     console.error('Error creating system notification:', error);
@@ -113,7 +113,7 @@ export async function notifyTeamManagers(
   type: string,
   title: string,
   description: string,
-  data?: Record<string, any>
+  data?: Record<string, unknown>
 ) {
   try {
     // Get all managers and owners for the tenant
@@ -131,10 +131,10 @@ export async function notifyTeamManagers(
         await db.insert(notifications).values({
           tenantId,
           userId: manager.id,
-          type: type as any,
+          type: type as 'sale' | 'stock' | 'user' | 'system',
           title,
           description,
-          data: data as any,
+          data: data as Record<string, unknown> | undefined,
         });
       }
     }

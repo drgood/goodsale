@@ -421,7 +421,7 @@ export default function CustomersPage() {
             <DialogHeader>
                 <DialogTitle>Edit Customer: {customerToEdit?.name}</DialogTitle>
                 <DialogDescription>
-                    Update the customer's information below.
+                    Update the customer&apos;s information below.
                 </DialogDescription>
             </DialogHeader>
             {customerToEdit && (

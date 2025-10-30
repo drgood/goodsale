@@ -56,7 +56,7 @@ export async function POST(request: Request) {
         session.user.tenantId,
         'sale',
         'New Sale!',
-        `Sale of GH₵${(typeof newSale.totalAmount === 'number' ? newSale.totalAmount : parseFloat((newSale.totalAmount as any)?.toString?.() || '0')).toFixed(2)} completed by ${newSale.cashierName || 'Unknown'}`
+        `Sale of GH₵${(typeof newSale.totalAmount === 'number' ? newSale.totalAmount : parseFloat(String(newSale.totalAmount || '0'))).toFixed(2)} completed by ${newSale.cashierName || 'Unknown'}`
       );
     } catch (notifError) {
       console.error('Error creating notification:', notifError);

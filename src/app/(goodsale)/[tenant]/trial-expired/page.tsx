@@ -42,7 +42,7 @@ export default function TrialExpiredPage() {
 
           {/* Features List */}
           <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 space-y-3">
-            <p className="font-semibold text-gray-900 dark:text-white mb-4">When you upgrade, you'll regain access to:</p>
+            <p className="font-semibold text-gray-900 dark:text-white mb-4">When you upgrade, you&apos;ll regain access to:</p>
             <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
               <div className="flex items-center gap-2">
                 <span className="text-green-600 dark:text-green-400">✓</span>
@@ -101,7 +101,7 @@ export default function TrialExpiredPage() {
               <strong>Support:</strong> Available 24/7 at support@goodsale.com
             </p>
             <p className="pt-2">
-              Questions? We're here to help. Don't hesitate to reach out!
+              Questions? We&apos;re here to help. Don&apos;t hesitate to reach out!
             </p>
           </div>
         </CardContent>

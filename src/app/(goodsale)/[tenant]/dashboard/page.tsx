@@ -294,7 +294,7 @@ export default function DashboardPage() {
             </Card>
             <Card>
                 <CardHeader>
-                    <CardTitle className="font-headline">Today's Top Performers</CardTitle>
+                    <CardTitle className="font-headline">Today&apos;s Top Performers</CardTitle>
                      <CardDescription>Cashiers with the highest sales volume today.</CardDescription>
                 </CardHeader>
                 <CardContent>
