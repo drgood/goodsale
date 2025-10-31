@@ -131,82 +131,58 @@ export default function SalesPage() {
   const handleSettlePayment = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!selectedSale || !selectedSale.customerId) return;
-    
+
     const formData = new FormData(event.currentTarget);
     const amount = parseFloat(formData.get("amount") as string);
+    const method = String(formData.get("method") || '');
     const customer = customers.find(c => c.id === selectedSale.customerId);
 
     if (!customer || isNaN(amount) || amount <= 0) {
-        toast({ variant: 'destructive', title: 'Invalid amount' });
-        return;
+      toast({ variant: 'destructive', title: 'Invalid amount' });
+      return;
     }
-    
+    if (!['Cash','Card','Mobile'].includes(method)) {
+      toast({ variant: 'destructive', title: 'Select a payment method' });
+      return;
+    }
     if (amount > customer.balance) {
-        toast({ variant: 'destructive', title: 'Amount exceeds balance', description: `Customer balance is only GH₵${customer.balance.toFixed(2)}.` });
-        return;
+      toast({ variant: 'destructive', title: 'Amount exceeds balance', description: `Customer balance is only GH₵${customer.balance.toFixed(2)}.` });
+      return;
     }
-
-    const newAmountSettled = (selectedSale.amountSettled || 0) + amount;
-    const remainingAmount = selectedSale.totalAmount - newAmountSettled;
-    const newStatus = remainingAmount <= 0 ? 'Paid' : 'Pending';
-    const newBalance = customer.balance - amount;
 
     try {
-      // Update sale in database
-      const saleUpdateResponse = await fetch('/api/sales', {
-        method: 'PUT',
+      const resp = await fetch('/api/receivables/payments', {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          id: selectedSale.id,
-          amountSettled: newAmountSettled,
-          status: newStatus
+          customerId: customer.id,
+          amount,
+          method,
+          saleId: selectedSale.id
         })
       });
+      if (!resp.ok) throw new Error('Failed to record payment');
+      const data = await resp.json();
 
-      if (!saleUpdateResponse.ok) {
-        throw new Error('Failed to update sale');
+      // Update local state from response
+      const newBalance = data.customerBalance ?? customer.balance - data.totalApplied;
+      setCustomers(customers.map(c => c.id === customer.id ? { ...c, balance: newBalance } : c));
+
+      type Allocation = { saleId: string; allocated: number; newAmountSettled: number; newStatus: 'Paid'|'Pending' };
+      const allocations: Allocation[] = Array.isArray(data.allocations) ? data.allocations as Allocation[] : [];
+      const saleAlloc = allocations.find(a => a.saleId === selectedSale.id);
+      if (saleAlloc) {
+        setSales(sales.map(s => s.id === selectedSale.id ? { ...s, amountSettled: saleAlloc.newAmountSettled, status: saleAlloc.newStatus } : s));
+      } else {
+        // It might have allocated elsewhere FIFO; refetch sales if needed later.
       }
 
-      // Update customer balance in database
-      const customerUpdateResponse = await fetch('/api/customers', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: customer.id,
-          balance: newBalance
-        })
-      });
-
-      if (!customerUpdateResponse.ok) {
-        throw new Error('Failed to update customer balance');
-      }
-
-      // Update local state after successful database updates
-      setCustomers(customers.map(c => 
-        c.id === selectedSale.customerId ? { ...c, balance: newBalance } : c
-      ));
-
-      setSales(sales.map(s => {
-        if (s.id === selectedSale.id) {
-          return {
-            ...s,
-            amountSettled: newAmountSettled,
-            status: newStatus as 'Paid' | 'Pending'
-          };
-        }
-        return s;
-      }));
-
-      toast({ title: 'Payment Recorded', description: `GH₵${amount.toFixed(2)} settled for sale ${selectedSale.id}.`});
+      toast({ title: 'Payment Recorded', description: `GH₵${amount.toFixed(2)} via ${method} recorded.`});
       setIsSettleOpen(false);
       setSelectedSale(null);
     } catch (error) {
       console.error('Error settling payment:', error);
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'Failed to record payment. Please try again.'
-      });
+      toast({ variant: 'destructive', title: 'Error', description: 'Failed to record payment. Please try again.' });
     }
   }
 
@@ -424,6 +400,15 @@ export default function SalesPage() {
                             <div className="space-y-2">
                                 <Label htmlFor="amount">Payment Amount</Label>
                                 <Input id="amount" name="amount" type="number" step="0.01" min="0.01" max={(selectedSale.totalAmount - (selectedSale.amountSettled || 0))} required />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="method">Payment Method</Label>
+                                <select id="method" name="method" className="w-full border rounded-md h-9 px-3">
+                                    <option value="">Select method</option>
+                                    <option value="Cash">Cash</option>
+                                    <option value="Card">Card</option>
+                                    <option value="Mobile">Mobile</option>
+                                </select>
                             </div>
                         </div>
                          <DialogFooter>

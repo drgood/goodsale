@@ -115,6 +115,12 @@ export default function POSPage() {
   const [customerSearchTerm, setCustomerSearchTerm] = useState("");
   const [isAddCustomerDialogOpen, setIsAddCustomerDialogOpen] = useState(false);
 
+  // Settle receivable dialog
+  const [isSettleDialogOpen, setIsSettleDialogOpen] = useState(false);
+
+  // Role helpers
+  const isCashier = (currentUser?.role || '').toLowerCase() === 'cashier';
+
   // Dexie hooks for offline data
   const localProducts = useLiveQuery(() => db.products.toArray(), []);
 
@@ -681,6 +687,11 @@ export default function POSPage() {
                 )))}
                 </CardContent>
             </ScrollArea>
+            <div className="flex w-full gap-2 p-4 pt-0">
+                <Button className="w-full" variant="secondary" onClick={() => setIsSettleDialogOpen(true)}>
+                    <CircleUserRound className="mr-2 h-4 w-4"/> Settle Receivable
+                </Button>
+            </div>
             {cart.length > 0 && (
                 <CardFooter className="flex-col !p-4 !mt-auto border-t">
                     <div className="w-full space-y-2 text-sm">
@@ -749,7 +760,9 @@ export default function POSPage() {
                         <Button variant={paymentMethod === 'Cash' ? 'default' : 'secondary'} size="sm" onClick={() => setPaymentMethod('Cash')}><Banknote className="mr-2 h-4 w-4"/>Cash</Button>
                         <Button variant={paymentMethod === 'Card' ? 'default' : 'secondary'} size="sm" onClick={() => setPaymentMethod('Card')}><CreditCard className="mr-2 h-4 w-4"/>Card</Button>
                         <Button variant={paymentMethod === 'Mobile' ? 'default' : 'secondary'} size="sm" onClick={() => setPaymentMethod('Mobile')}><Smartphone className="mr-2 h-4 w-4"/>Mobile</Button>
-                        <Button variant={paymentMethod === 'On Credit' ? 'default' : 'secondary'} size="sm" onClick={() => setPaymentMethod('On Credit')} disabled={!selectedCustomer}><CircleUserRound className="mr-2 h-4 w-4"/>On Credit</Button>
+                        {!isCashier && (
+                          <Button variant={paymentMethod === 'On Credit' ? 'default' : 'secondary'} size="sm" onClick={() => setPaymentMethod('On Credit')} disabled={!selectedCustomer}><CircleUserRound className="mr-2 h-4 w-4"/>On Credit</Button>
+                        )}
                     </div>
                     <div className="flex w-full gap-2 mt-2">
                         <Button className="w-full" variant="outline" disabled={cart.length === 0} onClick={handleHoldSale}>
@@ -810,6 +823,114 @@ export default function POSPage() {
                 <ReceiptComponent sale={lastCompletedSale} />
             </DialogContent>
         )}
+      </Dialog>
+
+      {/* Settle Receivable Dialog */}
+      <Dialog open={isSettleDialogOpen} onOpenChange={setIsSettleDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Settle Receivable</DialogTitle>
+            <DialogDescriptionComponent>
+              Record a payment against a customer's outstanding balance.
+            </DialogDescriptionComponent>
+          </DialogHeader>
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault();
+              const form = e.currentTarget as HTMLFormElement;
+              const formData = new FormData(form);
+              const customerId = (formData.get('customerId') as string) || selectedCustomer?.id || '';
+              const amount = parseFloat((formData.get('amount') as string) || '0');
+              const method = String(formData.get('method') || '');
+              const customer = customers.find(c => c.id === customerId);
+
+              if (!customerId || !customer) {
+                toast({ variant: 'destructive', title: 'Select a customer' });
+                return;
+              }
+              if (!['Cash','Card','Mobile'].includes(method)) {
+                toast({ variant: 'destructive', title: 'Select a payment method' });
+                return;
+              }
+              if (isNaN(amount) || amount <= 0 || amount > customer.balance) {
+                toast({ variant: 'destructive', title: 'Invalid amount', description: `Enter between 0.01 and GH₵${customer.balance.toFixed(2)}.` });
+                return;
+              }
+
+              try {
+                const resp = await fetch('/api/receivables/payments', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ customerId, amount, method })
+                });
+                if (!resp.ok) throw new Error('Failed to record payment');
+
+                // Refresh customers to reflect new balances
+                const customersRes = await fetch('/api/customers');
+                if (customersRes.ok) {
+                  const customersData = await customersRes.json();
+                  setCustomers(customersData);
+                  // If current selectedCustomer is same, update it
+                  if (selectedCustomer) {
+                    const updated = customersData.find((c: Customer) => c.id === selectedCustomer.id);
+                    if (updated) setSelectedCustomer(updated);
+                  }
+                }
+
+                toast({ title: 'Payment Recorded', description: `Payment of GH₵${amount.toFixed(2)} via ${method} saved.` });
+                setIsSettleDialogOpen(false);
+              } catch (err) {
+                console.error(err);
+                toast({ variant: 'destructive', title: 'Error', description: 'Failed to record payment.' });
+              }
+            }}
+          >
+            <div className="py-2 space-y-3">
+              {!selectedCustomer && (
+                <div className="space-y-1">
+                  <Label htmlFor="settle-customer">Customer</Label>
+                  <select id="settle-customer" name="customerId" className="w-full border rounded-md h-9 px-3">
+                    <option value="">Select customer</option>
+                    {customers.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name} — Balance GH₵{c.balance.toFixed(2)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+              {selectedCustomer && (
+                <div className="text-sm p-3 rounded-md bg-muted">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Customer</span>
+                    <span className="font-medium">{selectedCustomer.name}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Balance</span>
+                    <span className="font-bold text-destructive">GH₵{selectedCustomer.balance.toFixed(2)}</span>
+                  </div>
+                </div>
+              )}
+              <div className="space-y-1">
+                <Label htmlFor="settle-amount">Payment Amount</Label>
+                <Input id="settle-amount" name="amount" type="number" step="0.01" min="0.01" placeholder="0.00" />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="settle-method">Payment Method</Label>
+                <select id="settle-method" name="method" className="w-full border rounded-md h-9 px-3">
+                  <option value="">Select method</option>
+                  <option value="Cash">Cash</option>
+                  <option value="Card">Card</option>
+                  <option value="Mobile">Mobile</option>
+                </select>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => setIsSettleDialogOpen(false)}>Cancel</Button>
+              <Button type="submit">Record Payment</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
       </Dialog>
     </>
   );

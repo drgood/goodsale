@@ -48,18 +48,34 @@ export default function LoginPage() {
         const sessionResponse = await fetch('/api/auth/session');
         const session = await sessionResponse.json();
         
-        // Redirect based on role
-        const tenantSlug = session.user?.tenantId || 'gshop';
-        const role = session.user?.role || 'cashier';
-        
-        let redirectPath = `/${tenantSlug}/dashboard`;
-        if (role === 'owner' || role === 'admin') {
-          redirectPath = `/${tenantSlug}/dashboard/owner`;
-        } else if (role === 'manager') {
-          redirectPath = `/${tenantSlug}/dashboard/manager`;
+        // Fetch tenant name using tenantId
+        const tenantId = session.user?.tenantId;
+        if (!tenantId) {
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Unable to determine tenant.",
+          });
+          setIsLoading(false);
+          return;
         }
         
-        router.push(redirectPath);
+        const tenantResponse = await fetch(`/api/tenants/${tenantId}`);
+        if (!tenantResponse.ok) {
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Unable to fetch tenant details.",
+          });
+          setIsLoading(false);
+          return;
+        }
+        
+        const tenant = await tenantResponse.json();
+        const tenantSlug = tenant.subdomain;
+        
+        // Redirect to dashboard
+        router.push(`/${tenantSlug}/dashboard`);
         router.refresh();
       }
     } catch (error) {

@@ -27,11 +27,12 @@ import { usePathname } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { GoodSaleLogo } from "./goodsale-logo";
+import { useEffect, useState } from "react";
 
 const menuItems = [
   { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/tenants", label: "Tenants", icon: Building2 },
-  { href: "/admin/billing", label: "Billing", icon: DollarSign },
+  { href: "/admin/billing", label: "Billing & Subscriptions", icon: DollarSign },
   { href: "/admin/tenant-name-changes", label: "Name Changes", icon: FileText },
   { href: "/admin/plans", label: "Plans", icon: CreditCard },
   { href: "/admin/users", label: "Admin Users", icon: Users },
@@ -41,6 +42,27 @@ const menuItems = [
 export function AdminSidebar() {
   const pathname = usePathname();
   const userAvatar = PlaceHolderImages.find(img => img.id === 'user-avatar-3')?.imageUrl || '';
+  const [pendingCount, setPendingCount] = useState(0);
+
+  useEffect(() => {
+    // Fetch pending subscription requests count
+    const fetchPendingCount = async () => {
+      try {
+        const res = await fetch('/api/admin/subscription-requests/count');
+        if (res.ok) {
+          const data = await res.json();
+          setPendingCount(data.count || 0);
+        }
+      } catch (error) {
+        console.error('Failed to fetch pending count:', error);
+      }
+    };
+
+    fetchPendingCount();
+    // Refresh every 30 seconds
+    const interval = setInterval(fetchPendingCount, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   const isActive = (href: string) => {
     if (href.endsWith('/')) {
@@ -72,6 +94,11 @@ export function AdminSidebar() {
                 >
                   <item.icon />
                   <span>{item.label}</span>
+                  {item.href === '/admin/billing' && pendingCount > 0 && (
+                    <span className="ml-auto flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
+                      {pendingCount}
+                    </span>
+                  )}
                 </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>

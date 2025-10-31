@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db, tenants, users, auditLogs, subscriptions } from '@/db';
+import { db, tenants, users, auditLogs, subscriptions, plans } from '@/db';
 import { eq } from 'drizzle-orm';
 import { hash } from 'bcryptjs';
 
@@ -56,13 +56,27 @@ export async function POST(request: NextRequest) {
     // Hash password
     const hashedPassword = await hash(password, 10);
 
+    // Fetch plan name from planId
+    const [selectedPlan] = await db
+      .select()
+      .from(plans)
+      .where(eq(plans.id, planId))
+      .limit(1);
+
+    if (!selectedPlan) {
+      return NextResponse.json(
+        { error: 'Invalid plan selected' },
+        { status: 400 }
+      );
+    }
+
     // Create tenant
     const newTenant = await db
       .insert(tenants)
       .values({
         name: shopName,
         subdomain: subdomain.toLowerCase(),
-        plan: planId,
+        plan: selectedPlan.name,
         status: 'active',
       })
       .returning();

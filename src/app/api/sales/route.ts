@@ -36,6 +36,14 @@ export async function POST(request: Request) {
     const body = await request.json();
     console.log('Creating sale with data:', JSON.stringify(body, null, 2));
     console.log('Tenant ID:', session.user.tenantId);
+
+    // Enforce: cashiers cannot sell on credit
+    if (body?.paymentMethod === 'On Credit' && session.user.role === 'Cashier') {
+      return NextResponse.json(
+        { error: 'Cashiers are not allowed to sell on credit' },
+        { status: 403 }
+      );
+    }
     
     const newSale = await createSale(body, session.user.tenantId);
     console.log('Sale created successfully:', newSale.id);

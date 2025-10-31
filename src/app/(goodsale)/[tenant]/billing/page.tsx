@@ -5,6 +5,9 @@ import { useSession } from 'next-auth/react';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import Link from 'next/link';
 import {
   Table,
   TableBody,
@@ -13,7 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { AlertCircle, Calendar, DollarSign, CheckCircle, Clock } from 'lucide-react';
+import { AlertCircle, Calendar, DollarSign, CheckCircle, Clock, Check } from 'lucide-react';
 
 interface Subscription {
   id: string;
@@ -36,17 +39,40 @@ interface BillingRecord {
   paidAt: string;
 }
 
+interface Plan {
+  id: string;
+  name: string;
+  description: string;
+  price: string;
+  features: string[];
+  isPopular?: boolean;
+}
+
 export default function TenantBillingPage() {
   const { data: session } = useSession();
   const [isLoading, setIsLoading] = useState(true);
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [billingHistory, setBillingHistory] = useState<BillingRecord[]>([]);
+  const [plans, setPlans] = useState<Plan[]>([]);
+  const [showPlans, setShowPlans] = useState(false);
 
   useEffect(() => {
     if (session?.user?.id) {
-      Promise.all([fetchSubscription(), fetchBillingHistory()]);
+      Promise.all([fetchSubscription(), fetchBillingHistory(), fetchPlans()]);
     }
   }, [session]);
+
+  const fetchPlans = async () => {
+    try {
+      const response = await fetch('/api/plans');
+      if (response.ok) {
+        const data = await response.json();
+        setPlans(data);
+      }
+    } catch (error) {
+      console.error('Error fetching plans:', error);
+    }
+  };
 
   const fetchSubscription = async () => {
     try {
@@ -144,7 +170,66 @@ export default function TenantBillingPage() {
       <PageHeader
         title="Billing & Subscription"
         description="Manage your subscription plan and view payment history."
-      />
+      >
+        <Button onClick={() => setShowPlans(!showPlans)} variant="outline">
+          {showPlans ? 'Hide Plans' : 'View Available Plans'}
+        </Button>
+      </PageHeader>
+
+      {/* Available Plans */}
+      {showPlans && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Available Plans</CardTitle>
+            <CardDescription>Choose the plan that best fits your business needs</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {plans.map((plan) => (
+                <Card key={plan.id} className={plan.isPopular ? 'border-primary' : ''}>
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-xl">{plan.name}</CardTitle>
+                      {plan.isPopular && <Badge>Most Popular</Badge>}
+                    </div>
+                    <CardDescription>{plan.description}</CardDescription>
+                    <div className="mt-4">
+                      <span className="text-3xl font-bold">GH₵{plan.price}</span>
+                      <span className="text-muted-foreground">/month</span>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-2 mb-6">
+                      {plan.features && plan.features.length > 0 ? (
+                        plan.features.map((feature, index) => (
+                          <li key={index} className="flex items-start gap-2">
+                            <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                            <span className="text-sm">{feature}</span>
+                          </li>
+                        ))
+                      ) : (
+                        <li className="text-sm text-muted-foreground">No features listed</li>
+                      )}
+                    </ul>
+                    <Link href={subscription?.planId === plan.id ? '#' : `billing/upgrade?planId=${plan.id}`}>
+                      <Button 
+                        className="w-full" 
+                        variant={subscription?.planId === plan.id ? 'outline' : 'default'}
+                        disabled={subscription?.planId === plan.id}
+                      >
+                        {subscription?.planId === plan.id ? 'Current Plan' : 'Upgrade to This Plan'}
+                      </Button>
+                    </Link>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            <div className="mt-6 text-center text-sm text-muted-foreground">
+              <p>Need a custom plan? Contact our sales team at sales@goodsale.com</p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Current Subscription */}
       {subscription && (

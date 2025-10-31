@@ -167,6 +167,10 @@ export const shifts = pgTable("shifts", {
   expectedCash: numeric("expected_cash", { precision: 10, scale: 2 }),
   actualCash: numeric("actual_cash", { precision: 10, scale: 2 }),
   cashDifference: numeric("cash_difference", { precision: 10, scale: 2 }),
+  // Settlement collections during shift (do not count as sales)
+  cashSettlements: numeric("cash_settlements", { precision: 10, scale: 2 }).default("0"),
+  cardSettlements: numeric("card_settlements", { precision: 10, scale: 2 }).default("0"),
+  mobileSettlements: numeric("mobile_settlements", { precision: 10, scale: 2 }).default("0"),
 });
 
 // =====================================================
@@ -304,6 +308,8 @@ export const debtorHistory = pgTable("debtor_history", {
   saleId: uuid("sale_id").references(() => sales.id, { onDelete: "set null" }),
   amount: numeric("amount", { precision: 10, scale: 2 }).notNull(),
   type: varchar("type", { length: 50 }).notNull(),
+  method: varchar("method", { length: 50 }), // Cash, Card, Mobile (for payments)
+  idempotencyKey: varchar("idempotency_key", { length: 100 }),
   date: timestamp("date", { withTimezone: true }).defaultNow(),
 });
 
@@ -401,6 +407,34 @@ export const planPricing = pgTable("plan_pricing", {
   price: numeric("price", { precision: 12, scale: 2 }).notNull(),
   discountPercent: numeric("discount_percent", { precision: 5, scale: 2 }).default("0"), // e.g., 10 for 10% discount
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+});
+
+// =====================================================
+// SUBSCRIPTION REQUESTS (For upgrade/plan change requests)
+// =====================================================
+export const subscriptionRequests = pgTable("subscription_requests", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  tenantId: uuid("tenant_id")
+    .references(() => tenants.id, { onDelete: "cascade" })
+    .notNull(),
+  planId: uuid("plan_id")
+    .references(() => plans.id, { onDelete: "set null" })
+    .notNull(),
+  billingPeriod: varchar("billing_period", { length: 50 }).notNull(), // "1_month", "6_months", "12_months", "24_months"
+  totalAmount: numeric("total_amount", { precision: 12, scale: 2 }).notNull(),
+  contactName: varchar("contact_name", { length: 255 }).notNull(),
+  contactPhone: varchar("contact_phone", { length: 50 }).notNull(),
+  contactEmail: varchar("contact_email", { length: 255 }),
+  status: varchar("status", { length: 50 }).default("pending").notNull(), // pending, activated, rejected, cancelled
+  requestedBy: uuid("requested_by")
+    .references(() => users.id, { onDelete: "set null" })
+    .notNull(),
+  requestedAt: timestamp("requested_at", { withTimezone: true }).defaultNow(),
+  activatedBy: uuid("activated_by").references(() => superAdmins.id, { onDelete: "set null" }),
+  activatedAt: timestamp("activated_at", { withTimezone: true }),
+  subscriptionId: uuid("subscription_id").references(() => subscriptions.id, { onDelete: "set null" }),
+  invoiceNumber: varchar("invoice_number", { length: 100 }),
+  notes: text("notes"),
 });
 
 // =====================================================

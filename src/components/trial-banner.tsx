@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getSubscriptionStatus } from '@/lib/trial-validation';
 import Link from 'next/link';
 import { AlertCircle, Clock, X } from 'lucide-react';
 import { useSession } from 'next-auth/react';
@@ -16,8 +15,11 @@ export function TrialBanner({ tenant }: { tenant: string }) {
     async function checkTrial() {
       try {
         if (session?.user?.tenantId) {
-          const status = await getSubscriptionStatus(session.user.tenantId);
-          setDaysRemaining(status.daysRemaining);
+          const response = await fetch('/api/subscription/status');
+          if (response.ok) {
+            const status = await response.json();
+            setDaysRemaining(status.daysRemaining);
+          }
         }
       } catch (error) {
         console.error('Error checking trial status:', error);

@@ -7,6 +7,8 @@ import {
   tenants,
   planPricing,
   auditLogs,
+  subscriptionRequests,
+  superAdmins,
 } from '@/db';
 import { eq, desc, and } from 'drizzle-orm';
 
@@ -207,6 +209,37 @@ export async function POST(request: NextRequest) {
 
     if (newRecord.length === 0) {
       throw new Error('Failed to record billing transaction');
+    }
+
+    // Mark any pending subscription request as activated
+    const pendingRequests = await db
+      .select()
+      .from(subscriptionRequests)
+      .where(
+        and(
+          eq(subscriptionRequests.tenantId, tenantId),
+          eq(subscriptionRequests.status, 'pending'),
+          eq(subscriptionRequests.planId, planId),
+          eq(subscriptionRequests.billingPeriod, billingPeriod)
+        )
+      )
+      .orderBy(desc(subscriptionRequests.requestedAt))
+      .limit(1);
+
+    if (pendingRequests.length > 0) {
+      const request = pendingRequests[0];
+      
+      await db
+        .update(subscriptionRequests)
+        .set({
+          status: 'activated',
+          activatedAt: new Date(),
+          activatedBy: token.id as string,
+          subscriptionId: newSubscription[0].id,
+          invoiceNumber,
+        })
+        .where(eq(subscriptionRequests.id, request.id))
+        .catch((err) => console.error('Failed to update request status:', err));
     }
 
     // Log the transaction

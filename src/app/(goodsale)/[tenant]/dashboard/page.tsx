@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import { getWeek, startOfMonth, startOfYear, getMonth, endOfYear, eachDayOfInterval, eachWeekOfInterval, format, parseISO, eachMonthOfInterval, startOfWeek, endOfWeek, endOfMonth, isToday, subMonths, subDays, startOfDay, endOfDay } from 'date-fns';
+import { TrialBanner } from '@/components/trial-banner';
 
 type Timeframe = 'day' | 'week' | 'month';
 
@@ -277,6 +278,7 @@ export default function DashboardPage() {
     return (
       <>
         <PageHeader title={`Welcome, ${currentUser.name.split(' ')[0]}!`} description="Your daily overview." />
+        <TrialBanner tenant={tenantSubdomain} />
         <div className="grid gap-6 md:grid-cols-2">
             <Card className="flex flex-col items-center justify-center text-center p-6">
                 <CardHeader>
@@ -337,6 +339,7 @@ export default function DashboardPage() {
           </Button>
         </Link>
       </PageHeader>
+      <TrialBanner tenant={tenantSubdomain} />
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatCard 
           title="Total Revenue" 

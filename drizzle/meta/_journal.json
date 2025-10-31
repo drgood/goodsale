@@ -29,6 +29,13 @@
       "when": 1761718403019,
       "tag": "0003_vengeful_loki",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1761911666681,
+      "tag": "0004_lethal_blade",
+      "breakpoints": true
     }
   ]
 }

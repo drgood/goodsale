@@ -54,6 +54,11 @@ export default withAuth(
           return true;
         }
 
+        // Allow tenant login page without auth
+        if (req.nextUrl.pathname.match(/^\/[^\/]+\/login$/)) {
+          return true;
+        }
+
         return !!token;
       },
     },

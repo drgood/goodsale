@@ -102,6 +102,7 @@ export default function DebtorsReportPage() {
 
         const formData = new FormData(event.currentTarget);
         const amount = parseFloat(formData.get('amount') as string);
+        const method = String(formData.get('method') || '');
 
         if (isNaN(amount) || amount <= 0 || amount > selectedCustomer.balance) {
             toast({
@@ -111,22 +112,28 @@ export default function DebtorsReportPage() {
             });
             return;
         }
-
-        const newBalance = selectedCustomer.balance - amount;
+        if (!['Cash','Card','Mobile'].includes(method)) {
+            toast({ variant: 'destructive', title: 'Select a payment method' });
+            return;
+        }
 
         try {
-            const response = await fetch('/api/customers', {
-                method: 'PUT',
+            const response = await fetch('/api/receivables/payments', {
+                method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    id: selectedCustomer.id,
-                    balance: newBalance
+                    customerId: selectedCustomer.id,
+                    amount,
+                    method
                 })
             });
 
             if (!response.ok) {
-                throw new Error('Failed to update customer balance');
+                throw new Error('Failed to record payment');
             }
+            const data = await response.json();
+
+            const newBalance = data.customerBalance ?? (selectedCustomer.balance - data.totalApplied);
 
             // Update local state
             setCustomers(customers.map(c => 
@@ -135,7 +142,7 @@ export default function DebtorsReportPage() {
 
             toast({
                 title: 'Payment Recorded',
-                description: `GH₵${amount.toFixed(2)} has been credited to ${selectedCustomer.name}'s balance.`
+                description: `GH₵${amount.toFixed(2)} via ${method} has been recorded for ${selectedCustomer.name}.`
             });
 
             setIsSettleOpen(false);
@@ -271,6 +278,15 @@ export default function DebtorsReportPage() {
                                         required
                                         placeholder="Enter amount"
                                     />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="method">Payment Method</Label>
+                                    <select id="method" name="method" className="w-full border rounded-md h-9 px-3">
+                                        <option value="">Select method</option>
+                                        <option value="Cash">Cash</option>
+                                        <option value="Card">Card</option>
+                                        <option value="Mobile">Mobile</option>
+                                    </select>
                                 </div>
                             </div>
                             <DialogFooter>

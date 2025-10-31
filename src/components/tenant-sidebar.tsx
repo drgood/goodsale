@@ -25,6 +25,7 @@ import {
   Tags,
   Truck,
   ClipboardList,
+  CreditCard,
 } from "lucide-react";
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
@@ -50,6 +51,7 @@ const inventoryMenuItems = [
 ]
 
 const bottomMenuItems = [
+    { href: "billing", label: "Billing", icon: CreditCard, roles: ['Owner'] },
     { href: "team", label: "Team Settings", icon: Briefcase, roles: ['Owner', 'Manager'] },
     { href: "settings", label: "Shop Settings", icon: Settings, roles: ['Owner'] },
 ]

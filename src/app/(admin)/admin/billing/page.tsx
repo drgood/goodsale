@@ -35,7 +35,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { PlusCircle, Download, DollarSign, Calendar } from 'lucide-react';
+import { PlusCircle, Download, DollarSign, Calendar, Clock, CheckCircle } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 
 interface BillingRecord {
   id: string;
@@ -68,6 +69,26 @@ interface PlanPricing {
   discountPercent: string;
 }
 
+interface SubscriptionRequest {
+  id: string;
+  timestamp: string;
+  details: {
+    planId: string;
+    planName?: string;
+    billingPeriod: string;
+    contactInfo: {
+      name: string;
+      email: string;
+      phone: string;
+    };
+    totalAmount: string;
+    status: string;
+    tenantName?: string;
+    tenantSubdomain?: string;
+  };
+  entityId: string;
+}
+
 export default function BillingPage() {
   const { toast } = useToast();
   const { data: session } = useSession();
@@ -76,6 +97,7 @@ export default function BillingPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [billingRecords, setBillingRecords] = useState<BillingRecord[]>([]);
+  const [subscriptionRequests, setSubscriptionRequests] = useState<SubscriptionRequest[]>([]);
   const [tenants, setTenants] = useState<Tenant[]>([]);
   const [plans, setPlans] = useState<Plan[]>([]);
   const [planPricings, setPlanPricings] = useState<PlanPricing[]>([]);
@@ -99,7 +121,7 @@ export default function BillingPage() {
   // Fetch initial data
   useEffect(() => {
     if (session?.user?.isSuperAdmin) {
-      Promise.all([fetchBillingRecords(), fetchTenants(), fetchPlans()]);
+      Promise.all([fetchBillingRecords(), fetchSubscriptionRequests(), fetchTenants(), fetchPlans()]);
     }
   }, [session, page]);
 
@@ -117,6 +139,18 @@ export default function BillingPage() {
         title: 'Error',
         description: 'Failed to fetch billing records',
       });
+    }
+  };
+
+  const fetchSubscriptionRequests = async () => {
+    try {
+      const response = await fetch('/api/admin/subscription-requests');
+      if (!response.ok) throw new Error('Failed to fetch requests');
+      const data = await response.json();
+      // Only show pending requests
+      setSubscriptionRequests(data.filter((r: SubscriptionRequest) => r.details.status === 'pending'));
+    } catch (error) {
+      console.error('Error fetching subscription requests:', error);
     }
   };
 
@@ -209,7 +243,7 @@ export default function BillingPage() {
       setSelectedBillingPeriod('1_month');
       setInvoiceNumber('');
       setNotes('');
-      await fetchBillingRecords();
+      await Promise.all([fetchBillingRecords(), fetchSubscriptionRequests()]);
     } catch (error) {
       console.error('Error recording payment:', error);
       toast({
@@ -266,7 +300,7 @@ export default function BillingPage() {
   );
 
   return (
-    <>
+    <div className="space-y-6">
       <PageHeader title="Billing Management" description="Record payments and manage subscriptions.">
         <Dialog open={showDialog} onOpenChange={setShowDialog}>
           <DialogTrigger asChild>
@@ -408,6 +442,78 @@ export default function BillingPage() {
         </Card>
       </div>
 
+      {/* Pending Subscription Requests */}
+      {subscriptionRequests.length > 0 && (
+        <Card className="border-blue-200 dark:border-blue-800">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <Clock className="h-5 w-5 text-blue-600" />
+                  Pending Subscription Requests
+                </CardTitle>
+                <CardDescription>
+                  {subscriptionRequests.length} tenant{subscriptionRequests.length !== 1 ? 's' : ''} waiting for activation
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Tenant</TableHead>
+                  <TableHead>Plan</TableHead>
+                  <TableHead>Period</TableHead>
+                  <TableHead>Amount</TableHead>
+                  <TableHead>Contact</TableHead>
+                  <TableHead>Action</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {subscriptionRequests.map((request) => (
+                  <TableRow key={request.id}>
+                    <TableCell>
+                      <div>
+                        <p className="font-medium">{request.tenantName}</p>
+                        <p className="text-xs text-muted-foreground">{request.tenantSubdomain}</p>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-sm">{request.planName}</TableCell>
+                    <TableCell className="text-sm">
+                      {request.billingPeriod === '1_month' ? '1 Month' :
+                       request.billingPeriod === '6_months' ? '6 Months' :
+                       request.billingPeriod === '12_months' ? '1 Year' : '2 Years'}
+                    </TableCell>
+                    <TableCell className="font-medium">GH₵{parseFloat(request.totalAmount).toFixed(2)}</TableCell>
+                    <TableCell>
+                      <div className="text-xs">
+                        <p className="font-medium">{request.contactName}</p>
+                        <p className="text-muted-foreground">{request.contactPhone}</p>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        size="sm"
+                        onClick={() => {
+                          // Pre-fill the dialog with request data
+                          setSelectedTenant(request.tenantId);
+                          setSelectedPlan(request.planId);
+                          setSelectedBillingPeriod(request.billingPeriod);
+                          setShowDialog(true);
+                        }}
+                      >
+                        Record Payment
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Transactions Table */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
@@ -490,6 +596,6 @@ export default function BillingPage() {
           )}
         </CardContent>
       </Card>
-    </>
+    </div>
   );
 }

@@ -74,6 +74,7 @@ export default function CustomersPage() {
     const [customerToView, setCustomerToView] = useState<Customer | null>(null);
     const [searchTerm, setSearchTerm] = useState("");
     const [isSettleBalanceOpen, setIsSettleBalanceOpen] = useState(false);
+    const [selectedSaleId, setSelectedSaleId] = useState<string | null>(null);
 
     useEffect(() => {
         fetchData();
@@ -236,6 +237,7 @@ export default function CustomersPage() {
 
         const formData = new FormData(event.currentTarget);
         const amount = parseFloat(formData.get('amount') as string);
+        const method = String(formData.get('method') || '');
         
         if (isNaN(amount) || amount <= 0 || amount > customerToView.balance) {
             toast({
@@ -245,35 +247,44 @@ export default function CustomersPage() {
             });
             return;
         }
-
-        const newBalance = customerToView.balance - amount;
+        if (!['Cash','Card','Mobile'].includes(method)) {
+            toast({ variant: 'destructive', title: 'Select a payment method' });
+            return;
+        }
 
         try {
-            // Update customer balance in database
-            const response = await fetch('/api/customers', {
-                method: 'PUT',
+            const response = await fetch('/api/receivables/payments', {
+                method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    id: customerToView.id,
-                    balance: newBalance
+                    customerId: customerToView.id,
+                    amount,
+                    method,
+                    ...(selectedSaleId ? { saleId: selectedSaleId } : {})
                 })
             });
 
             if (!response.ok) {
-                throw new Error('Failed to update customer balance');
+                throw new Error('Failed to record payment');
             }
 
-            // Update local state after successful database update
+            const data = await response.json();
+            const newBalance = data.customerBalance ?? (customerToView.balance - data.totalApplied);
+
+            // Refresh lists to reflect allocations and sale statuses
+            await fetchData();
+
+            // Update local selected customer snapshot
             const updatedCustomer = { ...customerToView, balance: newBalance };
-            setCustomers(customers.map(c => c.id === customerToView.id ? updatedCustomer : c));
             setCustomerToView(updatedCustomer);
 
             toast({
                 title: 'Payment Recorded',
-                description: `GH₵${amount.toFixed(2)} has been credited to ${customerToView.name}'s balance.`
+                description: `GH₵${amount.toFixed(2)} via ${method} has been recorded for ${customerToView.name}.`
             });
             
             setIsSettleBalanceOpen(false);
+            setSelectedSaleId(null);
             if (newBalance <= 0) {
                 setIsDetailsDialogOpen(false);
             }
@@ -497,20 +508,47 @@ export default function CustomersPage() {
                                     </DialogTrigger>
                                     <DialogContent>
                                         <DialogHeader>
-                                            <DialogTitle>Settle Customer Balance</DialogTitle>
-                                            <DialogDescription>Record a payment for {customerToView.name}.</DialogDescription>
+                                            <DialogTitle>Settle {selectedSaleId ? 'Sale Payment' : 'Customer Balance'}</DialogTitle>
+                                            <DialogDescription>
+                                                {selectedSaleId ? (
+                                                    <>Record a payment for the selected sale.</>
+                                                ) : (
+                                                    <>Record a payment for {customerToView.name}. If no sale is selected, payments are allocated to oldest pending credit sales first.</>
+                                                )}
+                                            </DialogDescription>
                                         </DialogHeader>
                                         <form onSubmit={handleSettleBalance}>
                                             <div className="py-4 space-y-4">
-                                                <div className="p-4 rounded-lg bg-muted">
+                                                <div className="p-4 rounded-lg bg-muted space-y-2">
                                                     <div className="flex justify-between items-center">
                                                         <span className="text-sm text-muted-foreground">Current Balance:</span>
                                                         <span className="text-lg font-bold text-destructive">GH₵{customerToView.balance.toFixed(2)}</span>
                                                     </div>
+                                                    {selectedSaleId && (() => {
+                                                        const s = sales.find(s => s.id === selectedSaleId);
+                                                        if (!s) return null;
+                                                        const due = s.totalAmount - (s.amountSettled || 0);
+                                                        return (
+                                                            <div className="flex justify-between items-center text-sm">
+                                                                <span className="text-muted-foreground">Settling sale:</span>
+                                                                <span className="font-mono">{selectedSaleId.substring(0,12)}...</span>
+                                                                <span className="ml-2">(Due: GH₵{due.toFixed(2)})</span>
+                                                            </div>
+                                                        );
+                                                    })()}
                                                 </div>
                                                 <div className="space-y-2">
                                                     <Label htmlFor="settle-amount">Payment Amount</Label>
                                                     <Input id="settle-amount" name="amount" type="number" step="0.01" min="0.01" max={customerToView.balance} required placeholder="Enter amount to settle" />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <Label htmlFor="settle-method">Payment Method</Label>
+                                                    <select id="settle-method" name="method" className="w-full border rounded-md h-9 px-3">
+                                                        <option value="">Select method</option>
+                                                        <option value="Cash">Cash</option>
+                                                        <option value="Card">Card</option>
+                                                        <option value="Mobile">Mobile</option>
+                                                    </select>
                                                 </div>
                                             </div>
                                             <DialogFooter>
@@ -541,7 +579,11 @@ export default function CustomersPage() {
                                             <TableRow>
                                                 <TableHead>Sale ID</TableHead>
                                                 <TableHead>Date</TableHead>
+                                                <TableHead>Status</TableHead>
                                                 <TableHead className="text-right">Amount</TableHead>
+                                                <TableHead>
+                                                    <span className="sr-only">Actions</span>
+                                                </TableHead>
                                             </TableRow>
                                         </TableHeader>
                                         <TableBody>
@@ -549,7 +591,22 @@ export default function CustomersPage() {
                                                 <TableRow key={sale.id}>
                                                     <TableCell className="font-mono text-xs">{sale.id.substring(0, 12)}...</TableCell>
                                                     <TableCell>{new Date(sale.createdAt).toLocaleDateString()}</TableCell>
+                                                    <TableCell>{sale.status}</TableCell>
                                                     <TableCell className="text-right">GH₵{sale.totalAmount.toFixed(2)}</TableCell>
+                                                    <TableCell className="text-right">
+                                                        {sale.paymentMethod === 'On Credit' && sale.status === 'Pending' && (
+                                                            <Button
+                                                                variant="outline"
+                                                                size="sm"
+                                                                onClick={() => {
+                                                                    setSelectedSaleId(sale.id);
+                                                                    setIsSettleBalanceOpen(true);
+                                                                }}
+                                                            >
+                                                                Settle this sale
+                                                            </Button>
+                                                        )}
+                                                    </TableCell>
                                                 </TableRow>
                                             ))}
                                         </TableBody>

@@ -1,4 +1,4 @@
-CREATE TABLE "billing_ledger" (
+CREATE TABLE IF NOT EXISTS "billing_ledger" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"tenant_id" uuid NOT NULL,
 	"subscription_id" uuid,
@@ -13,7 +13,7 @@ CREATE TABLE "billing_ledger" (
 	CONSTRAINT "billing_ledger_invoice_number_unique" UNIQUE("invoice_number")
 );
 --> statement-breakpoint
-CREATE TABLE "plan_pricing" (
+CREATE TABLE IF NOT EXISTS "plan_pricing" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"plan_id" uuid NOT NULL,
 	"billing_period" varchar(50) NOT NULL,
@@ -22,7 +22,7 @@ CREATE TABLE "plan_pricing" (
 	"created_at" timestamp with time zone DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "plans" (
+CREATE TABLE IF NOT EXISTS "plans" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" varchar(255) NOT NULL,
 	"price" varchar(100) NOT NULL,
@@ -33,7 +33,7 @@ CREATE TABLE "plans" (
 	CONSTRAINT "plans_name_unique" UNIQUE("name")
 );
 --> statement-breakpoint
-CREATE TABLE "platform_settings" (
+CREATE TABLE IF NOT EXISTS "platform_settings" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"platform_name" varchar(255) DEFAULT 'GoodSale' NOT NULL,
 	"logo_url" text,
@@ -43,7 +43,7 @@ CREATE TABLE "platform_settings" (
 	"updated_at" timestamp with time zone DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "subscriptions" (
+CREATE TABLE IF NOT EXISTS "subscriptions" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"tenant_id" uuid NOT NULL,
 	"plan_id" uuid,
@@ -57,7 +57,7 @@ CREATE TABLE "subscriptions" (
 	"updated_at" timestamp with time zone DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "super_admins" (
+CREATE TABLE IF NOT EXISTS "super_admins" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" varchar(255) NOT NULL,
 	"email" varchar(255) NOT NULL,
@@ -68,7 +68,7 @@ CREATE TABLE "super_admins" (
 	CONSTRAINT "super_admins_email_unique" UNIQUE("email")
 );
 --> statement-breakpoint
-CREATE TABLE "tenant_name_change_requests" (
+CREATE TABLE IF NOT EXISTS "tenant_name_change_requests" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"tenant_id" uuid NOT NULL,
 	"old_name" varchar(255) NOT NULL,
@@ -84,14 +84,84 @@ CREATE TABLE "tenant_name_change_requests" (
 	"applied_at" timestamp with time zone
 );
 --> statement-breakpoint
-ALTER TABLE "tenants" ADD COLUMN "pending_name_change_id" uuid;--> statement-breakpoint
-ALTER TABLE "billing_ledger" ADD CONSTRAINT "billing_ledger_tenant_id_tenants_id_fk" FOREIGN KEY ("tenant_id") REFERENCES "public"."tenants"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "billing_ledger" ADD CONSTRAINT "billing_ledger_subscription_id_subscriptions_id_fk" FOREIGN KEY ("subscription_id") REFERENCES "public"."subscriptions"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "billing_ledger" ADD CONSTRAINT "billing_ledger_recorded_by_super_admins_id_fk" FOREIGN KEY ("recorded_by") REFERENCES "public"."super_admins"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "plan_pricing" ADD CONSTRAINT "plan_pricing_plan_id_plans_id_fk" FOREIGN KEY ("plan_id") REFERENCES "public"."plans"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "subscriptions" ADD CONSTRAINT "subscriptions_tenant_id_tenants_id_fk" FOREIGN KEY ("tenant_id") REFERENCES "public"."tenants"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "subscriptions" ADD CONSTRAINT "subscriptions_plan_id_plans_id_fk" FOREIGN KEY ("plan_id") REFERENCES "public"."plans"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "tenant_name_change_requests" ADD CONSTRAINT "tenant_name_change_requests_tenant_id_tenants_id_fk" FOREIGN KEY ("tenant_id") REFERENCES "public"."tenants"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "tenant_name_change_requests" ADD CONSTRAINT "tenant_name_change_requests_requested_by_users_id_fk" FOREIGN KEY ("requested_by") REFERENCES "public"."users"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "tenant_name_change_requests" ADD CONSTRAINT "tenant_name_change_requests_reviewed_by_super_admins_id_fk" FOREIGN KEY ("reviewed_by") REFERENCES "public"."super_admins"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "tenants" ADD CONSTRAINT "tenants_name_unique" UNIQUE("name");
+ALTER TABLE "tenants" ADD COLUMN IF NOT EXISTS "pending_name_change_id" uuid;--> statement-breakpoint
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'billing_ledger_tenant_id_tenants_id_fk'
+  ) THEN
+    ALTER TABLE "billing_ledger" ADD CONSTRAINT "billing_ledger_tenant_id_tenants_id_fk" FOREIGN KEY ("tenant_id") REFERENCES "public"."tenants"("id") ON DELETE cascade ON UPDATE no action;
+  END IF;
+END $$;--> statement-breakpoint
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'billing_ledger_subscription_id_subscriptions_id_fk'
+  ) THEN
+    ALTER TABLE "billing_ledger" ADD CONSTRAINT "billing_ledger_subscription_id_subscriptions_id_fk" FOREIGN KEY ("subscription_id") REFERENCES "public"."subscriptions"("id") ON DELETE set null ON UPDATE no action;
+  END IF;
+END $$;--> statement-breakpoint
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'billing_ledger_recorded_by_super_admins_id_fk'
+  ) THEN
+    ALTER TABLE "billing_ledger" ADD CONSTRAINT "billing_ledger_recorded_by_super_admins_id_fk" FOREIGN KEY ("recorded_by") REFERENCES "public"."super_admins"("id") ON DELETE set null ON UPDATE no action;
+  END IF;
+END $$;--> statement-breakpoint
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'plan_pricing_plan_id_plans_id_fk'
+  ) THEN
+    ALTER TABLE "plan_pricing" ADD CONSTRAINT "plan_pricing_plan_id_plans_id_fk" FOREIGN KEY ("plan_id") REFERENCES "public"."plans"("id") ON DELETE cascade ON UPDATE no action;
+  END IF;
+END $$;--> statement-breakpoint
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'subscriptions_tenant_id_tenants_id_fk'
+  ) THEN
+    ALTER TABLE "subscriptions" ADD CONSTRAINT "subscriptions_tenant_id_tenants_id_fk" FOREIGN KEY ("tenant_id") REFERENCES "public"."tenants"("id") ON DELETE cascade ON UPDATE no action;
+  END IF;
+END $$;--> statement-breakpoint
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'subscriptions_plan_id_plans_id_fk'
+  ) THEN
+    ALTER TABLE "subscriptions" ADD CONSTRAINT "subscriptions_plan_id_plans_id_fk" FOREIGN KEY ("plan_id") REFERENCES "public"."plans"("id") ON DELETE set null ON UPDATE no action;
+  END IF;
+END $$;--> statement-breakpoint
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'tenant_name_change_requests_tenant_id_tenants_id_fk'
+  ) THEN
+    ALTER TABLE "tenant_name_change_requests" ADD CONSTRAINT "tenant_name_change_requests_tenant_id_tenants_id_fk" FOREIGN KEY ("tenant_id") REFERENCES "public"."tenants"("id") ON DELETE cascade ON UPDATE no action;
+  END IF;
+END $$;--> statement-breakpoint
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'tenant_name_change_requests_requested_by_users_id_fk'
+  ) THEN
+    ALTER TABLE "tenant_name_change_requests" ADD CONSTRAINT "tenant_name_change_requests_requested_by_users_id_fk" FOREIGN KEY ("requested_by") REFERENCES "public"."users"("id") ON DELETE set null ON UPDATE no action;
+  END IF;
+END $$;--> statement-breakpoint
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'tenant_name_change_requests_reviewed_by_super_admins_id_fk'
+  ) THEN
+    ALTER TABLE "tenant_name_change_requests" ADD CONSTRAINT "tenant_name_change_requests_reviewed_by_super_admins_id_fk" FOREIGN KEY ("reviewed_by") REFERENCES "public"."super_admins"("id") ON DELETE set null ON UPDATE no action;
+  END IF;
+END $$;--> statement-breakpoint
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'tenants_name_unique'
+  ) THEN
+    ALTER TABLE "tenants" ADD CONSTRAINT "tenants_name_unique" UNIQUE("name");
+  END IF;
+END $$;
