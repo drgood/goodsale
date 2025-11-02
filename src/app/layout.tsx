@@ -5,7 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Providers } from './providers';
 
 export const metadata: Metadata = {
-  title: 'GoodSale - Inventory & POS SaaS',
+  title: 'GoodSale - Inventory & POS',
   description: 'GoodSale MVP built with Next.js',
 };
 
