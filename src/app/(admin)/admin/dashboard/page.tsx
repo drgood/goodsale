@@ -6,6 +6,8 @@ import { db, tenants as tenantsTable } from "@/db";
 import { Building2, DollarSign, Users, Activity } from "lucide-react";
 import { desc } from "drizzle-orm";
 
+export const dynamic = 'force-dynamic';
+
 export default async function AdminDashboardPage() {
     // Fetch all tenants from database
     const allTenants = await db

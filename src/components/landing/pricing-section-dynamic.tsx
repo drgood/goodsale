@@ -1,50 +1,41 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Check } from 'lucide-react';
-import { db, plans as plansTable, planPricing } from '@/db';
-import { desc } from 'drizzle-orm';
+
+// Default fallback plans
+const DEFAULT_PLANS = [
+  {
+    id: '1',
+    name: 'Starter',
+    price: '29',
+    description: 'Perfect for solo operators & pop-ups',
+    features: ['1 Location', 'Basic POS', 'Inventory Management', 'Sales Reports', 'Email Support', 'Up to 2 Users'],
+    isCurrent: false,
+    createdAt: new Date(),
+  },
+  {
+    id: '2',
+    name: 'Business',
+    price: '79',
+    description: 'For growing stores & franchises',
+    features: ['Up to 5 Locations', 'Advanced POS', 'Real-time Inventory Sync', 'Advanced Analytics', 'Multi-user Support', 'Up to 10 Users', 'Priority Support', 'Custom Integrations'],
+    isCurrent: true,
+    createdAt: new Date(),
+  },
+  {
+    id: '3',
+    name: 'Enterprise',
+    price: 'Custom',
+    description: 'For multi-location chains',
+    features: ['Unlimited Locations', 'Custom Integrations', 'Unlimited Users', 'Dedicated Support', 'Priority Features', 'SLA Guarantee', 'Advanced Security', 'On-Site Training'],
+    isCurrent: false,
+    createdAt: new Date(),
+  },
+];
 
 export async function PricingSectionDynamic() {
-  // Fetch all plans from database
-  let plansData = [];
-  try {
-    plansData = await db
-      .select()
-      .from(plansTable)
-      .orderBy(desc(plansTable.createdAt));
-  } catch (error) {
-    console.error('Error fetching plans:', error);
-    // Fallback to default plans if database fails
-    plansData = [
-      {
-        id: '1',
-        name: 'Starter',
-        price: '29',
-        description: 'Perfect for solo operators & pop-ups',
-        features: ['1 Location', 'Basic POS', 'Inventory Management', 'Sales Reports', 'Email Support', 'Up to 2 Users'],
-        isCurrent: false,
-        createdAt: new Date(),
-      },
-      {
-        id: '2',
-        name: 'Business',
-        price: '79',
-        description: 'For growing stores & franchises',
-        features: ['Up to 5 Locations', 'Advanced POS', 'Real-time Inventory Sync', 'Advanced Analytics', 'Multi-user Support', 'Up to 10 Users', 'Priority Support', 'Custom Integrations'],
-        isCurrent: true,
-        createdAt: new Date(),
-      },
-      {
-        id: '3',
-        name: 'Enterprise',
-        price: 'Custom',
-        description: 'For multi-location chains',
-        features: ['Unlimited Locations', 'Custom Integrations', 'Unlimited Users', 'Dedicated Support', 'Priority Features', 'SLA Guarantee', 'Advanced Security', 'On-Site Training'],
-        isCurrent: false,
-        createdAt: new Date(),
-      },
-    ];
-  }
+  // Use default plans for now (database fetch can be added later if needed)
+  const plansData = DEFAULT_PLANS;
 
   return (
     <section className="w-full py-20 px-4 md:py-32">
