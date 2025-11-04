@@ -60,8 +60,15 @@ export async function POST(request: Request) {
     );
     
     return NextResponse.json(newPO);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error creating purchase order:', error);
+    const code = error?.code ?? error?.cause?.code;
+    if (code === '23505') {
+      return NextResponse.json(
+        { error: 'PO number already exists' },
+        { status: 409 }
+      );
+    }
     console.error('Error details:', error instanceof Error ? error.message : 'Unknown error');
     return NextResponse.json(
       { error: 'Failed to create purchase order', details: error instanceof Error ? error.message : 'Unknown error' },

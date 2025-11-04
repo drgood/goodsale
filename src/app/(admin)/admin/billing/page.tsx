@@ -71,22 +71,19 @@ interface PlanPricing {
 
 interface SubscriptionRequest {
   id: string;
-  timestamp: string;
-  details: {
-    planId: string;
-    planName?: string;
-    billingPeriod: string;
-    contactInfo: {
-      name: string;
-      email: string;
-      phone: string;
-    };
-    totalAmount: string;
-    status: string;
-    tenantName?: string;
-    tenantSubdomain?: string;
-  };
-  entityId: string;
+  tenantId: string;
+  tenantName: string;
+  tenantSubdomain: string;
+  planId: string;
+  planName: string;
+  billingPeriod: string;
+  totalAmount: string;
+  contactName: string;
+  contactPhone: string;
+  contactEmail?: string;
+  requestedBy: string;
+  requestedAt: string;
+  status: string;
 }
 
 export default function BillingPage() {

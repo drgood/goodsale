@@ -245,11 +245,13 @@ export const purchaseOrders = pgTable("purchase_orders", {
   supplierId: uuid("supplier_id").references(() => suppliers.id, {
     onDelete: "set null",
   }),
-  poNumber: varchar("po_number", { length: 100 }).unique().notNull(),
+  poNumber: varchar("po_number", { length: 100 }).notNull(),
   status: varchar("status", { length: 50 }).default("Draft"),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
   totalCost: numeric("total_cost", { precision: 10, scale: 2 }).notNull(),
-});
+}, (table) => ({
+  poNumberTenantUnique: uniqueIndex("purchase_orders_tenant_po_unique").on(table.tenantId, table.poNumber),
+}));
 
 // =====================================================
 // PURCHASE ORDER ITEMS

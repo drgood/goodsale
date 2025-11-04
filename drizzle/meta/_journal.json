@@ -36,6 +36,13 @@
       "when": 1761911666681,
       "tag": "0004_lethal_blade",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1762208166474,
+      "tag": "0005_cold_black_knight",
+      "breakpoints": true
     }
   ]
 }
