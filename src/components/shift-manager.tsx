@@ -11,12 +11,17 @@ import type { Shift, Sale } from "@/lib/types";
 import { Card, CardContent } from "./ui/card";
 import { Separator } from "./ui/separator";
 import { useSession } from "next-auth/react";
+import { ShiftSummary } from "@/components/shift-summary";
+import { calculateExpectedCash } from "@/lib/shift-calculations";
 
 type ShiftContextType = {
     activeShift: Shift | null;
     startShift: (startingCash: number) => Promise<void>;
     closeShift: (actualCash: number) => Promise<void>;
     addSale: (sale: Sale) => Promise<void>;
+    updateShift?: (updatedShift: Shift) => void;
+    processReturn?: (returnAmount: number, refundMethod: string) => Promise<void>;
+    refreshActiveShift?: () => Promise<void>;
 };
 
 export const ShiftContext = createContext<ShiftContextType | null>(null);
@@ -69,7 +74,13 @@ export function ShiftProvider({ children }: { children: ReactNode }) {
             case 'Mobile': updatedShift.mobileSales += sale.totalAmount; break;
             case 'On Credit': updatedShift.creditSales += sale.totalAmount; break;
         }
-        updatedShift.expectedCash = updatedShift.startingCash + updatedShift.cashSales;
+        // Recalculate expectedCash using centralized helper: starting + sales + settlements - returns
+        updatedShift.expectedCash = calculateExpectedCash({
+          startingCash: updatedShift.startingCash,
+          cashSales: updatedShift.cashSales,
+          cashSettlements: updatedShift.cashSettlements,
+          cashReturns: updatedShift.cashReturns
+        });
         
         // Update in database
         try {
@@ -154,8 +165,69 @@ export function ShiftProvider({ children }: { children: ReactNode }) {
         }
     };
 
+    const updateShift = (updatedShift: Shift) => {
+        setActiveShift(updatedShift);
+    };
+
+    const processReturn = async (returnAmount: number, refundMethod: string) => {
+        if (!activeShift) return;
+
+        const updatedShift = { ...activeShift };
+        
+        // For store credit returns: doesn't affect cash, just updates tracking
+        if (refundMethod === 'store_credit') {
+            // Store credit doesn't change expectedCash since no cash is given
+            // Just track that a return was processed
+        }
+        
+        // For cash returns: update cash returned tracking
+        if (refundMethod === 'cash') {
+            updatedShift.cashReturns = (updatedShift.cashReturns || 0) + returnAmount;
+            // Recalculate expectedCash with new returns using centralized helper
+            updatedShift.expectedCash = calculateExpectedCash({
+              startingCash: updatedShift.startingCash,
+              cashSales: updatedShift.cashSales,
+              cashSettlements: updatedShift.cashSettlements,
+              cashReturns: updatedShift.cashReturns
+            });
+        }
+        
+        // Update in database
+        try {
+            await fetch('/api/shifts', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id: updatedShift.id,
+                    cashReturns: updatedShift.cashReturns,
+                    expectedCash: updatedShift.expectedCash
+                })
+            });
+            setActiveShift(updatedShift);
+        } catch (error) {
+            console.error('Error updating shift after return:', error);
+            throw error;
+        }
+    };
+
+    const refreshActiveShift = async () => {
+        if (!activeShift?.id) return;
+        
+        try {
+            const response = await fetch(`/api/shifts/${activeShift.id}`);
+            if (response.ok) {
+                const refreshedShift = await response.json();
+                setActiveShift(refreshedShift);
+            } else {
+                console.error('Failed to refresh shift:', response.status);
+            }
+        } catch (error) {
+            console.error('Error refreshing active shift:', error);
+        }
+    };
+
     return (
-        <ShiftContext.Provider value={{ activeShift, startShift, closeShift, addSale }}>
+        <ShiftContext.Provider value={{ activeShift, startShift, closeShift, addSale, updateShift, processReturn, refreshActiveShift }}>
             {children}
         </ShiftContext.Provider>
     );
@@ -248,29 +320,15 @@ export function ShiftManager() {
             
             {/* Shift Status Dialog */}
             {isStatusOpen && !isCloseShiftOpen && (
-                <DialogContent>
+                <DialogContent className="sm:max-w-2xl max-h-[85vh] overflow-y-auto">
                     <DialogHeader>
                         <DialogTitle>Active Shift Summary</DialogTitle>
                         <DialogDescription>
                             Your current shift started at {new Date(activeShift.startTime).toLocaleTimeString()}.
                         </DialogDescription>
                     </DialogHeader>
-                    <div className="py-4 space-y-4">
-                        <div className="grid grid-cols-2 gap-4">
-                            <StatCard title="Starting Cash" value={`GH₵${activeShift.startingCash.toFixed(2)}`} />
-                            <StatCard title="Total Sales" value={`GH₵${activeShift.totalSales.toFixed(2)}`} />
-                        </div>
-                        <div className="text-sm space-y-2">
-                            <div className="flex justify-between"><span>Cash Sales:</span> <span>GH₵{activeShift.cashSales.toFixed(2)}</span></div>
-                            <div className="flex justify-between"><span>Card Sales:</span> <span>GH₵{activeShift.cardSales.toFixed(2)}</span></div>
-                            <div className="flex justify-between"><span>Mobile Sales:</span> <span>GH₵{activeShift.mobileSales.toFixed(2)}</span></div>
-                            <div className="flex justify-between"><span>Credit Sales:</span> <span>GH₵{activeShift.creditSales.toFixed(2)}</span></div>
-                        </div>
-                        <Separator />
-                        <div className="flex justify-between font-bold">
-                            <span>Expected Cash in Drawer:</span>
-                            <span>GH₵{activeShift.expectedCash.toFixed(2)}</span>
-                        </div>
+                    <div className="py-4">
+                        <ShiftSummary shift={activeShift} showActualCash={false} />
                     </div>
                     <DialogFooter>
                         <Button variant="outline" onClick={() => setIsStatusOpen(false)}>Back to Work</Button>
@@ -281,31 +339,44 @@ export function ShiftManager() {
 
             {/* Close Shift Dialog */}
             {isCloseShiftOpen && (
-                <DialogContent>
+                <DialogContent className="sm:max-w-2xl max-h-[85vh] overflow-y-auto">
                     <DialogHeader>
                         <DialogTitle>Close Shift & Reconcile</DialogTitle>
-                        <DialogDescription>Count your cash and enter the final amount to close your shift.</DialogDescription>
+                        <DialogDescription>Review reconciliation breakdown and count your cash.</DialogDescription>
                     </DialogHeader>
                     <div className="py-4 space-y-4">
-                        <Card className="bg-muted/50">
-                            <CardContent className="p-4">
-                                <div className="flex justify-between font-bold text-lg">
-                                    <span>Expected Cash in Drawer:</span>
-                                    <span>GH₵{activeShift.expectedCash.toFixed(2)}</span>
+                        {/* Full Reconciliation Summary */}
+                        <ShiftSummary shift={activeShift} showActualCash={false} />
+                        
+                        {/* Cash Count Input */}
+                        <Card className="border-primary/50 bg-primary/5">
+                            <CardContent className="p-4 space-y-3">
+                                <div>
+                                    <Label htmlFor="actual-cash" className="font-semibold">Count Your Cash & Enter Final Amount</Label>
+                                    <p className="text-xs text-muted-foreground mt-1">This should match the Expected Cash from above</p>
                                 </div>
-                                <p className="text-xs text-muted-foreground mt-1">Starting Float (GH₵{activeShift.startingCash.toFixed(2)}) + Cash Sales (GH₵{activeShift.cashSales.toFixed(2)})</p>
+                                <Input
+                                    id="actual-cash"
+                                    type="number"
+                                    step="0.01"
+                                    value={actualCash}
+                                    onChange={(e) => setActualCash(e.target.value)}
+                                    placeholder="Enter final counted amount"
+                                    className="text-lg font-semibold"
+                                />
+                                {actualCash && !isNaN(parseFloat(actualCash)) && (
+                                    <div className="text-sm">
+                                        {Math.abs(parseFloat(actualCash) - activeShift.expectedCash) < 0.01 ? (
+                                            <p className="text-green-600 font-medium">✓ Perfect match! Shift is balanced.</p>
+                                        ) : (
+                                            <p className="text-orange-600 font-medium">
+                                                Variance: {parseFloat(actualCash) > activeShift.expectedCash ? '+' : '-'}GH₵{Math.abs(parseFloat(actualCash) - activeShift.expectedCash).toFixed(2)}
+                                            </p>
+                                        )}
+                                    </div>
+                                )}
                             </CardContent>
                         </Card>
-                        <div className="space-y-2">
-                            <Label htmlFor="actual-cash">Actual Cash in Drawer (GH₵)</Label>
-                            <Input
-                                id="actual-cash"
-                                type="number"
-                                value={actualCash}
-                                onChange={(e) => setActualCash(e.target.value)}
-                                placeholder="Enter final counted amount"
-                            />
-                        </div>
                     </div>
                     <DialogFooter>
                         <Button variant="outline" onClick={() => setIsCloseShiftOpen(false)}>Cancel</Button>
@@ -328,8 +399,5 @@ const StatCard = ({ title, value }: { title: string; value: string; }) => (
 // Hook to use the shift context
 export const useShiftContext = () => {
     const context = useContext(ShiftContext);
-    if (!context) {
-        throw new Error("useShiftContext must be used within a ShiftProvider");
-    }
     return context;
 }

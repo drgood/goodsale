@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { db } from '@/db';
 import * as schema from '@/db/schema';
 import { and, asc, desc, eq, isNull } from 'drizzle-orm';
+import { calculateExpectedCash } from '@/lib/shift-calculations';
 
 export const runtime = 'nodejs';
 
@@ -133,28 +134,38 @@ export async function POST(request: Request) {
         const currentCashSettlements = parseFloat(collectorShift.cashSettlements || '0');
         const currentCardSettlements = parseFloat(collectorShift.cardSettlements || '0');
         const currentMobileSettlements = parseFloat(collectorShift.mobileSettlements || '0');
-        const currentExpectedCash = parseFloat(collectorShift.expectedCash || '0');
+
+        // Update settlement amounts
+        let newCashSettlements = currentCashSettlements;
+        let newCardSettlements = currentCardSettlements;
+        let newMobileSettlements = currentMobileSettlements;
 
         if (method === 'Cash') {
-          await tx.update(schema.shifts)
-            .set({
-              cashSettlements: (currentCashSettlements + totalApplied).toString(),
-              expectedCash: (currentExpectedCash + totalApplied).toString(),
-            })
-            .where(eq(schema.shifts.id, collectorShift.id));
+          newCashSettlements = currentCashSettlements + totalApplied;
         } else if (method === 'Card') {
-          await tx.update(schema.shifts)
-            .set({
-              cardSettlements: (currentCardSettlements + totalApplied).toString(),
-            })
-            .where(eq(schema.shifts.id, collectorShift.id));
+          newCardSettlements = currentCardSettlements + totalApplied;
         } else if (method === 'Mobile') {
-          await tx.update(schema.shifts)
-            .set({
-              mobileSettlements: (currentMobileSettlements + totalApplied).toString(),
-            })
-            .where(eq(schema.shifts.id, collectorShift.id));
+          newMobileSettlements = currentMobileSettlements + totalApplied;
         }
+
+        // IMPORTANT: Always recalculate expectedCash from all components
+        // This ensures the formula is always correct, regardless of which method was used
+        const recalculatedExpectedCash = calculateExpectedCash({
+          startingCash: collectorShift.startingCash,
+          cashSales: collectorShift.cashSales || '0',
+          cashSettlements: newCashSettlements.toString(),
+          cashReturns: collectorShift.cashReturns || '0'
+        });
+
+        // Update shift with new settlements and recalculated expectedCash
+        await tx.update(schema.shifts)
+          .set({
+            cashSettlements: newCashSettlements.toString(),
+            cardSettlements: newCardSettlements.toString(),
+            mobileSettlements: newMobileSettlements.toString(),
+            expectedCash: recalculatedExpectedCash.toString(),
+          })
+          .where(eq(schema.shifts.id, collectorShift.id));
       }
 
       return { reused: false, allocations, totalApplied, customerBalance: newBalance };

@@ -81,7 +81,7 @@ export const authOptions: NextAuthOptions = {
         token.role = user.role;
         token.tenantId = user.tenantId;
         token.avatarUrl = user.avatarUrl;
-        token.isSuperAdmin = user.isSuperAdmin;
+        token.isSuperAdmin = user.isSuperAdmin || false;
       }
       return token;
     },

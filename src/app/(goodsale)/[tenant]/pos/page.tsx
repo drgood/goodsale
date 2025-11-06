@@ -1,6 +1,6 @@
 
 'use client'
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -8,12 +8,14 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import type { Product, Sale, Customer } from "@/lib/types";
-import { Search, X, Plus, Minus, CreditCard, Banknote, Smartphone, Receipt, Hand, Trash2, Play, UserPlus, CircleUserRound, Clock } from "lucide-react";
+import { Search, X, Plus, Minus, CreditCard, Banknote, Smartphone, Receipt, Hand, Trash2, Play, UserPlus, CircleUserRound, Clock, RotateCcw } from "lucide-react";
 import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Textarea } from '@/components/ui/textarea';
 import {
     Dialog,
     DialogContent,
@@ -26,6 +28,7 @@ import { DialogTrigger } from '@radix-ui/react-dialog';
 import { ReceiptComponent } from '@/components/receipt';
 import { useParams } from 'next/navigation';
 import { useShiftContext } from '@/components/shift-manager';
+import { useSettlePayment } from '@/hooks/use-settle-payment';
 import { useOnlineStatus } from '@/hooks/use-online-status';
 import { db, cacheProducts } from '@/lib/db';
 import { useLiveQuery } from 'dexie-react-hooks';
@@ -71,6 +74,27 @@ export default function POSPage() {
       }
     };
     fetchCustomers();
+  }, []);
+
+  // Fetch recent sales for returns
+  useEffect(() => {
+    const fetchRecentSales = async () => {
+      try {
+        const response = await fetch('/api/sales');
+        if (response.ok) {
+          const data = await response.json();
+          // Get last 10 sales from today
+          const today = new Date().toDateString();
+          const todaysSales = data.filter((sale: Sale) => 
+            new Date(sale.createdAt).toDateString() === today
+          ).slice(0, 10);
+          setRecentSales(todaysSales);
+        }
+      } catch (error) {
+        console.error('Error fetching recent sales:', error);
+      }
+    };
+    fetchRecentSales();
   }, []);
   
   // Local state for products
@@ -118,6 +142,34 @@ export default function POSPage() {
   // Settle receivable dialog
   const [isSettleDialogOpen, setIsSettleDialogOpen] = useState(false);
 
+  // Return modal state
+  const [isReturnModalOpen, setIsReturnModalOpen] = useState(false);
+  const [selectedSaleForReturn, setSelectedSaleForReturn] = useState<Sale | null>(null);
+  const [returnItems, setReturnItems] = useState<Set<string>>(new Set());
+  const [returnReason, setReturnReason] = useState('');
+  const [isProcessingReturn, setIsProcessingReturn] = useState(false);
+  const [recentSales, setRecentSales] = useState<Sale[]>([]);
+
+  // Settlement hook
+  const { settlePayment, isLoading: isSettling } = useSettlePayment({
+    onCustomerUpdate: (customer) => {
+      setCustomers(customers.map(c => c.id === customer.id ? customer : c));
+      // Update selectedCustomer if it's the same one
+      if (selectedCustomer && selectedCustomer.id === customer.id) {
+        setSelectedCustomer(customer);
+      }
+    },
+    onSuccess: (response) => {
+      // Use unified shift refresh mechanism
+      if (shiftContext?.refreshActiveShift) {
+        shiftContext.refreshActiveShift();
+      }
+    },
+    onError: (error) => {
+      toast({ variant: 'destructive', title: 'Error', description: error.message });
+    },
+  });
+
   // Role helpers
   const isCashier = (currentUser?.role || '').toLowerCase() === 'cashier';
 
@@ -159,7 +211,7 @@ export default function POSPage() {
 
   const displayProducts = isOnline ? products : (localProducts || []);
 
-  const addToCart = (product: Product) => {
+  const addToCart = useCallback((product: Product) => {
     if (product.stock === 0) {
       toast({
         variant: "destructive",
@@ -186,9 +238,9 @@ export default function POSPage() {
       }
       return [...prevCart, { product, quantity: 1 }];
     });
-  };
+  }, [toast]);
 
-  const updateQuantity = (productId: string, amount: number) => {
+  const updateQuantity = useCallback((productId: string, amount: number) => {
     setCart(cart => {
       const itemToUpdate = cart.find(item => item.product.id === productId);
       if (!itemToUpdate) return cart;
@@ -212,7 +264,7 @@ export default function POSPage() {
         item.product.id === productId ? { ...item, quantity: newQuantity } : item
       );
     });
-  };
+  }, [toast]);
 
   const removeFromCart = (productId: string) => {
     setCart(cart => cart.filter(item => item.product.id !== productId));
@@ -471,6 +523,74 @@ export default function POSPage() {
     return customers.filter(c => c.name.toLowerCase().includes(customerSearchTerm.toLowerCase()) || (c.email && c.email.toLowerCase().includes(customerSearchTerm.toLowerCase())));
   }, [customers, customerSearchTerm]);
   
+  // Handle return process
+  const handleProcessReturn = async () => {
+    if (!selectedSaleForReturn || returnItems.size === 0) {
+      toast({ variant: 'destructive', title: 'Invalid Return', description: 'Please select items to return.' });
+      return;
+    }
+
+    setIsProcessingReturn(true);
+    try {
+      // Build return items array
+      const itemsToReturn = selectedSaleForReturn.items
+        .filter(item => returnItems.has(item.productId))
+        .map(item => ({
+          saleItemId: null, // POS returns don't have sale item IDs
+          productId: item.productId,
+          productName: item.productName,
+          quantity: item.quantity,
+          unitPrice: item.price,
+          condition: 'good'
+        }));
+
+      const returnData = {
+        saleId: selectedSaleForReturn.id,
+        customerId: selectedSaleForReturn.customerId || null,
+        reason: returnReason || 'POS return during shift',
+        items: itemsToReturn,
+        // NOTE: No refundMethod - will be chosen by manager during approval
+        // NOTE: No createdDuringShift - all returns require approval now
+      };
+
+      const response = await fetch('/api/returns', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(returnData)
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.details || 'Failed to process return');
+      }
+
+      const result = await response.json();
+      
+      toast({
+        title: 'Return Created',
+        description: 'Return request created and pending approval. Manager will review and process on the Returns page.'
+      });
+      
+      // All returns are now pending - no immediate shift updates
+
+      // Reset modal state
+      setIsReturnModalOpen(false);
+      setSelectedSaleForReturn(null);
+      setReturnItems(new Set());
+      setReturnReason('');
+      
+    } catch (error) {
+      console.error('Return processing error:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Return Failed',
+        description: error instanceof Error ? error.message : 'Unable to process return'
+      });
+    } finally {
+      setIsProcessingReturn(false);
+    }
+  };
+
   const handleSelectCustomer = (customer: Customer) => {
     setSelectedCustomer(customer);
     setIsCustomerSelectOpen(false);
@@ -691,6 +811,9 @@ export default function POSPage() {
                 <Button className="w-full" variant="secondary" onClick={() => setIsSettleDialogOpen(true)}>
                     <CircleUserRound className="mr-2 h-4 w-4"/> Settle Receivable
                 </Button>
+                <Button className="w-full" variant="outline" onClick={() => setIsReturnModalOpen(true)}>
+                    <RotateCcw className="mr-2 h-4 w-4"/> Quick Return
+                </Button>
             </div>
             {cart.length > 0 && (
                 <CardFooter className="flex-col !p-4 !mt-auto border-t">
@@ -857,31 +980,15 @@ export default function POSPage() {
                 return;
               }
 
-              try {
-                const resp = await fetch('/api/receivables/payments', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ customerId, amount, method })
-                });
-                if (!resp.ok) throw new Error('Failed to record payment');
+              const result = await settlePayment({
+                customerId,
+                amount,
+                method: method as 'Cash' | 'Card' | 'Mobile'
+              });
 
-                // Refresh customers to reflect new balances
-                const customersRes = await fetch('/api/customers');
-                if (customersRes.ok) {
-                  const customersData = await customersRes.json();
-                  setCustomers(customersData);
-                  // If current selectedCustomer is same, update it
-                  if (selectedCustomer) {
-                    const updated = customersData.find((c: Customer) => c.id === selectedCustomer.id);
-                    if (updated) setSelectedCustomer(updated);
-                  }
-                }
-
+              if (result) {
                 toast({ title: 'Payment Recorded', description: `Payment of GH₵${amount.toFixed(2)} via ${method} saved.` });
                 setIsSettleDialogOpen(false);
-              } catch (err) {
-                console.error(err);
-                toast({ variant: 'destructive', title: 'Error', description: 'Failed to record payment.' });
               }
             }}
           >
@@ -927,9 +1034,156 @@ export default function POSPage() {
             </div>
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setIsSettleDialogOpen(false)}>Cancel</Button>
-              <Button type="submit">Record Payment</Button>
+              <Button type="submit" disabled={isSettling}>Record Payment</Button>
             </DialogFooter>
           </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Quick Return Dialog */}
+      <Dialog open={isReturnModalOpen} onOpenChange={(open) => {
+        setIsReturnModalOpen(open);
+        if (!open) {
+          setSelectedSaleForReturn(null);
+          setReturnItems(new Set());
+          setReturnReason('');
+        }
+      }}>
+        <DialogContent className="sm:max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
+          <DialogHeader>
+            <DialogTitle>Quick Return</DialogTitle>
+            <DialogDescriptionComponent>
+              Process a return for a recent sale. Store credit will be applied to the customer's account.
+            </DialogDescriptionComponent>
+          </DialogHeader>
+          
+          <div className="flex-1 overflow-hidden">
+            {!selectedSaleForReturn ? (
+              // Step 1: Select Sale
+              <div className="space-y-4">
+                <div>
+                  <Label className="text-sm font-medium">Select Sale to Return</Label>
+                  <p className="text-xs text-muted-foreground mt-1">Choose from today's sales:</p>
+                </div>
+                <ScrollArea className="h-64">
+                  {recentSales.length === 0 ? (
+                    <p className="text-center text-muted-foreground py-8">No recent sales found.</p>
+                  ) : (
+                    <div className="space-y-2">
+                      {recentSales.map(sale => {
+                        const saleTime = new Date(sale.createdAt).toLocaleTimeString();
+                        return (
+                          <div
+                            key={sale.id}
+                            onClick={() => setSelectedSaleForReturn(sale)}
+                            className="p-3 border rounded-lg hover:bg-muted cursor-pointer transition-colors"
+                          >
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <p className="font-medium text-sm">Sale at {saleTime}</p>
+                                <p className="text-xs text-muted-foreground">
+                                  {sale.customerName || 'Walk-in Customer'} • {sale.itemCount} items
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                  {sale.items.map(item => `${item.quantity}x ${item.productName}`).join(', ')}
+                                </p>
+                              </div>
+                              <div className="text-right">
+                                <p className="font-medium text-sm">GH₵{sale.totalAmount.toFixed(2)}</p>
+                                <p className="text-xs text-muted-foreground capitalize">{sale.paymentMethod}</p>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </ScrollArea>
+              </div>
+            ) : (
+              // Step 2: Select Items & Process
+              <div className="space-y-4 flex-1 overflow-hidden">
+                <div>
+                  <Label className="text-sm font-medium">Return Items</Label>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Sale: {new Date(selectedSaleForReturn.createdAt).toLocaleTimeString()} • 
+                    {selectedSaleForReturn.customerName || 'Walk-in'} • 
+                    GH₵{selectedSaleForReturn.totalAmount.toFixed(2)}
+                  </p>
+                </div>
+                
+                <ScrollArea className="flex-1">
+                  <div className="space-y-3">
+                    {selectedSaleForReturn.items.map(item => {
+                      const isSelected = returnItems.has(item.productId);
+                      return (
+                        <div key={item.productId} className="flex items-center space-x-3 p-2 border rounded">
+                          <Checkbox
+                            checked={isSelected}
+                            onCheckedChange={(checked) => {
+                              const newReturnItems = new Set(returnItems);
+                              if (checked) {
+                                newReturnItems.add(item.productId);
+                              } else {
+                                newReturnItems.delete(item.productId);
+                              }
+                              setReturnItems(newReturnItems);
+                            }}
+                          />
+                          <div className="flex-1">
+                            <p className="font-medium text-sm">{item.productName}</p>
+                            <p className="text-xs text-muted-foreground">
+                              {item.quantity}x @ GH₵{item.price.toFixed(2)} = GH₵{(item.quantity * item.price).toFixed(2)}
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </ScrollArea>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="return-reason" className="text-sm font-medium">Reason (Optional)</Label>
+                  <Textarea
+                    id="return-reason"
+                    placeholder="Enter reason for return..."
+                    value={returnReason}
+                    onChange={(e) => setReturnReason(e.target.value)}
+                    rows={2}
+                  />
+                </div>
+                
+                <div className="bg-muted p-3 rounded-lg">
+                  <div className="flex justify-between text-sm">
+                    <span>Refund Method:</span>
+                    <span className="font-medium">Store Credit (Safe for POS)</span>
+                  </div>
+                  {returnItems.size > 0 && (
+                    <div className="flex justify-between text-sm mt-1">
+                      <span>Items Selected:</span>
+                      <span className="font-medium">{returnItems.size} of {selectedSaleForReturn.items.length}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+          
+          <DialogFooter className="mt-4">
+            {!selectedSaleForReturn ? (
+              <Button variant="outline" onClick={() => setIsReturnModalOpen(false)}>Cancel</Button>
+            ) : (
+              <>
+                <Button variant="outline" onClick={() => setSelectedSaleForReturn(null)}>Back</Button>
+                <Button 
+                  onClick={handleProcessReturn} 
+                  disabled={returnItems.size === 0 || isProcessingReturn}
+                >
+                  {isProcessingReturn ? 'Processing...' : `Process Return (${returnItems.size} items)`}
+                </Button>
+              </>
+            )}
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </>

@@ -401,6 +401,10 @@ export async function getShiftsByTenant(tenantId: string): Promise<Shift[]> {
     mobileSales: parseFloat(s.mobileSales || '0'),
     creditSales: parseFloat(s.creditSales || '0'),
     totalSales: parseFloat(s.totalSales || '0'),
+    cashSettlements: s.cashSettlements ? parseFloat(s.cashSettlements) : undefined,
+    cardSettlements: s.cardSettlements ? parseFloat(s.cardSettlements) : undefined,
+    mobileSettlements: s.mobileSettlements ? parseFloat(s.mobileSettlements) : undefined,
+    cashReturns: s.cashReturns ? parseFloat(s.cashReturns) : undefined,
     expectedCash: parseFloat(s.expectedCash || '0'),
     actualCash: s.actualCash ? parseFloat(s.actualCash) : undefined,
     cashDifference: s.cashDifference ? parseFloat(s.cashDifference) : undefined
@@ -518,4 +522,435 @@ export async function updateProductStock(productId: string, quantity: number) {
   await db.update(schema.products)
     .set({ stock: sql`${schema.products.stock} + ${quantity}` })
     .where(eq(schema.products.id, productId));
+}
+
+// =====================================================
+// RETURN POLICIES
+// =====================================================
+export async function getReturnPolicyByTenant(tenantId: string) {
+  const result = await db
+    .select()
+    .from(schema.returnPolicies)
+    .where(eq(schema.returnPolicies.tenantId, tenantId))
+    .limit(1);
+  
+  const policy = result[0];
+  if (!policy) return null;
+  
+  return {
+    id: policy.id,
+    tenantId: policy.tenantId,
+    returnWindowDays: policy.returnWindowDays,
+    refundMethod: policy.refundMethod,
+    restockingFeePercent: parseFloat(policy.restockingFeePercent || '0'),
+    requiresApproval: policy.requiresApproval,
+    allowPartialReturns: policy.allowPartialReturns,
+    notifyCustomer: policy.notifyCustomer,
+    createdAt: policy.createdAt?.toISOString(),
+    updatedAt: policy.updatedAt?.toISOString()
+  };
+}
+
+export async function createOrUpdateReturnPolicy(tenantId: string, data: {
+  returnWindowDays: number;
+  refundMethod: string;
+  restockingFeePercent: number;
+  requiresApproval: boolean;
+  allowPartialReturns: boolean;
+  notifyCustomer: boolean;
+}) {
+  // Check if policy exists
+  const existing = await db
+    .select()
+    .from(schema.returnPolicies)
+    .where(eq(schema.returnPolicies.tenantId, tenantId))
+    .limit(1);
+  
+  if (existing.length > 0) {
+    const result = await db
+      .update(schema.returnPolicies)
+      .set({
+        returnWindowDays: data.returnWindowDays,
+        refundMethod: data.refundMethod,
+        restockingFeePercent: data.restockingFeePercent.toString(),
+        requiresApproval: data.requiresApproval,
+        allowPartialReturns: data.allowPartialReturns,
+        notifyCustomer: data.notifyCustomer,
+        updatedAt: new Date()
+      })
+      .where(eq(schema.returnPolicies.tenantId, tenantId))
+      .returning();
+    return result[0];
+  }
+  
+  const result = await db
+    .insert(schema.returnPolicies)
+    .values({
+      tenantId,
+      returnWindowDays: data.returnWindowDays,
+      refundMethod: data.refundMethod,
+      restockingFeePercent: data.restockingFeePercent.toString(),
+      requiresApproval: data.requiresApproval,
+      allowPartialReturns: data.allowPartialReturns,
+      notifyCustomer: data.notifyCustomer
+    })
+    .returning();
+  
+  return result[0];
+}
+
+// =====================================================
+// RETURNS
+// =====================================================
+export async function getReturnsByTenant(tenantId: string) {
+  const result = await db
+    .select()
+    .from(schema.returns)
+    .where(eq(schema.returns.tenantId, tenantId))
+    .orderBy(desc(schema.returns.createdAt));
+  
+  return result.map(r => ({
+    id: r.id,
+    tenantId: r.tenantId,
+    saleId: r.saleId,
+    customerId: r.customerId,
+    requestedBy: r.requestedBy,
+    reason: r.reason,
+    status: r.status,
+    totalReturnAmount: parseFloat(r.totalReturnAmount),
+    restockingFeeAmount: parseFloat(r.restockingFeeAmount || '0'),
+    refundAmount: parseFloat(r.refundAmount),
+    refundMethod: r.refundMethod,
+    approvedBy: r.approvedBy,
+    approvalReason: r.approvalReason,
+    rejectionReason: r.rejectionReason,
+    refundedAt: r.refundedAt?.toISOString(),
+    createdAt: r.createdAt?.toISOString(),
+    updatedAt: r.updatedAt?.toISOString()
+  }));
+}
+
+export async function getReturnById(returnId: string) {
+  const returnRecord = await db
+    .select()
+    .from(schema.returns)
+    .where(eq(schema.returns.id, returnId))
+    .limit(1);
+  
+  if (!returnRecord[0]) return null;
+  
+  const items = await db
+    .select()
+    .from(schema.returnItems)
+    .where(eq(schema.returnItems.returnId, returnId));
+  
+  const r = returnRecord[0];
+  return {
+    id: r.id,
+    tenantId: r.tenantId,
+    saleId: r.saleId,
+    customerId: r.customerId,
+    requestedBy: r.requestedBy,
+    reason: r.reason,
+    status: r.status,
+    totalReturnAmount: parseFloat(r.totalReturnAmount),
+    restockingFeeAmount: parseFloat(r.restockingFeeAmount || '0'),
+    refundAmount: parseFloat(r.refundAmount),
+    refundMethod: r.refundMethod,
+    approvedBy: r.approvedBy,
+    approvalReason: r.approvalReason,
+    rejectionReason: r.rejectionReason,
+    refundedAt: r.refundedAt?.toISOString(),
+    createdAt: r.createdAt?.toISOString(),
+    updatedAt: r.updatedAt?.toISOString(),
+    items: items.map(item => ({
+      id: item.id,
+      returnId: item.returnId,
+      saleItemId: item.saleItemId,
+      productId: item.productId,
+      productName: item.productName,
+      quantity: item.quantity,
+      unitPrice: parseFloat(item.unitPrice),
+      returnAmount: parseFloat(item.returnAmount),
+      condition: item.condition
+    }))
+  };
+}
+
+export async function createReturn(data: {
+  tenantId: string;
+  saleId: string;
+  customerId?: string | null;
+  requestedBy?: string | null;
+  reason?: string | null;
+  totalReturnAmount: number;
+  restockingFeeAmount: number;
+  refundAmount: number;
+  items: Array<{
+    saleItemId?: string | null;
+    productId?: string | null;
+    productName: string;
+    quantity: number;
+    unitPrice: number;
+    returnAmount: number;
+    condition?: string | null;
+  }>;
+}) {
+  // Create return record
+  const returnResult = await db
+    .insert(schema.returns)
+    .values({
+      tenantId: data.tenantId,
+      saleId: data.saleId,
+      customerId: data.customerId || null,
+      requestedBy: data.requestedBy || null,
+      reason: data.reason || null,
+      totalReturnAmount: data.totalReturnAmount.toString(),
+      restockingFeeAmount: data.restockingFeeAmount.toString(),
+      refundAmount: data.refundAmount.toString(),
+      status: 'pending'
+    })
+    .returning();
+  
+  const returnRecord = returnResult[0];
+  
+  // Create return items
+  if (data.items.length > 0) {
+    await db
+      .insert(schema.returnItems)
+      .values(
+        data.items.map(item => ({
+          returnId: returnRecord.id,
+          saleItemId: item.saleItemId || null,
+          productId: item.productId || null,
+          productName: item.productName,
+          quantity: item.quantity,
+          unitPrice: item.unitPrice.toString(),
+          returnAmount: item.returnAmount.toString(),
+          condition: item.condition || null
+        }))
+      );
+  }
+  
+  // Return with parsed numeric fields
+  return {
+    id: returnRecord.id,
+    tenantId: returnRecord.tenantId,
+    saleId: returnRecord.saleId,
+    customerId: returnRecord.customerId,
+    requestedBy: returnRecord.requestedBy,
+    reason: returnRecord.reason,
+    status: returnRecord.status,
+    totalReturnAmount: parseFloat(returnRecord.totalReturnAmount),
+    restockingFeeAmount: parseFloat(returnRecord.restockingFeeAmount || '0'),
+    refundAmount: parseFloat(returnRecord.refundAmount),
+    refundMethod: returnRecord.refundMethod,
+    approvedBy: returnRecord.approvedBy,
+    approvalReason: returnRecord.approvalReason,
+    rejectionReason: returnRecord.rejectionReason,
+    refundedAt: returnRecord.refundedAt?.toISOString(),
+    createdAt: returnRecord.createdAt?.toISOString(),
+    updatedAt: returnRecord.updatedAt?.toISOString()
+  };
+}
+
+export async function updateReturn(returnId: string, data: {
+  status?: string;
+  approvedBy?: string | null;
+  approvalReason?: string | null;
+  rejectionReason?: string | null;
+  refundMethod?: string | null;
+  refundedAt?: Date | null;
+}) {
+  const updateData: any = {};
+  if (data.status !== undefined) updateData.status = data.status;
+  if (data.approvedBy !== undefined) updateData.approvedBy = data.approvedBy;
+  if (data.approvalReason !== undefined) updateData.approvalReason = data.approvalReason;
+  if (data.rejectionReason !== undefined) updateData.rejectionReason = data.rejectionReason;
+  if (data.refundMethod !== undefined) updateData.refundMethod = data.refundMethod;
+  if (data.refundedAt !== undefined) updateData.refundedAt = data.refundedAt;
+  updateData.updatedAt = new Date();
+  
+  const result = await db
+    .update(schema.returns)
+    .set(updateData)
+    .where(eq(schema.returns.id, returnId))
+    .returning();
+  
+  if (!result[0]) return null;
+  
+  const r = result[0];
+  // Return with parsed numeric fields
+  return {
+    id: r.id,
+    tenantId: r.tenantId,
+    saleId: r.saleId,
+    customerId: r.customerId,
+    requestedBy: r.requestedBy,
+    reason: r.reason,
+    status: r.status,
+    totalReturnAmount: parseFloat(r.totalReturnAmount),
+    restockingFeeAmount: parseFloat(r.restockingFeeAmount || '0'),
+    refundAmount: parseFloat(r.refundAmount),
+    refundMethod: r.refundMethod,
+    approvedBy: r.approvedBy,
+    approvalReason: r.approvalReason,
+    rejectionReason: r.rejectionReason,
+    refundedAt: r.refundedAt?.toISOString(),
+    createdAt: r.createdAt?.toISOString(),
+    updatedAt: r.updatedAt?.toISOString()
+  };
+}
+
+// =====================================================
+// SHIFTS (POS RELATED UPDATES)
+// =====================================================
+export async function getShiftById(shiftId: string) {
+  const result = await db
+    .select()
+    .from(schema.shifts)
+    .where(eq(schema.shifts.id, shiftId))
+    .limit(1);
+  
+  if (!result[0]) return null;
+  
+  const s = result[0];
+  return {
+    id: s.id,
+    tenantId: s.tenantId,
+    cashierId: s.cashierId,
+    cashierName: s.cashierName,
+    startTime: s.startTime,
+    endTime: s.endTime,
+    status: s.status,
+    startingCash: parseFloat(s.startingCash),
+    cashSales: parseFloat(s.cashSales || '0'),
+    cardSales: parseFloat(s.cardSales || '0'),
+    mobileSales: parseFloat(s.mobileSales || '0'),
+    creditSales: parseFloat(s.creditSales || '0'),
+    totalSales: parseFloat(s.totalSales || '0'),
+    expectedCash: parseFloat(s.expectedCash || '0'),
+    actualCash: s.actualCash ? parseFloat(s.actualCash) : null,
+    cashDifference: s.cashDifference ? parseFloat(s.cashDifference) : null,
+    cashSettlements: parseFloat(s.cashSettlements || '0'),
+    cardSettlements: parseFloat(s.cardSettlements || '0'),
+    mobileSettlements: parseFloat(s.mobileSettlements || '0'),
+    cashReturns: parseFloat(s.cashReturns || '0'),
+    returnAdjustments: parseFloat(s.returnAdjustments || '0'),
+    cashRefundedAt: s.cashRefundedAt?.toISOString()
+  };
+}
+
+export async function updateShift(shiftId: string, data: {
+  cashSales?: number | string;
+  cardSales?: number | string;
+  mobileSales?: number | string;
+  creditSales?: number | string;
+  totalSales?: number | string;
+  cashSettlements?: number | string;
+  cardSettlements?: number | string;
+  mobileSettlements?: number | string;
+  cashReturns?: number | string;
+  returnAdjustments?: number | string;
+  expectedCash?: number | string;
+  actualCash?: number | string;
+  cashDifference?: number | string;
+  status?: string;
+  endTime?: Date;
+  cashRefundedAt?: Date;
+}) {
+  const updateData: any = {};
+  
+  if (data.cashSales !== undefined) updateData.cashSales = data.cashSales.toString();
+  if (data.cardSales !== undefined) updateData.cardSales = data.cardSales.toString();
+  if (data.mobileSales !== undefined) updateData.mobileSales = data.mobileSales.toString();
+  if (data.creditSales !== undefined) updateData.creditSales = data.creditSales.toString();
+  if (data.totalSales !== undefined) updateData.totalSales = data.totalSales.toString();
+  if (data.cashSettlements !== undefined) updateData.cashSettlements = data.cashSettlements.toString();
+  if (data.cardSettlements !== undefined) updateData.cardSettlements = data.cardSettlements.toString();
+  if (data.mobileSettlements !== undefined) updateData.mobileSettlements = data.mobileSettlements.toString();
+  if (data.cashReturns !== undefined) updateData.cashReturns = data.cashReturns.toString();
+  if (data.returnAdjustments !== undefined) updateData.returnAdjustments = data.returnAdjustments.toString();
+  if (data.expectedCash !== undefined) updateData.expectedCash = data.expectedCash.toString();
+  if (data.actualCash !== undefined) updateData.actualCash = data.actualCash.toString();
+  if (data.cashDifference !== undefined) updateData.cashDifference = data.cashDifference.toString();
+  if (data.status !== undefined) updateData.status = data.status;
+  if (data.endTime !== undefined) updateData.endTime = data.endTime;
+  if (data.cashRefundedAt !== undefined) updateData.cashRefundedAt = data.cashRefundedAt;
+  
+  const result = await db
+    .update(schema.shifts)
+    .set(updateData)
+    .where(eq(schema.shifts.id, shiftId))
+    .returning();
+  
+  if (!result[0]) return null;
+  
+  const s = result[0];
+  return {
+    id: s.id,
+    tenantId: s.tenantId,
+    cashierId: s.cashierId,
+    cashierName: s.cashierName,
+    startTime: s.startTime,
+    endTime: s.endTime,
+    status: s.status,
+    startingCash: parseFloat(s.startingCash),
+    cashSales: parseFloat(s.cashSales || '0'),
+    cardSales: parseFloat(s.cardSales || '0'),
+    mobileSales: parseFloat(s.mobileSales || '0'),
+    creditSales: parseFloat(s.creditSales || '0'),
+    totalSales: parseFloat(s.totalSales || '0'),
+    expectedCash: parseFloat(s.expectedCash || '0'),
+    actualCash: s.actualCash ? parseFloat(s.actualCash) : null,
+    cashDifference: s.cashDifference ? parseFloat(s.cashDifference) : null,
+    cashSettlements: parseFloat(s.cashSettlements || '0'),
+    cardSettlements: parseFloat(s.cardSettlements || '0'),
+    mobileSettlements: parseFloat(s.mobileSettlements || '0'),
+    cashReturns: parseFloat(s.cashReturns || '0'),
+    returnAdjustments: parseFloat(s.returnAdjustments || '0'),
+    cashRefundedAt: s.cashRefundedAt?.toISOString()
+  };
+}
+
+// =====================================================
+// RETURN TRANSACTIONS (Audit logging)
+// =====================================================
+export async function logReturnTransaction(data: {
+  returnId: string;
+  shiftId?: string | null;
+  tenantId: string;
+  action: string;
+  refundMethod?: string | null;
+  refundAmount?: number | null;
+  processedBy?: string | null;
+  impactOnRevenue?: number | null;
+  impactOnCash?: number | null;
+  impactOnExpectedCash?: number | null;
+  reason?: string | null;
+  notes?: string | null;
+  shiftDataBefore?: any;
+  shiftDataAfter?: any;
+}) {
+  const result = await db
+    .insert(schema.returnTransactions)
+    .values({
+      returnId: data.returnId,
+      shiftId: data.shiftId || null,
+      tenantId: data.tenantId,
+      action: data.action,
+      refundMethod: data.refundMethod || null,
+      refundAmount: data.refundAmount ? data.refundAmount.toString() : null,
+      processedBy: data.processedBy || null,
+      impactOnRevenue: data.impactOnRevenue ? data.impactOnRevenue.toString() : null,
+      impactOnCash: data.impactOnCash ? data.impactOnCash.toString() : null,
+      impactOnExpectedCash: data.impactOnExpectedCash ? data.impactOnExpectedCash.toString() : null,
+      reason: data.reason || null,
+      notes: data.notes || null,
+      shiftDataBefore: data.shiftDataBefore || null,
+      shiftDataAfter: data.shiftDataAfter || null,
+    })
+    .returning();
+  
+  return result[0];
 }

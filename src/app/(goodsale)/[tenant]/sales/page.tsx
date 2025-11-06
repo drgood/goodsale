@@ -1,6 +1,7 @@
 
 'use client';
 import { useState, useEffect, useMemo } from "react";
+import { useShiftContext } from "@/components/shift-manager";
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
@@ -14,7 +15,7 @@ import {
     DropdownMenuItem 
 } from "@/components/ui/dropdown-menu";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { File, ListFilter, MoreHorizontal, Receipt, CircleDollarSign } from "lucide-react";
+import { File, ListFilter, MoreHorizontal, Receipt, CircleDollarSign, RotateCcw } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { Sale, Customer } from "@/lib/types";
 import {
@@ -26,11 +27,15 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog"
 import { useToast } from "@/hooks/use-toast";
+import { useSettlePayment } from "@/hooks/use-settle-payment";
 import { Separator } from "@/components/ui/separator";
 import { ReceiptComponent } from "@/components/receipt";
 import { useParams } from 'next/navigation';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 
 type PaymentMethodFilter = 'Cash' | 'Card' | 'Mobile' | 'On Credit';
 
@@ -38,10 +43,31 @@ export default function SalesPage() {
   const { toast } = useToast();
   const params = useParams();
   const tenantSubdomain = params.tenant as string;
+  const shiftContext = useShiftContext();
 
   const [sales, setSales] = useState<Sale[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  
+  const { settlePayment, isLoading: isSettling } = useSettlePayment({
+    onCustomerUpdate: (customer) => {
+      setCustomers(customers.map(c => c.id === customer.id ? customer : c));
+    },
+    onSalesUpdate: (updatedSales) => {
+      setSales(sales.map(s => {
+        const update = updatedSales.find(u => u.id === s.id);
+        return update ? { ...s, amountSettled: update.amountSettled, status: update.status } : s;
+      }));
+    },
+    onError: (error) => {
+      toast({ variant: 'destructive', title: 'Error', description: error.message });
+    },
+    onSuccess: () => {
+      if (shiftContext?.refreshActiveShift) {
+        shiftContext.refreshActiveShift();
+      }
+    },
+  });
   
   useEffect(() => {
     async function fetchData() {
@@ -75,6 +101,11 @@ export default function SalesPage() {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [isReceiptOpen, setIsReceiptOpen] = useState(false);
   const [isSettleOpen, setIsSettleOpen] = useState(false);
+  const [isReturnOpen, setIsReturnOpen] = useState(false);
+  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
+  const [returnReason, setReturnReason] = useState('');
+  const [refundMethod, setRefundMethod] = useState('cash');
+  const [isCreatingReturn, setIsCreatingReturn] = useState(false);
 
   const handleFilterChange = (method: PaymentMethodFilter) => {
     setFilters(prev => 
@@ -128,6 +159,89 @@ export default function SalesPage() {
     setIsSettleOpen(true);
   }
 
+  const openReturnModal = (sale: Sale) => {
+    setSelectedSale(sale);
+    setSelectedItems(new Set());
+    setReturnReason('');
+    setRefundMethod('cash');
+    setIsReturnOpen(true);
+  };
+
+  const toggleItemSelection = (itemId: string) => {
+    const updated = new Set(selectedItems);
+    if (updated.has(itemId)) {
+      updated.delete(itemId);
+    } else {
+      updated.add(itemId);
+    }
+    setSelectedItems(updated);
+  };
+
+  const calculateReturnAmount = () => {
+    if (!selectedSale) return 0;
+    return selectedSale.items
+      .filter(item => selectedItems.has(item.productId))
+      .reduce((sum, item) => sum + (item.quantity * item.price), 0);
+  };
+
+  const handleCreateReturn = async () => {
+    if (!selectedSale || selectedItems.size === 0) {
+      toast({ variant: 'destructive', title: 'Error', description: 'Please select at least one item to return' });
+      return;
+    }
+
+    setIsCreatingReturn(true);
+    try {
+      const returnItems = selectedSale.items
+        .filter(item => selectedItems.has(item.productId))
+        .map(item => ({
+          productId: item.productId,
+          productName: item.productName,
+          quantity: item.quantity,
+          unitPrice: item.price,
+          condition: 'return'
+        }));
+
+      const response = await fetch('/api/returns', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          saleId: selectedSale.id,
+          customerId: selectedSale.customerId,
+          reason: returnReason || null,
+          items: returnItems,
+          refundMethod
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create return');
+      }
+
+      // Refresh shift context to update return calculations
+      if (shiftContext?.refreshActiveShift) {
+        await shiftContext.refreshActiveShift();
+      }
+      
+      toast({
+        title: 'Return Created',
+        description: `Return has been created and is pending approval.`
+      });
+      setIsReturnOpen(false);
+      setSelectedItems(new Set());
+      setReturnReason('');
+    } catch (error) {
+      console.error('Error creating return:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: error instanceof Error ? error.message : 'Failed to create return'
+      });
+    } finally {
+      setIsCreatingReturn(false);
+    }
+  };
+
   const handleSettlePayment = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!selectedSale || !selectedSale.customerId) return;
@@ -150,39 +264,17 @@ export default function SalesPage() {
       return;
     }
 
-    try {
-      const resp = await fetch('/api/receivables/payments', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          customerId: customer.id,
-          amount,
-          method,
-          saleId: selectedSale.id
-        })
-      });
-      if (!resp.ok) throw new Error('Failed to record payment');
-      const data = await resp.json();
+    const result = await settlePayment({
+      customerId: customer.id,
+      amount,
+      method: method as 'Cash' | 'Card' | 'Mobile',
+      saleId: selectedSale.id
+    });
 
-      // Update local state from response
-      const newBalance = data.customerBalance ?? customer.balance - data.totalApplied;
-      setCustomers(customers.map(c => c.id === customer.id ? { ...c, balance: newBalance } : c));
-
-      type Allocation = { saleId: string; allocated: number; newAmountSettled: number; newStatus: 'Paid'|'Pending' };
-      const allocations: Allocation[] = Array.isArray(data.allocations) ? data.allocations as Allocation[] : [];
-      const saleAlloc = allocations.find(a => a.saleId === selectedSale.id);
-      if (saleAlloc) {
-        setSales(sales.map(s => s.id === selectedSale.id ? { ...s, amountSettled: saleAlloc.newAmountSettled, status: saleAlloc.newStatus } : s));
-      } else {
-        // It might have allocated elsewhere FIFO; refetch sales if needed later.
-      }
-
+    if (result) {
       toast({ title: 'Payment Recorded', description: `GH₵${amount.toFixed(2)} via ${method} recorded.`});
       setIsSettleOpen(false);
       setSelectedSale(null);
-    } catch (error) {
-      console.error('Error settling payment:', error);
-      toast({ variant: 'destructive', title: 'Error', description: 'Failed to record payment. Please try again.' });
     }
   }
 
@@ -199,6 +291,8 @@ export default function SalesPage() {
   if (isLoading) {
     return <div className="flex flex-col gap-4"><p>Loading...</p></div>;
   }
+
+  const isFormDisabled = isLoading || isSettling;
 
   return (
     <div className="flex flex-col gap-4">
@@ -269,6 +363,11 @@ export default function SalesPage() {
                                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                                         <DropdownMenuItem onSelect={() => openSaleDetails(sale)}>View Details</DropdownMenuItem>
                                         <DropdownMenuItem onSelect={() => openReceipt(sale)}>Print Receipt</DropdownMenuItem>
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuItem onSelect={() => openReturnModal(sale)}>
+                                            <RotateCcw className="mr-2 h-4 w-4" />
+                                            Create Return
+                                        </DropdownMenuItem>
                                         {sale.paymentMethod === 'On Credit' && sale.status === 'Pending' && (
                                             <>
                                                 <DropdownMenuSeparator />
@@ -371,6 +470,97 @@ export default function SalesPage() {
                         <DialogTitle>Print Receipt</DialogTitle>
                     </DialogHeader>
                     <ReceiptComponent sale={selectedSale} />
+                </DialogContent>
+            )}
+        </Dialog>
+        
+        {/* Return Modal */}
+        <Dialog open={isReturnOpen} onOpenChange={setIsReturnOpen}>
+            {selectedSale && (
+                <DialogContent className="sm:max-w-md max-h-[80vh] overflow-y-auto">
+                    <DialogHeader>
+                        <DialogTitle>Create Return</DialogTitle>
+                        <DialogDescription>
+                            Sale: {selectedSale.id.substring(0, 12)}...
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                        {/* Items Selection */}
+                        <div className="space-y-3">
+                            <Label className="font-semibold">Select Items to Return</Label>
+                            <div className="border rounded-lg p-3 space-y-2 max-h-40 overflow-y-auto">
+                                {selectedSale.items.map((item) => (
+                                    <div key={item.productId} className="flex items-start gap-2">
+                                        <Checkbox
+                                            id={item.productId}
+                                            checked={selectedItems.has(item.productId)}
+                                            onCheckedChange={() => toggleItemSelection(item.productId)}
+                                        />
+                                        <label htmlFor={item.productId} className="flex-1 text-sm cursor-pointer">
+                                            <p className="font-medium">{item.productName}</p>
+                                            <p className="text-muted-foreground">
+                                                {item.quantity} x GH₵{item.price.toFixed(2)} = GH₵{(item.quantity * item.price).toFixed(2)}
+                                            </p>
+                                        </label>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Return Amount Summary */}
+                        {selectedItems.size > 0 && (
+                            <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-3">
+                                <p className="text-sm text-muted-foreground">Return Amount</p>
+                                <p className="text-lg font-semibold text-green-600">
+                                    GH₵{calculateReturnAmount().toFixed(2)}
+                                </p>
+                            </div>
+                        )}
+
+                        {/* Reason */}
+                        <div className="space-y-2">
+                            <Label htmlFor="return-reason">Reason for Return</Label>
+                            <Textarea
+                                id="return-reason"
+                                placeholder="e.g., Defective, Wrong size, Changed mind..."
+                                value={returnReason}
+                                onChange={(e) => setReturnReason(e.target.value)}
+                                rows={2}
+                            />
+                        </div>
+
+                        {/* Refund Method */}
+                        <div className="space-y-2">
+                            <Label htmlFor="refund-method">Refund Method</Label>
+                            <Select value={refundMethod} onValueChange={setRefundMethod}>
+                                <SelectTrigger id="refund-method">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="cash">Cash</SelectItem>
+                                    <SelectItem value="store_credit">Store Credit</SelectItem>
+                                    <SelectItem value="card">Card</SelectItem>
+                                    <SelectItem value="mobile">Mobile Money</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    </div>
+
+                    <DialogFooter>
+                        <Button
+                            variant="outline"
+                            onClick={() => setIsReturnOpen(false)}
+                            disabled={isCreatingReturn}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            onClick={handleCreateReturn}
+                            disabled={isCreatingReturn || selectedItems.size === 0}
+                        >
+                            {isCreatingReturn ? 'Creating...' : 'Create Return'}
+                        </Button>
+                    </DialogFooter>
                 </DialogContent>
             )}
         </Dialog>

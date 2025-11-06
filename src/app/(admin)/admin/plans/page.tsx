@@ -48,7 +48,16 @@ export default function PlansPage() {
                 const response = await fetch('/api/admin/plans');
                 if (!response.ok) throw new Error('Failed to fetch plans');
                 const data = await response.json();
-                setPlans(data);
+                // Normalize features in case they come back as string/JSON instead of string[]
+                const normalized = (Array.isArray(data) ? data : []).map((p: any) => ({
+                    ...p,
+                    features: Array.isArray(p?.features)
+                        ? p.features
+                        : (typeof p?.features === 'string'
+                            ? (() => { try { const parsed = JSON.parse(p.features); return Array.isArray(parsed) ? parsed : p.features.split('\n').filter((x: string) => x.trim()); } catch { return p.features.split('\n').filter((x: string) => x.trim()); } })()
+                            : []),
+                }));
+                setPlans(normalized);
             } catch (error) {
                 toast({
                     variant: 'destructive',
@@ -238,10 +247,10 @@ export default function PlansPage() {
                                 {plan.price !== "Custom" && <span className="text-muted-foreground">/month</span>}
                             </div>
                             <ul className="space-y-2 text-sm">
-                                {plan.features.map(feature => (
-                                    <li key={feature} className="flex items-center gap-2">
+                                {(Array.isArray(plan.features) ? plan.features : []).map((feature) => (
+                                    <li key={String(feature)} className="flex items-center gap-2">
                                         <Check className="h-4 w-4 text-green-500" />
-                                        <span>{feature}</span>
+                                        <span>{String(feature)}</span>
                                     </li>
                                 ))}
                             </ul>
@@ -286,7 +295,7 @@ export default function PlansPage() {
                             <Textarea 
                                 id="features" 
                                 name="features" 
-                                defaultValue={planToEdit?.features.join('\n')} 
+                                defaultValue={Array.isArray(planToEdit?.features) ? planToEdit?.features.join('\n') : ''} 
                                 rows={5}
                                 required 
                             />

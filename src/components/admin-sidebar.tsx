@@ -27,7 +27,7 @@ import { usePathname } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { GoodSaleLogo } from "./goodsale-logo";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const menuItems = [
   { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -43,25 +43,47 @@ export function AdminSidebar() {
   const pathname = usePathname();
   const userAvatar = PlaceHolderImages.find(img => img.id === 'user-avatar-3')?.imageUrl || '';
   const [pendingCount, setPendingCount] = useState(0);
+  const lastFetchRef = useRef(0);
 
   useEffect(() => {
-    // Fetch pending subscription requests count
+    const controller = new AbortController();
+
+    // Throttled fetch: skip if called within the last 5s
     const fetchPendingCount = async () => {
+      const now = Date.now();
+      if (now - lastFetchRef.current < 5000) return;
+      lastFetchRef.current = now;
+
       try {
-        const res = await fetch('/api/admin/subscription-requests/count');
+        const res = await fetch('/api/admin/subscription-requests/count', {
+          signal: controller.signal,
+          cache: 'no-store',
+        });
         if (res.ok) {
           const data = await res.json();
           setPendingCount(data.count || 0);
         }
       } catch (error) {
+        if ((error as any)?.name === 'AbortError') return;
         console.error('Failed to fetch pending count:', error);
       }
     };
 
+    // Initial fetch
     fetchPendingCount();
+
     // Refresh every 30 seconds
     const interval = setInterval(fetchPendingCount, 30000);
-    return () => clearInterval(interval);
+
+    // Also refresh on window focus (respects throttle)
+    const onFocus = () => fetchPendingCount();
+    window.addEventListener('focus', onFocus);
+
+    return () => {
+      controller.abort();
+      clearInterval(interval);
+      window.removeEventListener('focus', onFocus);
+    };
   }, []);
 
   const isActive = (href: string) => {

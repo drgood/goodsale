@@ -2,6 +2,7 @@
 'use client';
 import { useState, useMemo, useEffect } from 'react';
 import Image from "next/image";
+import { useShiftContext } from '@/components/shift-manager';
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import {
@@ -61,6 +62,7 @@ export default function CustomersPage() {
     const params = useParams();
     const tenantSubdomain = params.tenant as string;
     const tenant = tenants.find(t => t.subdomain === tenantSubdomain);
+    const shiftContext = useShiftContext();
 
     const [customers, setCustomers] = useState<Customer[]>([]);
     const [sales, setSales] = useState<Sale[]>([]);
@@ -273,6 +275,11 @@ export default function CustomersPage() {
 
             // Refresh lists to reflect allocations and sale statuses
             await fetchData();
+            
+            // Refresh active shift to update balance display
+            if (shiftContext?.refreshActiveShift) {
+                await shiftContext.refreshActiveShift();
+            }
 
             // Update local selected customer snapshot
             const updatedCustomer = { ...customerToView, balance: newBalance };

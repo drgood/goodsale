@@ -5,6 +5,7 @@ import { getShiftsByTenant } from '@/lib/queries';
 import { db } from '@/db';
 import * as schema from '@/db/schema';
 import { eq } from 'drizzle-orm';
+import { calculateExpectedCash } from '@/lib/shift-calculations';
 
 export const runtime = 'nodejs';
 
@@ -89,17 +90,38 @@ export async function PUT(request: Request) {
     const body = await request.json();
     const { id, ...updateData } = body;
     
+    // First, fetch current shift to get all components for recalculation
+    const currentShiftResult = await db.select().from(schema.shifts).where(eq(schema.shifts.id, id)).limit(1);
+    if (!currentShiftResult[0]) {
+      return NextResponse.json({ error: 'Shift not found' }, { status: 404 });
+    }
+    const currentShift = currentShiftResult[0];
+    
     const dataToUpdate: Record<string, string | Date> = {};
     if (updateData.endTime) dataToUpdate.endTime = new Date(updateData.endTime);
     if (updateData.status) dataToUpdate.status = updateData.status;
-    if (updateData.cashSales !== undefined) dataToUpdate.cashSales = updateData.cashSales.toString();
-    if (updateData.cardSales !== undefined) dataToUpdate.cardSales = updateData.cardSales.toString();
-    if (updateData.mobileSales !== undefined) dataToUpdate.mobileSales = updateData.mobileSales.toString();
-    if (updateData.creditSales !== undefined) dataToUpdate.creditSales = updateData.creditSales.toString();
-    if (updateData.totalSales !== undefined) dataToUpdate.totalSales = updateData.totalSales.toString();
-    if (updateData.expectedCash !== undefined) dataToUpdate.expectedCash = updateData.expectedCash.toString();
-    if (updateData.actualCash !== undefined) dataToUpdate.actualCash = updateData.actualCash.toString();
-    if (updateData.cashDifference !== undefined) dataToUpdate.cashDifference = updateData.cashDifference.toString();
+    if (updateData.cashSales !== undefined && updateData.cashSales !== null) dataToUpdate.cashSales = updateData.cashSales.toString();
+    if (updateData.cardSales !== undefined && updateData.cardSales !== null) dataToUpdate.cardSales = updateData.cardSales.toString();
+    if (updateData.mobileSales !== undefined && updateData.mobileSales !== null) dataToUpdate.mobileSales = updateData.mobileSales.toString();
+    if (updateData.creditSales !== undefined && updateData.creditSales !== null) dataToUpdate.creditSales = updateData.creditSales.toString();
+    if (updateData.totalSales !== undefined && updateData.totalSales !== null) dataToUpdate.totalSales = updateData.totalSales.toString();
+    if (updateData.actualCash !== undefined && updateData.actualCash !== null) dataToUpdate.actualCash = updateData.actualCash.toString();
+    if (updateData.cashDifference !== undefined && updateData.cashDifference !== null) dataToUpdate.cashDifference = updateData.cashDifference.toString();
+    if (updateData.cashSettlements !== undefined && updateData.cashSettlements !== null) dataToUpdate.cashSettlements = updateData.cashSettlements.toString();
+    if (updateData.cardSettlements !== undefined && updateData.cardSettlements !== null) dataToUpdate.cardSettlements = updateData.cardSettlements.toString();
+    if (updateData.mobileSettlements !== undefined && updateData.mobileSettlements !== null) dataToUpdate.mobileSettlements = updateData.mobileSettlements.toString();
+    if (updateData.cashReturns !== undefined && updateData.cashReturns !== null) dataToUpdate.cashReturns = updateData.cashReturns.toString();
+    
+    // IMPORTANT: Never accept expectedCash directly. Always recalculate from components.
+    // This ensures data integrity and prevents stale values.
+    const shiftForCalculation = {
+      startingCash: parseFloat(dataToUpdate.cashSales !== undefined ? currentShift.startingCash : currentShift.startingCash),
+      cashSales: parseFloat((dataToUpdate.cashSales as string) || currentShift.cashSales || '0'),
+      cashSettlements: parseFloat((dataToUpdate.cashSettlements as string) || currentShift.cashSettlements || '0'),
+      cashReturns: parseFloat((dataToUpdate.cashReturns as string) || currentShift.cashReturns || '0')
+    };
+    const recalculatedExpectedCash = calculateExpectedCash(shiftForCalculation);
+    dataToUpdate.expectedCash = recalculatedExpectedCash.toString();
     
     const result = await db.update(schema.shifts)
       .set(dataToUpdate)

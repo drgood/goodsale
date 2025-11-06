@@ -4,23 +4,44 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { db, tenants as tenantsTable } from "@/db";
 import { Building2, DollarSign, Users, Activity } from "lucide-react";
-import { desc } from "drizzle-orm";
+import { desc, eq, count, sum } from "drizzle-orm";
 
+export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export default async function AdminDashboardPage() {
-    // Fetch all tenants from database
-    const allTenants = await db
-        .select()
+    // Efficient aggregate queries instead of loading all rows
+    const [{ total }] = await db.select({ total: count(tenantsTable.id) }).from(tenantsTable);
+    const [{ active }] = await db
+        .select({ active: count(tenantsTable.id) })
         .from(tenantsTable)
-        .orderBy(desc(tenantsTable.createdAt));
+        .where(eq(tenantsTable.status, 'active'));
+    const [{ revenue }] = await db
+        .select({ revenue: sum(tenantsTable.totalSales) })
+        .from(tenantsTable);
+    const [{ users }] = await db
+        .select({ users: sum(tenantsTable.userCount) })
+        .from(tenantsTable);
 
-    const totalTenants = allTenants.length;
-    const activeTenants = allTenants.filter(t => t.status === 'active').length;
-    const totalPlatformRevenue = allTenants.reduce((acc, t) => acc + Number(t.totalSales), 0);
+    // Recent tenants (limited subset)
+    const recentTenants = await db
+        .select({
+            id: tenantsTable.id,
+            name: tenantsTable.name,
+            subdomain: tenantsTable.subdomain,
+            plan: tenantsTable.plan,
+            status: tenantsTable.status,
+            createdAt: tenantsTable.createdAt,
+        })
+        .from(tenantsTable)
+        .orderBy(desc(tenantsTable.createdAt))
+        .limit(5);
 
-    const recentTenants = allTenants.slice(0, 5);
-    const totalUsers = allTenants.reduce((acc, t) => acc + (t.userCount || 0), 0);
+    const totalTenants = Number(total ?? 0);
+    const activeTenants = Number(active ?? 0);
+    const totalUsers = Number(users ?? 0);
+    const totalPlatformRevenue = typeof revenue === 'string' ? parseFloat(revenue) : Number(revenue ?? 0);
+
     return (
         <>
             <PageHeader title="Super Admin Dashboard" description="Overview of the GoodSale platform." />

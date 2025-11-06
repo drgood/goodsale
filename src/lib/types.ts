@@ -123,6 +123,10 @@ export type Shift = {
     mobileSales: number;
     creditSales: number;
     totalSales: number;
+    cashSettlements?: number;
+    cardSettlements?: number;
+    mobileSettlements?: number;
+    cashReturns?: number;
     expectedCash: number;
     actualCash?: number;
     cashDifference?: number;

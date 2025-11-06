@@ -171,6 +171,10 @@ export const shifts = pgTable("shifts", {
   cashSettlements: numeric("cash_settlements", { precision: 10, scale: 2 }).default("0"),
   cardSettlements: numeric("card_settlements", { precision: 10, scale: 2 }).default("0"),
   mobileSettlements: numeric("mobile_settlements", { precision: 10, scale: 2 }).default("0"),
+  // POS return fields
+  cashReturns: numeric("cash_returns", { precision: 10, scale: 2 }).default("0"),
+  returnAdjustments: numeric("return_adjustments", { precision: 10, scale: 2 }).default("0"),
+  cashRefundedAt: timestamp("cash_refunded_at", { withTimezone: true }),
 });
 
 // =====================================================
@@ -437,6 +441,96 @@ export const subscriptionRequests = pgTable("subscription_requests", {
   subscriptionId: uuid("subscription_id").references(() => subscriptions.id, { onDelete: "set null" }),
   invoiceNumber: varchar("invoice_number", { length: 100 }),
   notes: text("notes"),
+});
+
+// =====================================================
+// RETURN POLICIES
+// =====================================================
+export const returnPolicies = pgTable("return_policies", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  tenantId: uuid("tenant_id")
+    .references(() => tenants.id, { onDelete: "cascade" })
+    .notNull(),
+  returnWindowDays: integer("return_window_days").default(30).notNull(), // Days within which items can be returned
+  refundMethod: varchar("refund_method", { length: 50 }).default("original").notNull(), // "original", "store_credit", "both"
+  restockingFeePercent: numeric("restocking_fee_percent", { precision: 5, scale: 2 }).default("0"), // e.g., 10 for 10% fee
+  requiresApproval: boolean("requires_approval").default(true).notNull(), // Whether returns need admin approval
+  allowPartialReturns: boolean("allow_partial_returns").default(true).notNull(),
+  notifyCustomer: boolean("notify_customer").default(true).notNull(), // Send notifications
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
+});
+
+// =====================================================
+// RETURNS
+// =====================================================
+export const returns = pgTable("returns", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  tenantId: uuid("tenant_id")
+    .references(() => tenants.id, { onDelete: "cascade" })
+    .notNull(),
+  saleId: uuid("sale_id")
+    .references(() => sales.id, { onDelete: "cascade" })
+    .notNull(),
+  customerId: uuid("customer_id")
+    .references(() => customers.id, { onDelete: "set null" }),
+  requestedBy: uuid("requested_by").references(() => users.id, { onDelete: "set null" }),
+  reason: text("reason"),
+  status: varchar("status", { length: 50 }).default("pending").notNull(), // pending, approved, rejected, refunded, cancelled
+  totalReturnAmount: numeric("total_return_amount", { precision: 10, scale: 2 }).notNull(),
+  restockingFeeAmount: numeric("restocking_fee_amount", { precision: 10, scale: 2 }).default("0"),
+  refundAmount: numeric("refund_amount", { precision: 10, scale: 2 }).notNull(),
+  refundMethod: varchar("refund_method", { length: 50 }), // "cash", "card", "mobile", "store_credit"
+  approvedBy: uuid("approved_by").references(() => users.id, { onDelete: "set null" }),
+  approvalReason: text("approval_reason"),
+  rejectionReason: text("rejection_reason"),
+  refundedAt: timestamp("refunded_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
+});
+
+// =====================================================
+// RETURN TRANSACTIONS (Audit log for returns)
+// =====================================================
+export const returnTransactions = pgTable("return_transactions", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  returnId: uuid("return_id")
+    .references(() => returns.id, { onDelete: "cascade" })
+    .notNull(),
+  shiftId: uuid("shift_id").references(() => shifts.id, { onDelete: "set null" }),
+  tenantId: uuid("tenant_id")
+    .references(() => tenants.id, { onDelete: "cascade" })
+    .notNull(),
+  action: varchar("action", { length: 50 }).notNull(), // 'return_created', 'return_approved', 'return_refunded'
+  refundMethod: varchar("refund_method", { length: 50 }), // 'cash', 'store_credit', 'card', 'mobile'
+  refundAmount: numeric("refund_amount", { precision: 10, scale: 2 }),
+  processedBy: uuid("processed_by").references(() => users.id, { onDelete: "set null" }),
+  processedAt: timestamp("processed_at", { withTimezone: true }).defaultNow(),
+  impactOnRevenue: numeric("impact_on_revenue", { precision: 10, scale: 2 }), // -totalReturnAmount
+  impactOnCash: numeric("impact_on_cash", { precision: 10, scale: 2 }), // -refundAmount (if cash)
+  impactOnExpectedCash: numeric("impact_on_expected_cash", { precision: 10, scale: 2 }), // calculated
+  reason: text("reason"),
+  notes: text("notes"),
+  shiftDataBefore: jsonb("shift_data_before"), // Snapshot of shift before return
+  shiftDataAfter: jsonb("shift_data_after"), // Snapshot of shift after return
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+});
+
+// =====================================================
+// RETURN ITEMS
+// =====================================================
+export const returnItems = pgTable("return_items", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  returnId: uuid("return_id")
+    .references(() => returns.id, { onDelete: "cascade" })
+    .notNull(),
+  saleItemId: uuid("sale_item_id").references(() => saleItems.id, { onDelete: "set null" }),
+  productId: uuid("product_id").references(() => products.id, { onDelete: "set null" }),
+  productName: varchar("product_name", { length: 255 }),
+  quantity: integer("quantity").notNull(),
+  unitPrice: numeric("unit_price", { precision: 10, scale: 2 }).notNull(),
+  returnAmount: numeric("return_amount", { precision: 10, scale: 2 }).notNull(),
+  condition: varchar("condition", { length: 50 }), // "like_new", "good", "fair", "damaged"
 });
 
 // =====================================================

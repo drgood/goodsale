@@ -15,11 +15,16 @@ import { ImageUpload } from "@/components/image-upload";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import { ChevronRight } from "lucide-react";
 
 export default function SettingsPage() {
   const { toast } = useToast();
   const { data: session } = useSession();
   const router = useRouter();
+  const params = useParams();
+  const tenantSubdomain = params.tenant as string;
   
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -334,6 +339,22 @@ export default function SettingsPage() {
     <>
     <div className="grid gap-6">
         <PageHeader title="Settings" description="Manage your shop's configuration and branding." />
+        
+        {/* Settings Sub-sections Navigation */}
+        <div className="grid gap-3">
+          <Link href={`/${tenantSubdomain}/settings/return-policy`}>
+            <Card className="cursor-pointer hover:shadow-md transition-shadow">
+              <CardContent className="p-4 flex items-center justify-between">
+                <div>
+                  <h3 className="font-semibold">Return Policy</h3>
+                  <p className="text-sm text-muted-foreground">Configure return windows and refund settings</p>
+                </div>
+                <ChevronRight className="h-5 w-5 text-muted-foreground" />
+              </CardContent>
+            </Card>
+          </Link>
+        </div>
+        
         {hasUnsavedChanges && (
           <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900 rounded-lg p-4 flex items-center justify-between">
             <div className="flex items-center gap-2">

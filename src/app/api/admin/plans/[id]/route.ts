@@ -1,8 +1,9 @@
+export const runtime = 'nodejs';
+
 import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 import { db, plans, auditLogs } from '@/db';
 import { eq } from 'drizzle-orm';
-
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -60,7 +61,15 @@ export async function PATCH(
 
     // Only update if there are changes
     if (Object.keys(updateData).length === 0) {
-      return NextResponse.json(plan);
+      const normalized = {
+        ...plan,
+        features: Array.isArray((plan as any)?.features)
+          ? (plan as any).features
+          : (typeof (plan as any)?.features === 'string'
+              ? (() => { try { const parsed = JSON.parse((plan as any).features); return Array.isArray(parsed) ? parsed : String((plan as any).features).split('\n').filter((x: string) => x.trim()); } catch { return String((plan as any).features).split('\n').filter((x: string) => x.trim()); } })()
+              : []),
+      };
+      return NextResponse.json(normalized);
     }
 
     const [updated] = await db
@@ -81,7 +90,15 @@ export async function PATCH(
       },
     }).catch(err => console.error('Audit log error:', err));
 
-    return NextResponse.json(updated);
+    const normalized = {
+      ...updated,
+      features: Array.isArray((updated as any)?.features)
+        ? (updated as any).features
+        : (typeof (updated as any)?.features === 'string'
+            ? (() => { try { const parsed = JSON.parse((updated as any).features); return Array.isArray(parsed) ? parsed : String((updated as any).features).split('\n').filter((x: string) => x.trim()); } catch { return String((updated as any).features).split('\n').filter((x: string) => x.trim()); } })()
+            : []),
+    } as any;
+    return NextResponse.json(normalized);
   } catch (error) {
     console.error('Error updating plan:', error);
     const errorMessage = error instanceof Error ? error.message : 'Failed to update plan';

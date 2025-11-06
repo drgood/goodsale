@@ -2,6 +2,7 @@
 'use client'
 import { useMemo, useState, useEffect } from "react";
 import Image from "next/image";
+import { useShiftContext } from "@/components/shift-manager";
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
@@ -23,6 +24,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { useSettlePayment } from "@/hooks/use-settle-payment";
 
 export default function DebtorsReportPage() {
     const { toast } = useToast();
@@ -33,6 +35,26 @@ export default function DebtorsReportPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [isSettleOpen, setIsSettleOpen] = useState(false);
     const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+    const shiftContext = useShiftContext();
+    const { settlePayment, isLoading: isSettling } = useSettlePayment({
+        onCustomerUpdate: (customer) => {
+            setCustomers(customers.map(c => c.id === customer.id ? customer : c));
+        },
+        onSalesUpdate: (updatedSales) => {
+            setSales(sales.map(s => {
+                const update = updatedSales.find(u => u.id === s.id);
+                return update ? { ...s, amountSettled: update.amountSettled, status: update.status } : s;
+            }));
+        },
+        onError: (error) => {
+            toast({ variant: 'destructive', title: 'Error', description: error.message });
+        },
+        onSuccess: () => {
+            if (shiftContext?.refreshActiveShift) {
+                shiftContext.refreshActiveShift();
+            }
+        },
+    });
     
     useEffect(() => {
         const fetchData = async () => {
@@ -117,43 +139,19 @@ export default function DebtorsReportPage() {
             return;
         }
 
-        try {
-            const response = await fetch('/api/receivables/payments', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    customerId: selectedCustomer.id,
-                    amount,
-                    method
-                })
-            });
+        const result = await settlePayment({
+            customerId: selectedCustomer.id,
+            amount,
+            method: method as 'Cash' | 'Card' | 'Mobile'
+        });
 
-            if (!response.ok) {
-                throw new Error('Failed to record payment');
-            }
-            const data = await response.json();
-
-            const newBalance = data.customerBalance ?? (selectedCustomer.balance - data.totalApplied);
-
-            // Update local state
-            setCustomers(customers.map(c => 
-                c.id === selectedCustomer.id ? { ...c, balance: newBalance } : c
-            ));
-
+        if (result) {
             toast({
                 title: 'Payment Recorded',
                 description: `GH₵${amount.toFixed(2)} via ${method} has been recorded for ${selectedCustomer.name}.`
             });
-
             setIsSettleOpen(false);
             setSelectedCustomer(null);
-        } catch (error) {
-            console.error('Error settling payment:', error);
-            toast({
-                variant: 'destructive',
-                title: 'Error',
-                description: 'Failed to record payment. Please try again.'
-            });
         }
     };
 

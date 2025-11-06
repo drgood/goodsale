@@ -26,6 +26,7 @@ import {
   Truck,
   ClipboardList,
   CreditCard,
+  RotateCcw,
 } from "lucide-react";
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
@@ -41,6 +42,7 @@ const menuItems = [
   { href: "products", label: "Products", icon: Boxes, roles: ['Owner', 'Manager'] },
   { href: "sales", label: "Sales", icon: BarChartHorizontal, roles: ['Owner', 'Manager'] },
   { href: "customers", label: "Customers", icon: Users, roles: ['Owner', 'Manager'] },
+  { href: "returns", label: "Returns", icon: RotateCcw, roles: ['Owner', 'Manager'] },
   { href: "reports", label: "Reports", icon: BarChartHorizontal, roles: ['Owner', 'Manager'] },
 ];
 

@@ -20,6 +20,15 @@ export async function GET(
 
     const { id: tenantId } = await params;
 
+    // Debug logging
+    console.log('Tenant API Debug:', {
+      tokenId: token.sub,
+      tokenTenantId: token.tenantId,
+      isSuperAdmin: token.isSuperAdmin,
+      requestedTenantId: tenantId,
+      canAccess: token.isSuperAdmin || token.tenantId === tenantId
+    });
+
     // Fetch tenant
     const tenantData = await db
       .select()
@@ -36,6 +45,11 @@ export async function GET(
 
     // Verify user belongs to this tenant (unless super admin)
     if (!token.isSuperAdmin && token.tenantId !== tenantId) {
+      console.error('Access Denied:', {
+        isSuperAdmin: token.isSuperAdmin,
+        tokenTenantId: token.tenantId,
+        requestedTenantId: tenantId
+      });
       return NextResponse.json(
         { error: 'Forbidden' },
         { status: 403 }
