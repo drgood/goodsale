@@ -100,9 +100,11 @@ export default function POSPage() {
   // Local state for products
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
+  const [taxRate, setTaxRate] = useState<number>(0);
 
   useEffect(() => {
     fetchProducts();
+    fetchSettings();
   }, []);
 
   const fetchProducts = async () => {
@@ -121,6 +123,18 @@ export default function POSPage() {
       console.error('Error fetching products:', error);
     } finally {
       setIsLoadingProducts(false);
+    }
+  };
+
+  const fetchSettings = async () => {
+    try {
+      const response = await fetch('/api/settings');
+      if (response.ok) {
+        const data = await response.json();
+        setTaxRate(data.taxRate || 0);
+      }
+    } catch (error) {
+      console.error('Error fetching settings:', error);
     }
   };
 
@@ -286,7 +300,7 @@ export default function POSPage() {
 
 
   const discountedSubtotal = subtotal - discountAmount;
-  const tax = discountedSubtotal * 0.08; // 8% tax on discounted price
+  const tax = discountedSubtotal * (taxRate / 100);
   const total = discountedSubtotal + tax;
   const totalProfit = discountedSubtotal - totalCost;
 
@@ -555,7 +569,7 @@ export default function POSPage() {
           customerId: selectedCustomer.id,
           items,
           discountAmount: discountAmount,
-          taxRate: 8,
+          taxRate: taxRate,
           dueDate: dueDate.toISOString(),
           notes: '',
           createdBy: currentUser?.id || null,
@@ -923,7 +937,7 @@ export default function POSPage() {
                             </Popover>
                         </div>
                         <div className="flex justify-between">
-                            <span>Tax (8%)</span>
+                            <span>Tax</span>
                             <span>GH₵{tax.toFixed(2)}</span>
                         </div>
                         <Separator />
