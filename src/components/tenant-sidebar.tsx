@@ -27,6 +27,7 @@ import {
   ClipboardList,
   CreditCard,
   RotateCcw,
+  FileText,
 } from "lucide-react";
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
@@ -41,6 +42,7 @@ const menuItems = [
   { href: "pos", label: "POS", icon: ShoppingCart, roles: ['Owner', 'Manager', 'Cashier'] },
   { href: "products", label: "Products", icon: Boxes, roles: ['Owner', 'Manager'] },
   { href: "sales", label: "Sales", icon: BarChartHorizontal, roles: ['Owner', 'Manager'] },
+  { href: "invoices", label: "Invoices", icon: FileText, roles: ['Owner', 'Manager'] },
   { href: "customers", label: "Customers", icon: Users, roles: ['Owner', 'Manager'] },
   { href: "returns", label: "Returns", icon: RotateCcw, roles: ['Owner', 'Manager'] },
   { href: "reports", label: "Reports", icon: BarChartHorizontal, roles: ['Owner', 'Manager'] },
@@ -209,18 +211,6 @@ export function TenantSidebar() {
             )}
         </div>
         <SidebarMenu>
-            <SidebarMenuItem>
-              <Link href={`/${tenantSubdomain}/profile`}>
-                <SidebarMenuButton
-                  isActive={isActive('profile')}
-                  tooltip="Profile"
-                  className="justify-start"
-                >
-                  <UserCircle />
-                  <span>Profile</span>
-                </SidebarMenuButton>
-              </Link>
-            </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton tooltip="Log Out" className="justify-start" onClick={handleLogout}>
                 <LogOut />

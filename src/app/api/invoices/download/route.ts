@@ -1,21 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db, subscriptions, tenants } from '@/db';
+import { db, posInvoices, posInvoiceItems, tenants, settings } from '@/db';
 import { eq } from 'drizzle-orm';
-import { generateInvoiceHTML, generateInvoiceFilename } from '@/lib/invoice-generator';
+import { generatePOSInvoiceHTML, generatePOSInvoiceFilename } from '@/lib/pos-invoice-generator';
 
 export const runtime = 'nodejs';
 
 /**
- * TODO: Add invoices table to schema
- * Download invoice as HTML (can be printed to PDF client-side)
- * GET /api/invoices/download?invoiceId=xxx&format=html
+ * Download POS invoice as HTML (can be printed to PDF client-side)
+ * GET /api/invoices/download?invoiceId=xxx&format=html|json
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
-  return NextResponse.json(
-    { error: 'Invoices feature not yet implemented - invoices table missing from schema' },
-    { status: 501 }
-  );
-  /*
   try {
     const searchParams = request.nextUrl.searchParams;
     const invoiceId = searchParams.get('invoiceId');
@@ -28,99 +22,59 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    // Fetch invoice data
-    const invoice = await db
-      .select()
-      .from(invoices)
-      .where(eq(invoices.id, invoiceId))
-      .then((rows) => rows[0]);
-
+    // Fetch invoice
+const inv = await db.select().from(posInvoices).where(eq(posInvoices.id, invoiceId)).limit(1);
+    const invoice = inv[0];
     if (!invoice) {
-      return NextResponse.json(
-        { error: 'Invoice not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Invoice not found' }, { status: 404 });
     }
 
-    // Fetch subscription data
-    const subscription = await db
-      .select()
-      .from(subscriptions)
-      .where(eq(subscriptions.id, invoice.subscriptionId))
-      .then((rows) => rows[0]);
+    // Fetch items
+const items = await db.select().from(posInvoiceItems).where(eq(posInvoiceItems.invoiceId, invoiceId));
 
-    if (!subscription) {
-      return NextResponse.json(
-        { error: 'Subscription not found' },
-        { status: 404 }
-      );
-    }
+    // Fetch company settings (optional)
+    const tenant = await db.select().from(tenants).where(eq(tenants.id, invoice.tenantId)).limit(1);
+    const tenantSettings = await db.select().from(settings).where(eq(settings.tenantId, invoice.tenantId)).limit(1);
 
-    // Fetch tenant data
-    const tenant = await db
-      .select()
-      .from(tenants)
-      .where(eq(tenants.id, subscription.tenantId))
-      .then((rows) => rows[0]);
-
-    if (!tenant) {
-      return NextResponse.json(
-        { error: 'Tenant not found' },
-        { status: 404 }
-      );
-    }
-
-    // Determine billing period from subscription
-    const startDate = new Date(subscription.startDate);
-    const endDate = new Date(subscription.endDate);
-    const diffMonths = (endDate.getFullYear() - startDate.getFullYear()) * 12 + 
-                       (endDate.getMonth() - startDate.getMonth());
-
-    let billingPeriod = '1_month';
-    if (diffMonths >= 24) billingPeriod = '24_months';
-    else if (diffMonths >= 12) billingPeriod = '12_months';
-    else if (diffMonths >= 6) billingPeriod = '6_months';
-    else billingPeriod = '1_month';
-
-    // Generate invoice data
-    const invoiceData = {
-      invoiceNumber: invoice.invoiceNumber,
-      tenantName: tenant.name,
-      tenantEmail: tenant.contactEmail || '',
-      tenantPhone: tenant.contactPhone,
-      planName: subscription.planName,
-      billingPeriod,
-      amount: invoice.amount,
-      currency: 'USD',
-      startDate: subscription.startDate,
-      endDate: subscription.endDate,
-      paymentMethod: invoice.paymentMethod || 'card',
-      issuedDate: invoice.createdAt,
-      dueDate: invoice.dueDate,
-      notes: invoice.notes,
+    const company = {
+      name: tenantSettings[0]?.shopName || tenant[0]?.name || 'GoodSale',
+      address: null,
+      logoUrl: tenantSettings[0]?.logoUrl || null,
+      phone: null,
+      email: null,
+      taxRate: tenantSettings[0]?.taxRate ? parseFloat(String(tenantSettings[0].taxRate)) : 8,
+      currency: tenantSettings[0]?.currency?.toUpperCase?.() === 'USD' ? '$' : 'GH₵',
+      headerMessage: tenantSettings[0]?.receiptHeader || null,
+      footerMessage: tenantSettings[0]?.receiptFooter || null,
     };
 
-    if (format === 'html') {
-      // Return HTML for client-side PDF conversion
-      const html = generateInvoiceHTML(invoiceData);
-      return new NextResponse(html, {
-        headers: {
-          'Content-Type': 'text/html; charset=utf-8',
-          'Content-Disposition': `inline; filename="${generateInvoiceFilename(invoice.invoiceNumber)}"`,
-        },
-      });
-    } else if (format === 'json') {
-      // Return JSON data for custom handling
-      return NextResponse.json({
-        invoice: invoiceData,
-        downloadUrl: `/api/invoices/download?invoiceId=${invoiceId}&format=html`,
-      });
+    const responseInvoice = {
+      ...invoice,
+      subtotal: parseFloat(String(invoice.subtotal)),
+      discountAmount: parseFloat(String(invoice.discountAmount)),
+      taxAmount: parseFloat(String(invoice.taxAmount)),
+      totalAmount: parseFloat(String(invoice.totalAmount)),
+      items: items.map((r) => ({
+        productId: r.productId,
+        productName: r.productName,
+        sku: r.sku ?? undefined,
+        quantity: r.quantity,
+        unitPrice: parseFloat(String(r.unitPrice)),
+        lineTotal: parseFloat(String(r.lineTotal)),
+      })),
+    };
+
+    if (format === 'json') {
+      return NextResponse.json({ invoice: responseInvoice, company });
     }
 
-    return NextResponse.json(
-      { error: 'Invalid format parameter. Use "html" or "json"' },
-      { status: 400 }
-    );
+    const html = generatePOSInvoiceHTML({ invoice: responseInvoice as any, company });
+    return new NextResponse(html, {
+      headers: {
+        'Content-Type': 'text/html; charset=utf-8',
+        'Content-Disposition': `inline; filename="${generatePOSInvoiceFilename(invoice.invoiceNumber)}"`,
+      },
+    });
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : 'Unknown error';
     console.error('Error in invoice download:', error);
@@ -133,5 +87,4 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       { status: 500 }
     );
   }
-  */
 }

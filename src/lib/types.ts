@@ -169,6 +169,33 @@ export type DebtorHistory = {
     date: string;
 };
 
+export type InvoiceItem = {
+  productId: string | null;
+  productName: string;
+  sku?: string | null;
+  quantity: number;
+  unitPrice: number;
+  lineTotal: number;
+};
+
+export type Invoice = {
+  id: string;
+  tenantId: string;
+  invoiceNumber: string;
+  customerId?: string | null;
+  customerName?: string | null;
+  createdBy?: string | null;
+  status: 'Draft' | 'Issued' | 'Paid' | 'Cancelled' | 'Overdue';
+  issueDate: string;
+  dueDate?: string | null;
+  subtotal: number;
+  discountAmount: number;
+  taxAmount: number;
+  totalAmount: number;
+  notes?: string | null;
+  items: InvoiceItem[];
+};
+
 export type AuditLog = {
     id: string;
     userId: string;

@@ -102,7 +102,9 @@ export const suppliers = pgTable("suppliers", {
 // =====================================================
 // PRODUCTS
 // =====================================================
-export const products = pgTable("products", {
+
+
+export const products = pgTable('products', {
   id: uuid("id").defaultRandom().primaryKey(),
   tenantId: uuid("tenant_id")
     .references(() => tenants.id, { onDelete: "cascade" })
@@ -271,6 +273,48 @@ export const purchaseOrderItems = pgTable("purchase_order_items", {
   productName: varchar("product_name", { length: 255 }),
   quantity: integer("quantity").notNull(),
   costPrice: numeric("cost_price", { precision: 10, scale: 2 }).notNull(),
+});
+
+// =====================================================
+// INVOICES (POS)
+// =====================================================
+export const posInvoices = pgTable("invoices", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  tenantId: uuid("tenant_id")
+    .references(() => tenants.id, { onDelete: "cascade" })
+    .notNull(),
+  invoiceNumber: varchar("invoice_number", { length: 100 }).notNull(),
+  customerId: uuid("customer_id").references(() => customers.id, { onDelete: "set null" }),
+  customerName: varchar("customer_name", { length: 255 }),
+  createdBy: uuid("created_by").references(() => users.id, { onDelete: "set null" }),
+  status: varchar("status", { length: 50 }).default("Issued").notNull(), // Draft, Issued, Paid, Cancelled, Overdue
+  issueDate: timestamp("issue_date", { withTimezone: true }).defaultNow(),
+  dueDate: timestamp("due_date", { withTimezone: true }),
+  subtotal: numeric("subtotal", { precision: 12, scale: 2 }).notNull(),
+  discountAmount: numeric("discount_amount", { precision: 12, scale: 2 }).default("0").notNull(),
+  taxAmount: numeric("tax_amount", { precision: 12, scale: 2 }).default("0").notNull(),
+  totalAmount: numeric("total_amount", { precision: 12, scale: 2 }).notNull(),
+  notes: text("notes"),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
+}, (table) => ({
+  invoiceTenantUnique: uniqueIndex("invoices_tenant_number_unique").on(table.tenantId, table.invoiceNumber),
+}));
+
+// =====================================================
+// INVOICE ITEMS (POS)
+// =====================================================
+export const posInvoiceItems = pgTable("invoice_items", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  invoiceId: uuid("invoice_id")
+    .references(() => posInvoices.id, { onDelete: "cascade" })
+    .notNull(),
+  productId: uuid("product_id").references(() => products.id, { onDelete: "set null" }),
+  productName: varchar("product_name", { length: 255 }),
+  sku: varchar("sku", { length: 100 }),
+  quantity: integer("quantity").notNull(),
+  unitPrice: numeric("unit_price", { precision: 10, scale: 2 }).notNull(),
+  lineTotal: numeric("line_total", { precision: 12, scale: 2 }).notNull(),
 });
 
 // =====================================================

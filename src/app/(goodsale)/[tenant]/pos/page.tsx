@@ -7,8 +7,8 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import type { Product, Sale, Customer } from "@/lib/types";
-import { Search, X, Plus, Minus, CreditCard, Banknote, Smartphone, Receipt, Hand, Trash2, Play, UserPlus, CircleUserRound, Clock, RotateCcw } from "lucide-react";
+import type { Product, Sale, Customer, Invoice } from "@/lib/types";
+import { Search, X, Plus, Minus, CreditCard, Banknote, Smartphone, Receipt, Hand, Trash2, Play, UserPlus, CircleUserRound, Clock, RotateCcw, FileText } from "lucide-react";
 import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
@@ -138,6 +138,11 @@ export default function POSPage() {
   const [isCustomerSelectOpen, setIsCustomerSelectOpen] = useState(false);
   const [customerSearchTerm, setCustomerSearchTerm] = useState("");
   const [isAddCustomerDialogOpen, setIsAddCustomerDialogOpen] = useState(false);
+
+  // Invoice dialog state
+  const [isInvoiceDialogOpen, setIsInvoiceDialogOpen] = useState(false);
+  const [createdInvoiceId, setCreatedInvoiceId] = useState<string | null>(null);
+  const [createdInvoiceNumber, setCreatedInvoiceNumber] = useState<string | null>(null);
 
   // Settle receivable dialog
   const [isSettleDialogOpen, setIsSettleDialogOpen] = useState(false);
@@ -523,6 +528,55 @@ export default function POSPage() {
     return customers.filter(c => c.name.toLowerCase().includes(customerSearchTerm.toLowerCase()) || (c.email && c.email.toLowerCase().includes(customerSearchTerm.toLowerCase())));
   }, [customers, customerSearchTerm]);
   
+  const handleIssueInvoice = async () => {
+    if (cart.length === 0) {
+      toast({ variant: 'destructive', title: 'Empty Cart', description: 'Add items before issuing an invoice.' });
+      return;
+    }
+    if (!selectedCustomer) {
+      toast({ variant: 'destructive', title: 'Customer Required', description: 'Select a customer to issue an invoice.' });
+      return;
+    }
+    try {
+      const items = cart.map(ci => ({
+        productId: ci.product.id,
+        productName: ci.product.name,
+        sku: ci.product.sku,
+        quantity: ci.quantity,
+        unitPrice: ci.product.price,
+      }));
+      const dueDate = new Date();
+      dueDate.setDate(dueDate.getDate() + 7);
+      const res = await fetch('/api/invoices', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tenantId: tenantId,
+          customerId: selectedCustomer.id,
+          items,
+          discountAmount: discountAmount,
+          taxRate: 8,
+          dueDate: dueDate.toISOString(),
+          notes: '',
+          createdBy: currentUser?.id || null,
+        })
+      });
+      if (!res.ok) {
+        const t = await res.text();
+        throw new Error(t || 'Failed to create invoice');
+      }
+      const data = await res.json();
+      const inv = data.invoice as Invoice;
+      setCreatedInvoiceId(inv.id);
+      setCreatedInvoiceNumber(inv.invoiceNumber);
+      setIsInvoiceDialogOpen(true);
+      toast({ title: 'Invoice Created', description: `Invoice ${inv.invoiceNumber} issued for GH₵${inv.totalAmount.toFixed(2)}.` });
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : 'Unable to create invoice';
+      toast({ variant: 'destructive', title: 'Error', description: msg });
+    }
+  };
+  
   // Handle return process
   const handleProcessReturn = async () => {
     if (!selectedSaleForReturn || returnItems.size === 0) {
@@ -895,6 +949,11 @@ export default function POSPage() {
                             <Receipt className="mr-2 h-4"/> Complete Sale
                         </Button>
                     </div>
+                    <div className="flex w-full gap-2 mt-2">
+                        <Button className="w-full" variant="secondary" disabled={cart.length === 0 || !selectedCustomer} onClick={handleIssueInvoice}>
+                            <FileText className="mr-2 h-4 w-4"/> Issue Invoice
+                        </Button>
+                    </div>
                 </CardFooter>
             )}
             </Card>
@@ -1184,6 +1243,34 @@ export default function POSPage() {
               </>
             )}
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      {/* Invoice Preview Dialog */}
+      <Dialog open={isInvoiceDialogOpen} onOpenChange={setIsInvoiceDialogOpen}>
+        <DialogContent className="sm:max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>Invoice {createdInvoiceNumber || ''}</DialogTitle>
+            <DialogDescriptionComponent>
+              Preview and print/download the invoice.
+            </DialogDescriptionComponent>
+          </DialogHeader>
+          {createdInvoiceId ? (
+            <div className="space-y-3">
+              <div className="h-[60vh] border rounded overflow-hidden">
+                <iframe title="Invoice Preview" src={`/api/invoices/download?invoiceId=${createdInvoiceId}&format=html`} className="w-full h-full" />
+              </div>
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={() => window.open(`/api/invoices/download?invoiceId=${createdInvoiceId}&format=html`, '_blank')?.focus?.()}>Download/Print</Button>
+                <Button onClick={() => {
+                  const w = window.open(`/api/invoices/download?invoiceId=${createdInvoiceId}&format=html`, '_blank');
+                  if (w) {
+                    const trigger = () => { try { w.print(); } catch {} };
+                    w.addEventListener('load', trigger, { once: true } as any);
+                  }
+                }}>Print</Button>
+              </div>
+            </div>
+          ) : null}
         </DialogContent>
       </Dialog>
     </>
