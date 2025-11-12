@@ -28,6 +28,7 @@ import {
   CreditCard,
   RotateCcw,
   FileText,
+  Package,
 } from "lucide-react";
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
@@ -40,6 +41,7 @@ import { useSession, signOut } from "next-auth/react";
 const menuItems = [
   { href: "dashboard", label: "Dashboard", icon: LayoutDashboard, roles: ['Owner', 'Manager', 'Cashier'] },
   { href: "pos", label: "POS", icon: ShoppingCart, roles: ['Owner', 'Manager', 'Cashier'] },
+  { href: "awaiting-collection", label: "Awaiting Collection", icon: Package, roles: ['Owner', 'Manager', 'Cashier'] },
   { href: "products", label: "Products", icon: Boxes, roles: ['Owner', 'Manager'] },
   { href: "sales", label: "Sales", icon: BarChartHorizontal, roles: ['Owner', 'Manager'] },
   { href: "invoices", label: "Invoices", icon: FileText, roles: ['Owner', 'Manager'] },

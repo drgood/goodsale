@@ -62,10 +62,16 @@ export function AdminSidebar() {
         if (res.ok) {
           const data = await res.json();
           setPendingCount(data.count || 0);
+        } else if (res.status === 401) {
+          // User not authorized - silently fail
+          console.warn('Not authorized to fetch subscription request count');
+        } else {
+          console.error('Failed to fetch pending count:', res.status, res.statusText);
         }
       } catch (error) {
         if ((error as any)?.name === 'AbortError') return;
-        console.error('Failed to fetch pending count:', error);
+        // Silently fail for network errors to prevent console spam
+        console.warn('Could not fetch subscription request count:', error instanceof Error ? error.message : 'Unknown error');
       }
     };
 

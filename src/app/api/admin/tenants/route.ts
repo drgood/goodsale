@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
-import { db, tenants, auditLogs } from '@/db';
-import { desc, eq } from 'drizzle-orm';
+import { db, tenants, plans, auditLogs } from '@/db';
+import { desc, eq, sql } from 'drizzle-orm';
 import { hash } from 'bcryptjs';
 
 export async function GET(request: NextRequest) {
@@ -29,14 +29,36 @@ export async function GET(request: NextRequest) {
 
     // Get tenants with pagination
     const allTenants = await db
-      .select()
+      .select({
+        id: tenants.id,
+        name: tenants.name,
+        subdomain: tenants.subdomain,
+        plan: tenants.plan,
+        planName: plans.name,
+        status: tenants.status,
+        userCount: tenants.userCount,
+        productCount: tenants.productCount,
+        totalSales: tenants.totalSales,
+        createdAt: tenants.createdAt,
+        pendingNameChangeId: tenants.pendingNameChangeId,
+      })
       .from(tenants)
+      .leftJoin(
+        plans, 
+        sql`${plans.id}::text = ${tenants.plan} OR ${plans.name} = ${tenants.plan}`
+      )
       .orderBy(desc(tenants.createdAt))
       .limit(limit)
       .offset(offset);
 
+    // Map to include plan name
+    const tenantsWithPlanName = allTenants.map(t => ({
+      ...t,
+      plan: t.planName || t.plan || '',
+    }));
+
     return NextResponse.json({
-      data: allTenants,
+      data: tenantsWithPlanName,
       pagination: {
         page,
         limit,

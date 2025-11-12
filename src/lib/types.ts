@@ -53,7 +53,7 @@ export type Sale = {
   totalProfit: number;
   itemCount: number;
   paymentMethod: 'Cash' | 'Card' | 'Mobile' | 'On Credit';
-  status: 'Paid' | 'Pending';
+  status: 'Paid' | 'Pending' | 'Awaiting Collection' | 'Completed';
   customerId?: string;
   customerName?: string;
   createdAt: string;

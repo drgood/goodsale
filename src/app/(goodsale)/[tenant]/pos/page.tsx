@@ -8,7 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import type { Product, Sale, Customer, Invoice } from "@/lib/types";
-import { Search, X, Plus, Minus, CreditCard, Banknote, Smartphone, Receipt, Hand, Trash2, Play, UserPlus, CircleUserRound, Clock, RotateCcw, FileText } from "lucide-react";
+import { Search, X, Plus, Minus, CreditCard, Banknote, Smartphone, Receipt, Hand, Trash2, Play, UserPlus, CircleUserRound, Clock, RotateCcw, FileText, Package } from "lucide-react";
 import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
@@ -152,6 +152,7 @@ export default function POSPage() {
   const [isCustomerSelectOpen, setIsCustomerSelectOpen] = useState(false);
   const [customerSearchTerm, setCustomerSearchTerm] = useState("");
   const [isAddCustomerDialogOpen, setIsAddCustomerDialogOpen] = useState(false);
+  const [isAwaitingCollection, setIsAwaitingCollection] = useState(false);
 
   // Invoice dialog state
   const [isInvoiceDialogOpen, setIsInvoiceDialogOpen] = useState(false);
@@ -310,6 +311,7 @@ export default function POSPage() {
     setDiscountValue(0);
     setDiscountType('percentage');
     setSelectedCustomer(null);
+    setIsAwaitingCollection(false);
   }
 
   const handleCompleteSale = async () => {
@@ -349,6 +351,16 @@ export default function POSPage() {
         return;
     }
 
+    // Determine sale status based on payment method and awaiting collection flag
+    let saleStatus: 'Paid' | 'Pending' | 'Awaiting Collection' | 'Completed';
+    if (paymentMethod === 'On Credit') {
+      saleStatus = 'Pending';
+    } else if (isAwaitingCollection) {
+      saleStatus = 'Awaiting Collection';
+    } else {
+      saleStatus = 'Paid';
+    }
+
     const newSale: Sale = {
       id: `s-${isOnline ? 'online' : 'offline'}-${Date.now()}`,
       tenantId: tenantId,
@@ -358,7 +370,7 @@ export default function POSPage() {
       totalProfit: totalProfit,
       itemCount: cart.reduce((acc, item) => acc + item.quantity, 0),
       paymentMethod: paymentMethod,
-      status: paymentMethod === 'On Credit' ? 'Pending' : 'Paid',
+      status: saleStatus,
       customerId: selectedCustomer?.id,
       customerName: selectedCustomer?.name,
       createdAt: new Date().toISOString(),
@@ -955,6 +967,17 @@ export default function POSPage() {
                           <Button variant={paymentMethod === 'On Credit' ? 'default' : 'secondary'} size="sm" onClick={() => setPaymentMethod('On Credit')} disabled={!selectedCustomer}><CircleUserRound className="mr-2 h-4 w-4"/>On Credit</Button>
                         )}
                     </div>
+                    {paymentMethod && paymentMethod !== 'On Credit' && (
+                      <Button 
+                        variant={isAwaitingCollection ? 'default' : 'outline'} 
+                        size="sm" 
+                        className="w-full mt-2"
+                        onClick={() => setIsAwaitingCollection(!isAwaitingCollection)}
+                      >
+                        <Package className="mr-2 h-4 w-4" />
+                        Customer will collect later
+                      </Button>
+                    )}
                     <div className="flex w-full gap-2 mt-2">
                         <Button className="w-full" variant="outline" disabled={cart.length === 0} onClick={handleHoldSale}>
                             <Hand className="mr-2 h-4 w-4"/> Hold Sale
