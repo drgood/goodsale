@@ -35,9 +35,14 @@ export function extractSubdomain(host: string | null): string | null {
  * Get the current subdomain from request headers (for server components)
  */
 export async function getCurrentSubdomain(): Promise<string | null> {
-  const headersList = await headers();
-  const host = headersList.get('host');
-  return extractSubdomain(host);
+  try {
+    const headersList = await headers();
+    const host = headersList.get('host');
+    return extractSubdomain(host);
+  } catch (error) {
+    console.error('Error getting subdomain:', error);
+    return null;
+  }
 }
 
 /**

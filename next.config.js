@@ -24,13 +24,13 @@ const nextConfig = {
           ],
           destination: '/:subdomain/:path*',
         },
-        // Same for localhost development
+        // Same for localhost development (only matches *.localhost, not plain localhost)
         {
           source: '/:path*',
           has: [
             {
               type: 'host',
-              value: '(?<subdomain>.*)\\.localhost',
+              value: '(?<subdomain>.+)\\.localhost',
             },
           ],
           destination: '/:subdomain/:path*',

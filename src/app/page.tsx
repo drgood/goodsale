@@ -17,8 +17,7 @@ export default async function Home() {
   
   // If subdomain exists, redirect to tenant login page
   if (subdomain) {
-    // On subdomain, just redirect to /login (rewrite will handle routing to /[tenant]/login)
-    redirect('/login');
+    redirect(`/${subdomain}/login`);
   }
   return (
     <main className="flex min-h-screen flex-col bg-background">

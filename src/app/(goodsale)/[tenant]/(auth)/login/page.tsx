@@ -88,16 +88,8 @@ export default function TenantLoginPage() {
         const sessionResponse = await fetch('/api/auth/session');
         const session = await sessionResponse.json();
         
-        // Check if we're on a subdomain
-        const isSubdomain = window.location.host.includes('.localhost') || 
-                            window.location.host.includes('.goodsale.online');
-        
         // Redirect to dashboard
-        if (isSubdomain) {
-          router.push('/dashboard');
-        } else {
-          router.push(`/${tenantSlug}/dashboard`);
-        }
+        router.push(`/${tenantSlug}/dashboard`);
         router.refresh();
       }
     } catch (error) {
