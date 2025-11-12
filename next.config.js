@@ -13,12 +13,24 @@ const nextConfig = {
     return {
       beforeFiles: [
         // Rewrite subdomain requests to tenant routes
+        // When accessing gshop.goodsale.online/dashboard, internally route to /gshop/dashboard
         {
           source: '/:path*',
           has: [
             {
               type: 'host',
               value: '(?<subdomain>.*)\\.goodsale\\.online',
+            },
+          ],
+          destination: '/:subdomain/:path*',
+        },
+        // Same for localhost development
+        {
+          source: '/:path*',
+          has: [
+            {
+              type: 'host',
+              value: '(?<subdomain>.*)\\.localhost',
             },
           ],
           destination: '/:subdomain/:path*',

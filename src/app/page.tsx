@@ -8,8 +8,18 @@ import { FAQAndCTASection } from '@/components/landing/faq-and-cta-section';
 import Link from 'next/link';
 import { GoodSaleLogo } from '@/components/goodsale-logo';
 import { Mail, Linkedin, Twitter, Instagram } from 'lucide-react';
+import { redirect } from 'next/navigation';
+import { getCurrentSubdomain } from '@/lib/subdomain';
 
-export default function Home() {
+export default async function Home() {
+  // Check if this is a subdomain request
+  const subdomain = await getCurrentSubdomain();
+  
+  // If subdomain exists, redirect to tenant login page
+  if (subdomain) {
+    // On subdomain, just redirect to /login (rewrite will handle routing to /[tenant]/login)
+    redirect('/login');
+  }
   return (
     <main className="flex min-h-screen flex-col bg-background">
       {/* Navigation Bar */}

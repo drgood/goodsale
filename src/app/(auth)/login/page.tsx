@@ -15,8 +15,8 @@ export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
 
-  const [email, setEmail] = useState('owner@gshop.com');
-  const [password, setPassword] = useState('password123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   
   const handleLogin = async (e: React.FormEvent) => {
@@ -74,9 +74,16 @@ export default function LoginPage() {
         const tenant = await tenantResponse.json();
         const tenantSlug = tenant.subdomain;
         
-        // Redirect to dashboard
-        router.push(`/${tenantSlug}/dashboard`);
-        router.refresh();
+        // Redirect to tenant's subdomain dashboard
+        // In production, redirect to subdomain URL
+        // In dev, use path-based routing
+        if (process.env.NODE_ENV === 'production') {
+          const protocol = window.location.protocol;
+          window.location.href = `${protocol}//${tenantSlug}.goodsale.online/dashboard`;
+        } else {
+          router.push(`/${tenantSlug}/dashboard`);
+          router.refresh();
+        }
       }
     } catch (error) {
       console.error('Login error:', error);
@@ -128,9 +135,6 @@ export default function LoginPage() {
             Login with Google
           </Button>
         </form>
-        <p className="text-xs text-muted-foreground mt-4 text-center">
-          Demo: <code className="font-mono">owner@gshop.com</code> / <code className="font-mono">password123</code>
-        </p>
       </CardContent>
       <CardFooter className="flex justify-center text-sm">
         <p>Don&apos;t have an account? <Link href="/signup" className="underline font-semibold ml-1">Sign up</Link></p>

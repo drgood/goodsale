@@ -77,3 +77,43 @@ export function isValidSubdomain(subdomain: string): boolean {
   const subdomainRegex = /^[a-z0-9]([a-z0-9-]{1,61}[a-z0-9])?$/;
   return subdomainRegex.test(subdomain);
 }
+
+/**
+ * Build a tenant-aware URL that works for both subdomain and path-based routing
+ * @param tenant - The tenant subdomain
+ * @param path - The path (e.g., '/dashboard', '/pos')
+ * @param useSubdomain - Force subdomain URL (for redirects/links)
+ */
+export function buildTenantUrl(tenant: string, path: string, useSubdomain: boolean = false): string {
+  // Ensure path starts with /
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  
+  if (useSubdomain || process.env.NODE_ENV === 'production') {
+    // Build subdomain URL: https://gshop.goodsale.online/dashboard
+    return buildSubdomainUrl(tenant, normalizedPath);
+  } else {
+    // Build path-based URL for development: /gshop/dashboard
+    return `/${tenant}${normalizedPath}`;
+  }
+}
+
+/**
+ * Get tenant-aware path for navigation (client-side)
+ * If on subdomain: returns just the path (/dashboard)
+ * If path-based: returns tenant + path (/gshop/dashboard)
+ */
+export function getTenantPath(tenant: string, path: string, currentHost?: string): string {
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  
+  // Check if we're on a subdomain
+  if (currentHost) {
+    const subdomain = extractSubdomain(currentHost);
+    if (subdomain) {
+      // On subdomain, just return the path
+      return normalizedPath;
+    }
+  }
+  
+  // Path-based routing
+  return `/${tenant}${normalizedPath}`;
+}
