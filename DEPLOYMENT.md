@@ -1,6 +1,6 @@
 # GoodSale Deployment Guide
 
-This guide will help you deploy GoodSale to your Contabo VPS.
+This guide will help you deploy GoodSale to your VPS.
 
 ## Prerequisites on VPS
 
@@ -10,15 +10,30 @@ This guide will help you deploy GoodSale to your Contabo VPS.
 
 ## Deployment Options
 
-### Option 1: Podman Deployment (Recommended)
+### Option 1: Coolify Deployment (✨ Recommended)
+
+**For Coolify deployment, see [DEPLOYMENT-COOLIFY.md](./DEPLOYMENT-COOLIFY.md)**
+
+Coolify is a self-hosted PaaS that provides:
+- 🎯 Web UI for easy management
+- 🔒 Automatic SSL certificates
+- 🚀 One-click deployments
+- 📊 Built-in monitoring and logs
+- 🔄 Git integration with auto-deploy
+- 💾 Automated database backups
+
+---
+
+### Option 2: Podman Deployment (Advanced)
 
 **For Podman deployment, see [DEPLOYMENT-PODMAN.md](./DEPLOYMENT-PODMAN.md)**
 
 Podman offers better security with rootless containers and no daemon requirement.
+Best for users who prefer CLI-based management.
 
 ---
 
-### Option 2: Docker Deployment
+### Option 3: Docker Deployment (Manual)
 
 #### 1. Install Docker & Docker Compose
 
@@ -128,7 +143,7 @@ sudo certbot --nginx -d yourdomain.com -d www.yourdomain.com
 
 ---
 
-### Option 3: PM2 Deployment (Alternative)
+### Option 4: PM2 Deployment (Alternative)
 
 #### 1. Install Node.js & pnpm
 

@@ -2,6 +2,7 @@ import { withAuth } from 'next-auth/middleware';
 import { NextResponse } from 'next/server';
 import type { NextRequestWithAuth } from 'next-auth/middleware';
 import { getSubscriptionStatus } from '@/lib/trial-validation';
+import { extractSubdomain } from '@/lib/subdomain';
 
 export const config = {
   matcher: [
@@ -14,6 +15,17 @@ export const config = {
 
 export default withAuth(
   async function middleware(req: NextRequestWithAuth) {
+    // Extract subdomain from host header
+    const host = req.headers.get('host');
+    const subdomain = extractSubdomain(host);
+    
+    // If subdomain exists, validate tenant exists in database
+    if (subdomain) {
+      // The Next.js rewrite will handle routing to /:subdomain/:path
+      // We just need to validate the tenant exists
+      // This will be handled by the page components
+    }
+    
     // Check trial status for tenant routes
     if (req.nextUrl.pathname.match(/^\/[^\/]+\/(dashboard|pos|products|customers|settings|billing)/)) {
       const tenantId = req.nextauth.token?.tenantId as string | undefined;

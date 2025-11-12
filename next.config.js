@@ -8,6 +8,24 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   serverExternalPackages: ['pg', 'drizzle-orm'],
+  // Subdomain routing
+  async rewrites() {
+    return {
+      beforeFiles: [
+        // Rewrite subdomain requests to tenant routes
+        {
+          source: '/:path*',
+          has: [
+            {
+              type: 'host',
+              value: '(?<subdomain>.*)\\.goodsale\\.online',
+            },
+          ],
+          destination: '/:subdomain/:path*',
+        },
+      ],
+    };
+  },
   images: {
     remotePatterns: [
       {
