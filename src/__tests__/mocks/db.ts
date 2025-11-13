@@ -1,5 +1,17 @@
 // Mock database for testing
 
+// This is a mock file, not a test file
+describe('Database Mocks', () => {
+  it('should export mock utilities', () => {
+    expect(mockDb).toBeDefined();
+    expect(mockSubscriptions).toBeDefined();
+    expect(mockTenant).toBeDefined();
+    expect(mockUser).toBeDefined();
+    expect(mockAuditLog).toBeDefined();
+    expect(createMockQueryBuilder).toBeDefined();
+  });
+});
+
 export const mockDb = {
   select: jest.fn(),
   insert: jest.fn(),
