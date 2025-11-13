@@ -1,0 +1,25 @@
+# Build with Node 20 + pnpm, then run the Next.js standalone server
+
+[variables]
+PORT = "3000"
+NEXT_TELEMETRY_DISABLED = "1"
+
+[phases.setup]
+# Provide Node.js 20 and corepack for pnpm
+nixPkgs = ["nodejs_20", "corepack"]
+
+[phases.install]
+cmds = [
+  "corepack enable",
+  "corepack prepare pnpm@9 --activate",
+  "pnpm install --frozen-lockfile"
+]
+
+[phases.build]
+cmds = [
+  "pnpm build"
+]
+
+[phases.start]
+# Next.js standalone output places server.js under .next/standalone
+cmd = "node .next/standalone/server.js"

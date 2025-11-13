@@ -106,6 +106,7 @@ postgresql://goodsale:your_password@goodsale-db:5432/goodsale
     - External Port: `80` (or leave default)
 11. **Domain**: Add your domain (e.g., `goodsale.yourdomain.com`)
     - Or use Coolify's generated domain
+    - For multi-tenant subdomains, also add a wildcard domain (e.g., `*.goodsale.online`). Wildcard TLS requires configuring a DNS-01 provider in Coolify (ACME). If not set up yet, start with a single host and add wildcard later.
 
 ---
 
@@ -115,9 +116,11 @@ In the **Environment Variables** section, add these variables:
 
 ```bash
 NODE_ENV=production
+NEXT_TELEMETRY_DISABLED=1
 DATABASE_URL=postgresql://goodsale:your_password@goodsale-db:5432/goodsale
 NEXTAUTH_URL=https://goodsale.yourdomain.com
 NEXTAUTH_SECRET=<generate-with-openssl-rand-base64-32>
+NEXT_PUBLIC_BASE_DOMAIN=goodsale.online
 GOOGLE_GENAI_API_KEY=your_google_ai_api_key
 ```
 
@@ -134,14 +137,9 @@ openssl rand -base64 32
 
 ---
 
-### Step 7: Configure Build Settings (Optional but Recommended)
+### Step 7: Configure Build Settings
 
-1. Go to **"Build & Deploy"** section
-2. **Pre-Deploy Command**: Leave empty
-3. **Post-Deploy Command**: Add this to run migrations after deployment:
-   ```bash
-   pnpm db:push
-   ```
+Do not run migrations in the container (the production image is slim and doesn't include pnpm/dev tools). Plan to run them via GitHub Actions or from your local machine as described below.
 
 ---
 
@@ -163,44 +161,27 @@ openssl rand -base64 32
 
 After successful deployment:
 
-#### Option A: Using Coolify Terminal
+#### Option A — GitHub Actions (recommended)
+- Add a repository secret named `DATABASE_URL` pointing at your Coolify Postgres (publicly reachable or via secure access).
+- Trigger the workflow: Actions -> "Run DB Migrations".
 
-1. In Coolify, go to your `goodsale-app`
-2. Click on **"Terminal"** or **"Execute Command"**
-3. Run these commands:
-   ```bash
-   # Run migrations
-   pnpm db:push
-   
-   # Create super admin
-   pnpm db:seed:admin
-   ```
+#### Option B — From your local machine
+- Bash/zsh:
+  ```bash
+  export DATABASE_URL="postgresql://<user>:<password>@<public_db_host_or_tunnel>:5432/goodsale"
+  pnpm db:migrate
+  pnpm db:seed:admin   # optional
+  unset DATABASE_URL
+  ```
+- PowerShell:
+  ```powershell
+  $env:DATABASE_URL = "postgresql://<user>:<password>@<public_db_host_or_tunnel>:5432/goodsale"
+  pnpm db:migrate
+  pnpm db:seed:admin   # optional
+  Remove-Item Env:DATABASE_URL
+  ```
 
-#### Option B: Using SSH
-
-1. SSH into your Contabo VPS:
-   ```bash
-   ssh root@your-vps-ip
-   ```
-
-2. Find your container:
-   ```bash
-   docker ps | grep goodsale-app
-   ```
-
-3. Execute commands in the container:
-   ```bash
-   # Replace <container-id> with actual ID from previous command
-   docker exec -it <container-id> sh
-   
-   # Inside container
-   pnpm db:push
-   pnpm db:seed:admin
-   
-   # Follow prompts to create super admin
-   # Then exit
-   exit
-   ```
+Note: If your database is not publicly reachable, create a secure SSH tunnel or temporary access rule and point `DATABASE_URL` to the forwarded port.
 
 ---
 

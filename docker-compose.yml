@@ -33,9 +33,16 @@ services:
       DATABASE_URL: postgresql://goodsale:${DB_PASSWORD:-changeme}@postgres:5432/goodsale
       NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3000}
       NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+      NEXT_PUBLIC_BASE_DOMAIN: ${NEXT_PUBLIC_BASE_DOMAIN:-goodsale.online}
       GOOGLE_GENAI_API_KEY: ${GOOGLE_GENAI_API_KEY}
     ports:
       - "3000:3000"
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"require('net').connect(3000,'localhost').on('connect',()=>process.exit(0)).on('error',()=>process.exit(1))\""]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     volumes:
       - ./public:/app/public:Z
 

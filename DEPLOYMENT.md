@@ -93,19 +93,18 @@ docker compose logs -f app
 
 #### 5. Run Database Migrations
 
+Option A: Run from your local machine (recommended)
+
 ```bash
-# Enter the app container
-docker compose exec app sh
-
-# Inside container, run migrations
-pnpm db:push
-
-# Seed admin user
-pnpm db:seed:admin
-
-# Exit container
-exit
+# Point at the compose Postgres (adjust DB_PASSWORD accordingly)
+DATABASE_URL=postgresql://goodsale:${DB_PASSWORD}@localhost:5432/goodsale pnpm db:migrate
+# (Optional) Seed super admin user
+DATABASE_URL=postgresql://goodsale:${DB_PASSWORD}@localhost:5432/goodsale pnpm db:seed:admin
 ```
+
+Option B: Run via GitHub Actions
+- Add a repository secret named `DATABASE_URL` pointing at your production database
+- Trigger the "Run DB Migrations" workflow from the Actions tab
 
 #### 6. Setup Nginx (Optional but recommended)
 
@@ -284,11 +283,11 @@ curl http://localhost:3000
 
 ### Check database connection
 ```bash
-# Docker
-docker compose exec app pnpm db:studio
+# From your local machine (recommended)
+DATABASE_URL=postgresql://goodsale:${DB_PASSWORD}@localhost:5432/goodsale pnpm db:studio
 
-# PM2
-pnpm db:studio
+# Or connect with psql inside the Postgres container
+docker compose exec postgres psql -U goodsale -d goodsale
 ```
 
 ### View application logs
@@ -305,10 +304,11 @@ pm2 logs goodsale
 # Docker
 docker compose down -v
 docker compose up -d
-docker compose exec app pnpm db:push
-docker compose exec app pnpm db:seed:admin
+# Recreate schema from your local machine (adjust DB_PASSWORD)
+DATABASE_URL=postgresql://goodsale:${DB_PASSWORD}@localhost:5432/goodsale pnpm db:push
+DATABASE_URL=postgresql://goodsale:${DB_PASSWORD}@localhost:5432/goodsale pnpm db:seed:admin
 
-# PM2
+# PM2 (local/server)
 pnpm db:drop
 pnpm db:push
 pnpm db:seed:admin

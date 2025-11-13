@@ -1,7 +1,6 @@
 import { withAuth } from 'next-auth/middleware';
 import { NextResponse } from 'next/server';
 import type { NextRequestWithAuth } from 'next-auth/middleware';
-import { getSubscriptionStatus } from '@/lib/trial-validation';
 import { extractSubdomain } from '@/lib/subdomain';
 
 export const config = {
@@ -26,23 +25,29 @@ export default withAuth(
       // This will be handled by the page components
     }
     
-    // Check trial status for tenant routes
+    // Check trial status for tenant routes via API (avoid DB/Node logic in middleware)
     if (req.nextUrl.pathname.match(/^\/[^\/]+\/(dashboard|pos|products|customers|settings|billing)/)) {
-      const tenantId = req.nextauth.token?.tenantId as string | undefined;
-      
-      if (tenantId) {
-        try {
-          const subscriptionStatus = await getSubscriptionStatus(tenantId);
-          
-          // If trial has expired, redirect to trial-expired page
+      try {
+        const apiUrl = new URL('/api/subscription/status', req.url);
+        const res = await fetch(apiUrl.toString(), {
+          headers: {
+            // Forward cookies so API can read the session token
+            cookie: req.headers.get('cookie') || '',
+          },
+          // Avoid caching user-specific data
+          cache: 'no-store',
+        });
+
+        if (res.ok) {
+          const subscriptionStatus = await res.json();
           if (subscriptionStatus.status === 'expired') {
             const tenant = req.nextUrl.pathname.split('/')[1];
             return NextResponse.redirect(new URL(`/${tenant}/trial-expired`, req.url));
           }
-        } catch (error) {
-          console.error('Error checking trial status in middleware:', error);
-          // Continue on error to not block access
         }
+      } catch (error) {
+        console.error('Error checking trial status via API in middleware:', error);
+        // Continue on error to not block access
       }
     }
     
