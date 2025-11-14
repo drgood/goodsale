@@ -45,7 +45,6 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { tenants } from "@/lib/data";
 import { MoreHorizontal, PlusCircle, Search, UserMinus } from "lucide-react";
 import type { Customer, Sale } from '@/lib/types';
 import { Label } from '@/components/ui/label';
@@ -61,7 +60,6 @@ export default function CustomersPage() {
     const { toast } = useToast();
     const params = useParams();
     const tenantSubdomain = params.tenant as string;
-    const tenant = tenants.find(t => t.subdomain === tenantSubdomain);
     const shiftContext = useShiftContext();
 
     const [customers, setCustomers] = useState<Customer[]>([]);

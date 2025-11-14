@@ -2,7 +2,6 @@
 'use client'
 import { createContext, useState, useContext, type ReactNode, useEffect } from "react";
 import type { User, Tenant, Sale, Customer } from "@/lib/types";
-import { users as initialUsers, tenants as initialTenants, sales as initialSales, customers as initialCustomers } from "@/lib/data";
 import { useParams } from "next/navigation";
 
 type UserContextType = {
@@ -25,10 +24,10 @@ export function UserProvider({ children }: { children: ReactNode }) {
     const params = useParams();
     const tenantSubdomain = params.tenant as string;
     
-    const [users, setUsers] = useState<User[]>(initialUsers);
-    const [tenants, setTenants] = useState<Tenant[]>(initialTenants);
-    const [sales, setSales] = useState<Sale[]>(initialSales);
-    const [customers, setCustomers] = useState<Customer[]>(initialCustomers);
+    const [users, setUsers] = useState<User[]>([]);
+    const [tenants, setTenants] = useState<Tenant[]>([]);
+    const [sales, setSales] = useState<Sale[]>([]);
+    const [customers, setCustomers] = useState<Customer[]>([]);
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [isInitialLoad, setIsInitialLoad] = useState(true);
 
@@ -41,15 +40,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
         if (savedUser) {
             try {
                 const parsedUser = JSON.parse(savedUser);
-                const userTenant = tenants.find(t => t.id === parsedUser.tenantId);
-
-                if (tenantSubdomain && userTenant && userTenant.subdomain === tenantSubdomain) {
-                    setCurrentUser(parsedUser);
-                } else if (!tenantSubdomain) {
-                    setCurrentUser(parsedUser);
-                } else {
-                    handleSetCurrentUser(null);
-                }
+                // TODO: if you still use UserContext, you can reintroduce tenant-based checks here
+                setCurrentUser(parsedUser);
             } catch (e) {
                 localStorage.removeItem('currentUser');
             }

@@ -5,7 +5,6 @@ import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { tenants } from "@/lib/data";
 import { MoreHorizontal, PlusCircle, Search, X, PackagePlus, Trash2, CheckCircle, Truck, Eye, Edit } from "lucide-react";
 import type { PurchaseOrder, PurchaseOrderItem, Supplier, Product, Category } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
@@ -26,7 +25,6 @@ export default function PurchaseOrdersPage() {
     const { toast } = useToast();
     const params = useParams();
     const tenantSubdomain = params.tenant as string;
-    const tenant = tenants.find(t => t.subdomain === tenantSubdomain);
 
     const [products, setProducts] = useState<Product[]>([]);
     const [purchaseOrders, setPurchaseOrders] = useState<PurchaseOrder[]>([]);
@@ -314,7 +312,7 @@ setIsReceiveConfirmOpen(true);
         event.preventDefault();
         const form = event.currentTarget;
         const formData = new FormData(form);
-        if (!selectedSupplier || !tenant) return;
+        if (!selectedSupplier) return;
 
         const imageFile = formData.get('image') as File;
         let imageUrl = `https://picsum.photos/seed/${formData.get("sku")}/400/300`;
