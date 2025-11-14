@@ -1,0 +1,754 @@
+2025-11-14 13:47:16:  ⚠ "next start" does not work with "output: standalone" configuration. Use "node .next/standalone/server.js" instead.
+2025-11-14 16:04:15:  ⚠ "next start" does not work with "output: standalone" configuration. Use "node .next/standalone/server.js" instead.
+2025-11-14 16:08:28: Error checking trial status via API in middleware: Error: fetch failed
+2025-11-14 16:08:28:     at context.fetch (/var/www/nextjs/goodsale/node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/web/sandbox/context.js:322:60)
+2025-11-14 16:08:28:     at tr.callbacks.authorized.token (/var/www/nextjs/goodsale/.next/server/src/middleware.js:2:32062)
+2025-11-14 16:08:28:     at /var/www/nextjs/goodsale/.next/server/src/middleware.js:5:781
+2025-11-14 16:08:28:     at s (/var/www/nextjs/goodsale/.next/server/src/middleware.js:5:471)
+2025-11-14 16:08:28:     at async t (/var/www/nextjs/goodsale/.next/server/src/middleware.js:5:726)
+2025-11-14 16:08:28:     at async handler (/var/www/nextjs/goodsale/.next/server/src/middleware.js:2:33118)
+2025-11-14 16:08:28:     at async /var/www/nextjs/goodsale/.next/server/src/middleware.js:2:25135
+2025-11-14 16:08:28:     at async eJ (/var/www/nextjs/goodsale/.next/server/src/middleware.js:2:21688)
+2025-11-14 16:08:28:     at async /var/www/nextjs/goodsale/node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/web/sandbox/sandbox.js:108:26
+2025-11-14 16:08:28:     at async runWithTaggedErrors (/var/www/nextjs/goodsale/node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/web/sandbox/sandbox.js:105:9) {
+2025-11-14 16:08:28:   
+2025-11-14 16:08:28: }
+2025-11-14 16:08:29: Error checking trial status via API in middleware: Error: fetch failed
+2025-11-14 16:08:29:     at context.fetch (/var/www/nextjs/goodsale/node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/web/sandbox/context.js:322:60)
+2025-11-14 16:08:29:     at tr.callbacks.authorized.token (/var/www/nextjs/goodsale/.next/server/src/middleware.js:2:32062)
+2025-11-14 16:08:29:     at /var/www/nextjs/goodsale/.next/server/src/middleware.js:5:781
+2025-11-14 16:08:29:     at s (/var/www/nextjs/goodsale/.next/server/src/middleware.js:5:471)
+2025-11-14 16:08:29:     at async t (/var/www/nextjs/goodsale/.next/server/src/middleware.js:5:726)
+2025-11-14 16:08:29:     at async handler (/var/www/nextjs/goodsale/.next/server/src/middleware.js:2:33118)
+2025-11-14 16:08:29:     at async /var/www/nextjs/goodsale/.next/server/src/middleware.js:2:25135
+2025-11-14 16:08:29:     at async eJ (/var/www/nextjs/goodsale/.next/server/src/middleware.js:2:21688)
+2025-11-14 16:08:29:     at async /var/www/nextjs/goodsale/node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/web/sandbox/sandbox.js:108:26
+2025-11-14 16:08:29:     at async runWithTaggedErrors (/var/www/nextjs/goodsale/node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/web/sandbox/sandbox.js:105:9) {
+2025-11-14 16:08:29:   
+2025-11-14 16:08:29: }
+2025-11-14 16:08:29: Error checking trial status via API in middleware: Error: fetch failed
+2025-11-14 16:08:29:     at context.fetch (/var/www/nextjs/goodsale/node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/web/sandbox/context.js:322:60)
+2025-11-14 16:08:29:     at tr.callbacks.authorized.token (/var/www/nextjs/goodsale/.next/server/src/middleware.js:2:32062)
+2025-11-14 16:08:29:     at /var/www/nextjs/goodsale/.next/server/src/middleware.js:5:781
+2025-11-14 16:08:29:     at s (/var/www/nextjs/goodsale/.next/server/src/middleware.js:5:471)
+2025-11-14 16:08:29:     at async t (/var/www/nextjs/goodsale/.next/server/src/middleware.js:5:726)
+2025-11-14 16:08:29:     at async handler (/var/www/nextjs/goodsale/.next/server/src/middleware.js:2:33118)
+2025-11-14 16:08:29:     at async /var/www/nextjs/goodsale/.next/server/src/middleware.js:2:25135
+2025-11-14 16:08:29:     at async eJ (/var/www/nextjs/goodsale/.next/server/src/middleware.js:2:21688)
+2025-11-14 16:08:29:     at async /var/www/nextjs/goodsale/node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/web/sandbox/sandbox.js:108:26
+2025-11-14 16:08:29:     at async runWithTaggedErrors (/var/www/nextjs/goodsale/node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/web/sandbox/sandbox.js:105:9) {
+2025-11-14 16:08:29:   
+2025-11-14 16:08:29: }
+2025-11-14 16:08:29: Error checking trial status via API in middleware: Error: fetch failed
+2025-11-14 16:08:29:     at context.fetch (/var/www/nextjs/goodsale/node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/web/sandbox/context.js:322:60)
+2025-11-14 16:08:29:     at tr.callbacks.authorized.token (/var/www/nextjs/goodsale/.next/server/src/middleware.js:2:32062)
+2025-11-14 16:08:29:     at /var/www/nextjs/goodsale/.next/server/src/middleware.js:5:781
+2025-11-14 16:08:29:     at s (/var/www/nextjs/goodsale/.next/server/src/middleware.js:5:471)
+2025-11-14 16:08:29:     at async t (/var/www/nextjs/goodsale/.next/server/src/middleware.js:5:726)
+2025-11-14 16:08:29:     at async handler (/var/www/nextjs/goodsale/.next/server/src/middleware.js:2:33118)
+2025-11-14 16:08:29:     at async /var/www/nextjs/goodsale/.next/server/src/middleware.js:2:25135
+2025-11-14 16:08:29:     at async eJ (/var/www/nextjs/goodsale/.next/server/src/middleware.js:2:21688)
+2025-11-14 16:08:29:     at async /var/www/nextjs/goodsale/node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/web/sandbox/sandbox.js:108:26
+2025-11-14 16:08:29:     at async runWithTaggedErrors (/var/www/nextjs/goodsale/node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/web/sandbox/sandbox.js:105:9) {
+2025-11-14 16:08:29:   
+2025-11-14 16:08:29: }
+2025-11-14 17:13:39:  ⚠ "next start" does not work with "output: standalone" configuration. Use "node .next/standalone/server.js" instead.
+2025-11-14 17:15:12:  ⚠ "next start" does not work with "output: standalone" configuration. Use "node .next/standalone/server.js" instead.
+2025-11-14 18:23:01:  ⚠ "next start" does not work with "output: standalone" configuration. Use "node .next/standalone/server.js" instead.
+2025-11-14 18:34:05:  ⚠ "next start" does not work with "output: standalone" configuration. Use "node .next/standalone/server.js" instead.
+2025-11-14 18:58:31:  ⚠ "next start" does not work with "output: standalone" configuration. Use "node .next/standalone/server.js" instead.
+2025-11-14 19:15:57:  ⚠ You are using a non-standard "NODE_ENV" value in your environment. This creates inconsistencies in the project and is strongly advised against. Read more: https://nextjs.org/docs/messages/non-standard-node-env
+2025-11-14 19:16:16:  ⨯ ./src/app/globals.css
+2025-11-14 19:16:16: Module parse failed: Unexpected character '@' (1:0)
+2025-11-14 19:16:16: > @tailwind base;
+2025-11-14 19:16:16: | @tailwind components;
+2025-11-14 19:16:16: | @tailwind utilities;
+2025-11-14 19:16:16: 
+2025-11-14 19:16:16: Import trace for requested module:
+2025-11-14 19:16:16: ./src/app/globals.css
+2025-11-14 19:16:16: ./src/app/layout.tsx
+2025-11-14 19:16:16:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:16:16:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:16:16:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:16:16:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:16:16:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:16:16:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:16:16:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:16:16:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:16:39:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:16:39:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:16:39:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:16:39:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:16:39:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:16:39:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:16:39:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:16:39:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:16:46: <w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/var/www/nextjs/goodsale/.next/cache/webpack/client-development-fallback/0.pack.gz_' -> '/var/www/nextjs/goodsale/.next/cache/webpack/client-development-fallback/0.pack.gz'
+2025-11-14 19:16:46: <w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/var/www/nextjs/goodsale/.next/cache/webpack/client-development-fallback/0.pack.gz_' -> '/var/www/nextjs/goodsale/.next/cache/webpack/client-development-fallback/0.pack.gz'
+2025-11-14 19:16:46:  ⨯ ./src/app/globals.css
+2025-11-14 19:16:46: Module parse failed: Unexpected character '@' (1:0)
+2025-11-14 19:16:46: > @tailwind base;
+2025-11-14 19:16:46: | @tailwind components;
+2025-11-14 19:16:46: | @tailwind utilities;
+2025-11-14 19:16:46: 
+2025-11-14 19:16:46: Import trace for requested module:
+2025-11-14 19:16:46: ./src/app/globals.css
+2025-11-14 19:16:46: ./src/app/layout.tsx
+2025-11-14 19:16:50:  ⨯ ./src/app/globals.css
+2025-11-14 19:16:50: Module parse failed: Unexpected character '@' (1:0)
+2025-11-14 19:16:50: > @tailwind base;
+2025-11-14 19:16:50: | @tailwind components;
+2025-11-14 19:16:50: | @tailwind utilities;
+2025-11-14 19:16:50: 
+2025-11-14 19:16:50: Import trace for requested module:
+2025-11-14 19:16:50: ./src/app/globals.css
+2025-11-14 19:16:50: ./src/app/layout.tsx
+2025-11-14 19:16:51: <w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/var/www/nextjs/goodsale/.next/cache/webpack/client-development-fallback/0.pack.gz_' -> '/var/www/nextjs/goodsale/.next/cache/webpack/client-development-fallback/0.pack.gz'
+2025-11-14 19:16:51: <w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/var/www/nextjs/goodsale/.next/cache/webpack/client-development-fallback/0.pack.gz_' -> '/var/www/nextjs/goodsale/.next/cache/webpack/client-development-fallback/0.pack.gz'
+2025-11-14 19:17:07:  ⚠ Cross origin request detected from goodsale.online to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
+2025-11-14 19:17:07: Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+2025-11-14 19:17:09:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:17:09:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:17:09:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:17:09:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:17:09:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:17:09:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:17:09:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:17:09:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:17:39:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:17:39:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:17:39:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:17:39:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:17:39:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:17:39:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:17:39:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:17:39:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:18:09:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:18:09:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:18:09:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:18:09:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:18:09:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:18:09:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:18:09:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:18:09:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:18:39:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:18:39:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:18:39:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:18:39:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:18:39:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:18:39:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:18:39:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:18:39:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:19:09:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:19:09:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:19:09:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:19:09:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:19:09:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:19:09:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:19:09:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:19:09:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:19:39:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:19:39:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:19:39:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:19:39:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:19:39:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:19:39:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:19:39:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:19:39:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:20:09:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:20:09:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:20:09:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:20:09:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:20:09:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:20:09:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:20:09:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:20:09:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:20:39:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:20:39:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:20:39:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:20:39:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:20:39:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:20:39:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:20:39:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:20:39:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:21:09:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:21:09:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:21:09:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:21:09:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:21:09:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:21:09:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:21:09:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:21:09:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:21:39:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:21:39:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:21:39:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:21:39:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:21:39:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:21:39:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:21:39:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:21:39:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:22:09:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:22:09:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:22:09:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:22:09:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:22:09:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:22:09:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:22:09:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:22:09:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:22:39:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:22:39:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:22:39:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:22:39:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:22:39:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:22:39:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:22:39:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:22:39:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:23:09:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:23:09:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:23:09:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:23:09:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:23:09:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:23:09:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:23:09:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:23:09:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:23:39:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:23:39:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:23:39:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:23:39:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:23:39:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:23:39:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:23:39:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:23:39:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:24:09:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:24:09:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:24:09:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:24:09:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:24:09:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:24:09:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:24:09:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:24:09:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:24:39:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:24:39:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:24:39:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:24:39:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:24:39:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:24:39:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:24:39:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:24:39:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:25:09:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:25:09:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:25:09:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:25:09:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:25:09:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:25:09:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:25:09:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:25:09:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:25:40:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:25:40:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:25:40:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:25:40:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:25:40:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:25:40:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:25:40:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:25:40:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:26:09:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:26:09:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:26:09:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:26:09:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:26:09:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:26:09:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:26:09:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:26:09:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:26:28:  ⚠ Found a change in next.config.js. Restarting the server to apply the changes...
+2025-11-14 19:26:34:  ⚠ Cross origin request detected from goodsale.online to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
+2025-11-14 19:26:34: Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+2025-11-14 19:26:44:  ⨯ ./src/app/globals.css
+2025-11-14 19:26:44: Module parse failed: Unexpected character '@' (1:0)
+2025-11-14 19:26:44: > @tailwind base;
+2025-11-14 19:26:44: | @tailwind components;
+2025-11-14 19:26:44: | @tailwind utilities;
+2025-11-14 19:26:44: 
+2025-11-14 19:26:44: Import trace for requested module:
+2025-11-14 19:26:44: ./src/app/globals.css
+2025-11-14 19:26:44: ./src/app/layout.tsx
+2025-11-14 19:26:45:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:26:45:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:26:45:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:26:45:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:26:45:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:26:45:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:26:45:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:26:45:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:27:04:  ⨯ ./src/app/globals.css
+2025-11-14 19:27:04: Module parse failed: Unexpected character '@' (1:0)
+2025-11-14 19:27:04: > @tailwind base;
+2025-11-14 19:27:04: | @tailwind components;
+2025-11-14 19:27:04: | @tailwind utilities;
+2025-11-14 19:27:04: 
+2025-11-14 19:27:04: Import trace for requested module:
+2025-11-14 19:27:04: ./src/app/globals.css
+2025-11-14 19:27:04: ./src/app/layout.tsx
+2025-11-14 19:27:04:  ⨯ ./src/app/globals.css
+2025-11-14 19:27:04: Module parse failed: Unexpected character '@' (1:0)
+2025-11-14 19:27:04: > @tailwind base;
+2025-11-14 19:27:04: | @tailwind components;
+2025-11-14 19:27:04: | @tailwind utilities;
+2025-11-14 19:27:04: 
+2025-11-14 19:27:04: Import trace for requested module:
+2025-11-14 19:27:04: ./src/app/globals.css
+2025-11-14 19:27:04: ./src/app/layout.tsx
+2025-11-14 19:27:05:  ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+2025-11-14 19:27:08: <w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/var/www/nextjs/goodsale/.next/cache/webpack/client-development-fallback/0.pack.gz_' -> '/var/www/nextjs/goodsale/.next/cache/webpack/client-development-fallback/0.pack.gz'
+2025-11-14 19:27:08: <w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/var/www/nextjs/goodsale/.next/cache/webpack/client-development-fallback/0.pack.gz_' -> '/var/www/nextjs/goodsale/.next/cache/webpack/client-development-fallback/0.pack.gz'
+2025-11-14 19:27:08: <w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/var/www/nextjs/goodsale/.next/cache/webpack/client-development-fallback/0.pack.gz_' -> '/var/www/nextjs/goodsale/.next/cache/webpack/client-development-fallback/0.pack.gz'
+2025-11-14 19:27:09:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:27:09:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:27:09:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:27:09:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:27:09:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:27:09:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:27:09:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:27:09:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:27:39:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:27:39:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:27:39:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:27:39:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:27:39:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:27:39:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:27:39:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:27:39:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:28:09:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:28:09:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:28:09:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:28:09:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:28:09:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:28:09:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:28:09:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:28:09:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:28:39:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:28:39:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:28:39:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:28:39:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:28:39:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:28:39:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:28:39:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:28:39:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:29:10:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:29:10:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:29:10:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:29:10:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:29:10:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:29:10:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:29:10:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:29:10:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:29:40:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:29:40:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:29:40:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:29:40:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:29:40:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:29:40:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:29:40:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:29:40:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:30:10:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:30:10:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:30:10:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:30:10:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:30:10:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:30:10:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:30:10:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:30:10:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:30:40:  ⨯ [Error: ENOENT: no such file or directory, open '/var/www/nextjs/goodsale/.next/server/middleware.js'] {
+2025-11-14 19:30:40:   errno: -2,
+2025-11-14 19:30:40:   code: 'ENOENT',
+2025-11-14 19:30:40:   syscall: 'open',
+2025-11-14 19:30:40:   path: '/var/www/nextjs/goodsale/.next/server/middleware.js'
+2025-11-14 19:30:40: }
+2025-11-14 19:31:10:  ⨯ [Error: ENOENT: no such file or directory, open '/var/www/nextjs/goodsale/.next/server/middleware.js'] {
+2025-11-14 19:31:10:   errno: -2,
+2025-11-14 19:31:10:   code: 'ENOENT',
+2025-11-14 19:31:10:   syscall: 'open',
+2025-11-14 19:31:10:   path: '/var/www/nextjs/goodsale/.next/server/middleware.js'
+2025-11-14 19:31:10: }
+2025-11-14 19:31:40:  ⨯ [Error: ENOENT: no such file or directory, open '/var/www/nextjs/goodsale/.next/server/middleware.js'] {
+2025-11-14 19:31:40:   errno: -2,
+2025-11-14 19:31:40:   code: 'ENOENT',
+2025-11-14 19:31:40:   syscall: 'open',
+2025-11-14 19:31:40:   path: '/var/www/nextjs/goodsale/.next/server/middleware.js'
+2025-11-14 19:31:40: }
+2025-11-14 19:32:10:  ⨯ [Error: ENOENT: no such file or directory, open '/var/www/nextjs/goodsale/.next/server/middleware.js'] {
+2025-11-14 19:32:10:   errno: -2,
+2025-11-14 19:32:10:   code: 'ENOENT',
+2025-11-14 19:32:10:   syscall: 'open',
+2025-11-14 19:32:10:   path: '/var/www/nextjs/goodsale/.next/server/middleware.js'
+2025-11-14 19:32:10: }
+2025-11-14 19:32:40:  ⨯ [Error: ENOENT: no such file or directory, open '/var/www/nextjs/goodsale/.next/server/middleware.js'] {
+2025-11-14 19:32:40:   errno: -2,
+2025-11-14 19:32:40:   code: 'ENOENT',
+2025-11-14 19:32:40:   syscall: 'open',
+2025-11-14 19:32:40:   path: '/var/www/nextjs/goodsale/.next/server/middleware.js'
+2025-11-14 19:32:40: }
+2025-11-14 19:33:10:  ⨯ [Error: ENOENT: no such file or directory, open '/var/www/nextjs/goodsale/.next/server/middleware.js'] {
+2025-11-14 19:33:10:   errno: -2,
+2025-11-14 19:33:10:   code: 'ENOENT',
+2025-11-14 19:33:10:   syscall: 'open',
+2025-11-14 19:33:10:   path: '/var/www/nextjs/goodsale/.next/server/middleware.js'
+2025-11-14 19:33:10: }
+2025-11-14 19:33:40:  ⨯ [Error: ENOENT: no such file or directory, open '/var/www/nextjs/goodsale/.next/server/middleware.js'] {
+2025-11-14 19:33:40:   errno: -2,
+2025-11-14 19:33:40:   code: 'ENOENT',
+2025-11-14 19:33:40:   syscall: 'open',
+2025-11-14 19:33:40:   path: '/var/www/nextjs/goodsale/.next/server/middleware.js'
+2025-11-14 19:33:40: }
+2025-11-14 19:34:10:  ⨯ [Error: ENOENT: no such file or directory, open '/var/www/nextjs/goodsale/.next/server/middleware.js'] {
+2025-11-14 19:34:10:   errno: -2,
+2025-11-14 19:34:10:   code: 'ENOENT',
+2025-11-14 19:34:10:   syscall: 'open',
+2025-11-14 19:34:10:   path: '/var/www/nextjs/goodsale/.next/server/middleware.js'
+2025-11-14 19:34:10: }
+2025-11-14 19:34:15:  ⨯ ./src/app/globals.css
+2025-11-14 19:34:15: Module parse failed: Unexpected character '@' (1:0)
+2025-11-14 19:34:15: > @tailwind base;
+2025-11-14 19:34:15: | @tailwind components;
+2025-11-14 19:34:15: | @tailwind utilities;
+2025-11-14 19:34:15: 
+2025-11-14 19:34:15: Import trace for requested module:
+2025-11-14 19:34:15: ./src/app/globals.css
+2025-11-14 19:34:15: ./src/app/layout.tsx
+2025-11-14 19:34:16:  ⨯ ./src/app/globals.css
+2025-11-14 19:34:16: Module parse failed: Unexpected character '@' (1:0)
+2025-11-14 19:34:16: > @tailwind base;
+2025-11-14 19:34:16: | @tailwind components;
+2025-11-14 19:34:16: | @tailwind utilities;
+2025-11-14 19:34:16: 
+2025-11-14 19:34:16: Import trace for requested module:
+2025-11-14 19:34:16: ./src/app/globals.css
+2025-11-14 19:34:16: ./src/app/layout.tsx
+2025-11-14 19:34:16:  ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+2025-11-14 19:34:29:  ⨯ ./src/app/globals.css
+2025-11-14 19:34:29: Module parse failed: Unexpected character '@' (1:0)
+2025-11-14 19:34:29: > @tailwind base;
+2025-11-14 19:34:29: | @tailwind components;
+2025-11-14 19:34:29: | @tailwind utilities;
+2025-11-14 19:34:29: 
+2025-11-14 19:34:29: Import trace for requested module:
+2025-11-14 19:34:29: ./src/app/globals.css
+2025-11-14 19:34:29: ./src/app/layout.tsx
+2025-11-14 19:34:40:  ⨯ [Error: ENOENT: no such file or directory, open '/var/www/nextjs/goodsale/.next/server/middleware.js'] {
+2025-11-14 19:34:40:   errno: -2,
+2025-11-14 19:34:40:   code: 'ENOENT',
+2025-11-14 19:34:40:   syscall: 'open',
+2025-11-14 19:34:40:   path: '/var/www/nextjs/goodsale/.next/server/middleware.js'
+2025-11-14 19:34:40: }
+2025-11-14 19:35:10:  ⨯ [Error: ENOENT: no such file or directory, open '/var/www/nextjs/goodsale/.next/server/middleware.js'] {
+2025-11-14 19:35:10:   errno: -2,
+2025-11-14 19:35:10:   code: 'ENOENT',
+2025-11-14 19:35:10:   syscall: 'open',
+2025-11-14 19:35:10:   path: '/var/www/nextjs/goodsale/.next/server/middleware.js'
+2025-11-14 19:35:10: }
+2025-11-14 19:35:40:  ⨯ [Error: ENOENT: no such file or directory, open '/var/www/nextjs/goodsale/.next/server/middleware.js'] {
+2025-11-14 19:35:40:   errno: -2,
+2025-11-14 19:35:40:   code: 'ENOENT',
+2025-11-14 19:35:40:   syscall: 'open',
+2025-11-14 19:35:40:   path: '/var/www/nextjs/goodsale/.next/server/middleware.js'
+2025-11-14 19:35:40: }
+2025-11-14 19:36:10:  ⨯ [Error: ENOENT: no such file or directory, open '/var/www/nextjs/goodsale/.next/server/middleware.js'] {
+2025-11-14 19:36:10:   errno: -2,
+2025-11-14 19:36:10:   code: 'ENOENT',
+2025-11-14 19:36:10:   syscall: 'open',
+2025-11-14 19:36:10:   path: '/var/www/nextjs/goodsale/.next/server/middleware.js'
+2025-11-14 19:36:10: }
+2025-11-14 19:36:40:  ⨯ [Error: ENOENT: no such file or directory, open '/var/www/nextjs/goodsale/.next/server/middleware.js'] {
+2025-11-14 19:36:40:   errno: -2,
+2025-11-14 19:36:40:   code: 'ENOENT',
+2025-11-14 19:36:40:   syscall: 'open',
+2025-11-14 19:36:40:   path: '/var/www/nextjs/goodsale/.next/server/middleware.js'
+2025-11-14 19:36:40: }
+2025-11-14 19:37:10:  ⨯ [Error: ENOENT: no such file or directory, open '/var/www/nextjs/goodsale/.next/server/middleware.js'] {
+2025-11-14 19:37:10:   errno: -2,
+2025-11-14 19:37:10:   code: 'ENOENT',
+2025-11-14 19:37:10:   syscall: 'open',
+2025-11-14 19:37:10:   path: '/var/www/nextjs/goodsale/.next/server/middleware.js'
+2025-11-14 19:37:10: }
+2025-11-14 19:37:40:  ⨯ [Error: ENOENT: no such file or directory, open '/var/www/nextjs/goodsale/.next/server/middleware.js'] {
+2025-11-14 19:37:40:   errno: -2,
+2025-11-14 19:37:40:   code: 'ENOENT',
+2025-11-14 19:37:40:   syscall: 'open',
+2025-11-14 19:37:40:   path: '/var/www/nextjs/goodsale/.next/server/middleware.js'
+2025-11-14 19:37:40: }
+2025-11-14 19:38:10:  ⨯ [Error: ENOENT: no such file or directory, open '/var/www/nextjs/goodsale/.next/server/middleware.js'] {
+2025-11-14 19:38:10:   errno: -2,
+2025-11-14 19:38:10:   code: 'ENOENT',
+2025-11-14 19:38:10:   syscall: 'open',
+2025-11-14 19:38:10:   path: '/var/www/nextjs/goodsale/.next/server/middleware.js'
+2025-11-14 19:38:10: }
+2025-11-14 19:38:40:  ⨯ [Error: ENOENT: no such file or directory, open '/var/www/nextjs/goodsale/.next/server/middleware.js'] {
+2025-11-14 19:38:40:   errno: -2,
+2025-11-14 19:38:40:   code: 'ENOENT',
+2025-11-14 19:38:40:   syscall: 'open',
+2025-11-14 19:38:40:   path: '/var/www/nextjs/goodsale/.next/server/middleware.js'
+2025-11-14 19:38:40: }
+2025-11-14 19:39:10:  ⨯ [Error: ENOENT: no such file or directory, open '/var/www/nextjs/goodsale/.next/server/middleware.js'] {
+2025-11-14 19:39:10:   errno: -2,
+2025-11-14 19:39:10:   code: 'ENOENT',
+2025-11-14 19:39:10:   syscall: 'open',
+2025-11-14 19:39:10:   path: '/var/www/nextjs/goodsale/.next/server/middleware.js'
+2025-11-14 19:39:10: }
+2025-11-14 19:39:40:  ⨯ [Error: ENOENT: no such file or directory, open '/var/www/nextjs/goodsale/.next/server/middleware.js'] {
+2025-11-14 19:39:40:   errno: -2,
+2025-11-14 19:39:40:   code: 'ENOENT',
+2025-11-14 19:39:40:   syscall: 'open',
+2025-11-14 19:39:40:   path: '/var/www/nextjs/goodsale/.next/server/middleware.js'
+2025-11-14 19:39:40: }
+2025-11-14 19:40:10:  ⨯ [Error: ENOENT: no such file or directory, open '/var/www/nextjs/goodsale/.next/server/middleware.js'] {
+2025-11-14 19:40:10:   errno: -2,
+2025-11-14 19:40:10:   code: 'ENOENT',
+2025-11-14 19:40:10:   syscall: 'open',
+2025-11-14 19:40:10:   path: '/var/www/nextjs/goodsale/.next/server/middleware.js'
+2025-11-14 19:40:10: }
+2025-11-14 19:40:40:  ⨯ [Error: ENOENT: no such file or directory, open '/var/www/nextjs/goodsale/.next/server/middleware.js'] {
+2025-11-14 19:40:40:   errno: -2,
+2025-11-14 19:40:40:   code: 'ENOENT',
+2025-11-14 19:40:40:   syscall: 'open',
+2025-11-14 19:40:40:   path: '/var/www/nextjs/goodsale/.next/server/middleware.js'
+2025-11-14 19:40:40: }
+2025-11-14 19:41:10:  ⨯ [Error: ENOENT: no such file or directory, open '/var/www/nextjs/goodsale/.next/server/middleware.js'] {
+2025-11-14 19:41:10:   errno: -2,
+2025-11-14 19:41:10:   code: 'ENOENT',
+2025-11-14 19:41:10:   syscall: 'open',
+2025-11-14 19:41:10:   path: '/var/www/nextjs/goodsale/.next/server/middleware.js'
+2025-11-14 19:41:10: }
+2025-11-14 19:41:40:  ⨯ [Error: ENOENT: no such file or directory, open '/var/www/nextjs/goodsale/.next/server/middleware.js'] {
+2025-11-14 19:41:40:   errno: -2,
+2025-11-14 19:41:40:   code: 'ENOENT',
+2025-11-14 19:41:40:   syscall: 'open',
+2025-11-14 19:41:40:   path: '/var/www/nextjs/goodsale/.next/server/middleware.js'
+2025-11-14 19:41:40: }
+2025-11-14 19:42:10:  ⨯ [Error: ENOENT: no such file or directory, open '/var/www/nextjs/goodsale/.next/server/middleware.js'] {
+2025-11-14 19:42:10:   errno: -2,
+2025-11-14 19:42:10:   code: 'ENOENT',
+2025-11-14 19:42:10:   syscall: 'open',
+2025-11-14 19:42:10:   path: '/var/www/nextjs/goodsale/.next/server/middleware.js'
+2025-11-14 19:42:10: }
+2025-11-14 19:42:40:  ⨯ [Error: ENOENT: no such file or directory, open '/var/www/nextjs/goodsale/.next/server/middleware.js'] {
+2025-11-14 19:42:40:   errno: -2,
+2025-11-14 19:42:40:   code: 'ENOENT',
+2025-11-14 19:42:40:   syscall: 'open',
+2025-11-14 19:42:40:   path: '/var/www/nextjs/goodsale/.next/server/middleware.js'
+2025-11-14 19:42:40: }
+2025-11-14 19:43:09:  ⚠ You are using a non-standard "NODE_ENV" value in your environment. This creates inconsistencies in the project and is strongly advised against. Read more: https://nextjs.org/docs/messages/non-standard-node-env
+2025-11-14 19:43:23:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:43:23:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:43:23:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:43:23:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:43:23:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:43:23:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:43:23:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:43:23:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:43:38:  ⨯ ./src/app/globals.css
+2025-11-14 19:43:38: Module parse failed: Unexpected character '@' (1:0)
+2025-11-14 19:43:38: > @tailwind base;
+2025-11-14 19:43:38: | @tailwind components;
+2025-11-14 19:43:38: | @tailwind utilities;
+2025-11-14 19:43:38: 
+2025-11-14 19:43:38: Import trace for requested module:
+2025-11-14 19:43:38: ./src/app/globals.css
+2025-11-14 19:43:38: ./src/app/layout.tsx
+2025-11-14 19:43:42:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:43:42:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:43:42:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:43:42:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:43:42:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:43:42:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:43:42:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:43:42:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:43:53: <w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/var/www/nextjs/goodsale/.next/cache/webpack/client-development-fallback/0.pack.gz_' -> '/var/www/nextjs/goodsale/.next/cache/webpack/client-development-fallback/0.pack.gz'
+2025-11-14 19:43:54: <w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/var/www/nextjs/goodsale/.next/cache/webpack/client-development-fallback/0.pack.gz_' -> '/var/www/nextjs/goodsale/.next/cache/webpack/client-development-fallback/0.pack.gz'
+2025-11-14 19:44:10:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:44:10:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:44:10:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:44:10:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:44:10:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:44:10:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:44:10:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:44:10:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:44:18:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:44:18:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:44:18:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:44:18:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:44:18:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:44:18:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:44:18:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:44:18:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:44:40:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:44:40:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:44:40:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:44:40:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:44:40:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:44:40:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:44:40:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:44:40:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:44:40:  ⚠ Cross origin request detected from goodsale.online to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
+2025-11-14 19:44:40: Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+2025-11-14 19:45:04:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:45:04:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:45:04:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:45:04:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:45:04:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:45:04:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:45:04:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:45:04:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:45:10:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:45:10:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:45:10:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:45:10:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:45:10:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:45:10:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:45:10:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:45:10:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:45:40:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:45:40:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:45:40:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:45:40:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:45:40:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:45:40:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:45:40:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:45:40:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:46:10:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:46:10:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:46:10:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:46:10:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:46:10:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:46:10:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:46:10:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:46:10:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:46:40:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:46:40:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:46:40:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:46:40:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:46:40:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:46:40:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:46:40:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:46:40:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:47:10:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:47:10:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:47:10:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:47:10:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:47:10:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:47:10:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:47:10:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:47:10:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:47:40:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:47:40:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:47:40:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:47:40:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:47:40:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:47:40:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:47:40:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:47:40:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:48:10:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:48:10:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:48:10:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:48:10:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:48:10:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:48:10:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:48:10:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:48:10:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:48:40:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:48:40:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:48:40:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:48:40:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:48:40:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:48:40:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:48:40:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:48:40:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:49:10:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:49:10:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:49:10:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:49:10:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:49:10:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:49:10:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:49:10:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:49:10:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:49:40:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:49:40:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:49:40:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:49:40:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:49:40:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:49:40:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:49:40:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:49:40:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:50:10:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:50:10:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:50:10:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:50:10:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:50:10:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:50:10:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:50:10:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:50:10:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:50:40:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:50:40:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:50:40:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:50:40:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:50:40:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:50:40:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:50:40:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:50:40:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:51:10:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:51:10:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:51:10:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:51:10:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:51:10:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:51:10:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:51:10:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:51:10:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:51:40:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:51:40:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:51:40:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:51:40:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:51:40:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:51:40:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:51:40:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:51:40:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:52:10:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:52:10:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:52:10:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:52:10:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:52:10:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:52:10:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:52:10:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:52:10:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:52:40:  ⨯ EvalError: Code generation from strings disallowed for this context
+2025-11-14 19:52:40:     at <unknown> (.next/server/middleware.js:1469)
+2025-11-14 19:52:40:     at (middleware)/./node_modules/.pnpm/next@15.3.3_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/next-middleware-loader.js?absolutePagePath=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale%2Fsrc%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fvar%2Fwww%2Fnextjs%2Fgoodsale&matchers=&preferredRegion=&middlewareConfig=e30%3D! (.next/server/middleware.js:1469:1)
+2025-11-14 19:52:40:     at __webpack_require__ (.next/server/edge-runtime-webpack.js:37:33)
+2025-11-14 19:52:40:     at __webpack_exec__ (.next/server/middleware.js:2715:48)
+2025-11-14 19:52:40:     at <unknown> (.next/server/middleware.js:2716:37)
+2025-11-14 19:52:40:     at webpackJsonpCallback (.next/server/edge-runtime-webpack.js:1128:39)
+2025-11-14 19:52:40:     at <unknown> (.next/server/middleware.js:9:61)
+2025-11-14 19:52:53:  ⨯ ./src/app/globals.css
+2025-11-14 19:52:53: Module parse failed: Unexpected character '@' (1:0)
+2025-11-14 19:52:53: > @tailwind base;
+2025-11-14 19:52:53: | @tailwind components;
+2025-11-14 19:52:53: | @tailwind utilities;
+2025-11-14 19:52:53: 
+2025-11-14 19:52:53: Import trace for requested module:
+2025-11-14 19:52:53: ./src/app/globals.css
+2025-11-14 19:52:53: ./src/app/layout.tsx
+2025-11-14 19:52:54:  ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+2025-11-14 19:53:05: [Error: Could not find a production build in the '.next' directory. Try building your app with 'next build' before starting the production server. https://nextjs.org/docs/messages/production-start-no-build-id]
+2025-11-14 19:53:05: [Error: Could not find a production build in the '.next' directory. Try building your app with 'next build' before starting the production server. https://nextjs.org/docs/messages/production-start-no-build-id]
+2025-11-14 19:53:06: [Error: Could not find a production build in the '.next' directory. Try building your app with 'next build' before starting the production server. https://nextjs.org/docs/messages/production-start-no-build-id]
+2025-11-14 19:53:06: [Error: Could not find a production build in the '.next' directory. Try building your app with 'next build' before starting the production server. https://nextjs.org/docs/messages/production-start-no-build-id]
+2025-11-14 19:53:07: [Error: Could not find a production build in the '.next' directory. Try building your app with 'next build' before starting the production server. https://nextjs.org/docs/messages/production-start-no-build-id]
+2025-11-14 19:53:08: [Error: Could not find a production build in the '.next' directory. Try building your app with 'next build' before starting the production server. https://nextjs.org/docs/messages/production-start-no-build-id]
+2025-11-14 19:53:08: [Error: Could not find a production build in the '.next' directory. Try building your app with 'next build' before starting the production server. https://nextjs.org/docs/messages/production-start-no-build-id]
+2025-11-14 19:53:09: [Error: Could not find a production build in the '.next' directory. Try building your app with 'next build' before starting the production server. https://nextjs.org/docs/messages/production-start-no-build-id]
+2025-11-14 19:53:09: [Error: Could not find a production build in the '.next' directory. Try building your app with 'next build' before starting the production server. https://nextjs.org/docs/messages/production-start-no-build-id]
+2025-11-14 19:53:10: [Error: Could not find a production build in the '.next' directory. Try building your app with 'next build' before starting the production server. https://nextjs.org/docs/messages/production-start-no-build-id]
+2025-11-14 19:53:11: [Error: Could not find a production build in the '.next' directory. Try building your app with 'next build' before starting the production server. https://nextjs.org/docs/messages/production-start-no-build-id]
+2025-11-14 19:53:11: [Error: Could not find a production build in the '.next' directory. Try building your app with 'next build' before starting the production server. https://nextjs.org/docs/messages/production-start-no-build-id]
+2025-11-14 19:53:12: [Error: Could not find a production build in the '.next' directory. Try building your app with 'next build' before starting the production server. https://nextjs.org/docs/messages/production-start-no-build-id]
+2025-11-14 19:53:12: [Error: Could not find a production build in the '.next' directory. Try building your app with 'next build' before starting the production server. https://nextjs.org/docs/messages/production-start-no-build-id]
+2025-11-14 19:53:13: [Error: Could not find a production build in the '.next' directory. Try building your app with 'next build' before starting the production server. https://nextjs.org/docs/messages/production-start-no-build-id]
+2025-11-14 19:53:14: [Error: Could not find a production build in the '.next' directory. Try building your app with 'next build' before starting the production server. https://nextjs.org/docs/messages/production-start-no-build-id]
+2025-11-14 20:11:13:  ⚠ "next start" does not work with "output: standalone" configuration. Use "node .next/standalone/server.js" instead.

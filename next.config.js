@@ -1,19 +1,21 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
+
   typescript: {
     ignoreBuildErrors: true,
   },
   eslint: {
     ignoreDuringBuilds: true,
   },
+
   serverExternalPackages: ['pg', 'drizzle-orm'],
+
   // Subdomain routing
   async rewrites() {
     return {
       beforeFiles: [
-        // Rewrite subdomain requests to tenant routes
-        // When accessing gshop.goodsale.online/dashboard, internally route to /gshop/dashboard
+        // Production subdomains (e.g., gshop.goodsale.online)
         {
           source: '/:path*',
           has: [
@@ -24,7 +26,7 @@ const nextConfig = {
           ],
           destination: '/:subdomain/:path*',
         },
-        // Same for localhost development (only matches *.localhost, not plain localhost)
+        // Localhost subdomains (e.g., gshop.localhost:3000)
         {
           source: '/:path*',
           has: [
@@ -38,6 +40,8 @@ const nextConfig = {
       ],
     };
   },
+
+  // Images from external sources
   images: {
     remotePatterns: [
       {
@@ -60,6 +64,9 @@ const nextConfig = {
       },
     ],
   },
+
+  // Ensure static assets load correctly
+  assetPrefix: '/',
 };
 
 module.exports = nextConfig;

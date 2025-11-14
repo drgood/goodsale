@@ -1,23 +1,30 @@
 module.exports = {
   apps: [
     {
-      name: 'goodsale',
-      script: 'node_modules/next/dist/bin/next',
-      args: 'start',
-      cwd: './',
+      name: "goodsale",
+      script: "node_modules/next/dist/bin/next",
+      args: "start -p 3000",
+      cwd: "./",
+
       instances: 1,
-      exec_mode: 'cluster',
-      autorestart: true,
+      exec_mode: "fork",
       watch: false,
-      max_memory_restart: '1G',
+      autorestart: true,
+      max_memory_restart: "512M",
+
       env: {
-        NODE_ENV: 'production',
-        PORT: 3000,
+        NODE_ENV: "development",
+        NEXTAUTH_URL: "http://localhost:3000"
       },
-      error_file: './logs/err.log',
-      out_file: './logs/out.log',
-      log_file: './logs/combined.log',
-      time: true,
-    },
-  ],
+      env_production: {
+        NODE_ENV: "production",
+        PORT: 3000,
+        NEXTAUTH_URL: "https://goodsale.online"
+      },
+
+      error_file: "./logs/pm2-error.log",
+      out_file: "./logs/pm2-out.log",
+      log_date_format: "YYYY-MM-DD HH:mm:ss"
+    }
+  ]
 };

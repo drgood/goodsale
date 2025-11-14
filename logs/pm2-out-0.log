@@ -1,0 +1,343 @@
+2025-11-14 13:47:16:    ▲ Next.js 15.3.3
+2025-11-14 13:47:16:    - Local:        http://localhost:3000
+2025-11-14 13:47:16:    - Network:      http://109.123.243.155:3000
+2025-11-14 13:47:16: 
+2025-11-14 13:47:16:  ✓ Starting...
+2025-11-14 13:47:16:  ✓ Ready in 395ms
+2025-11-14 16:04:15:    ▲ Next.js 15.3.3
+2025-11-14 16:04:15:    - Local:        http://localhost:3000
+2025-11-14 16:04:15:    - Network:      http://109.123.243.155:3000
+2025-11-14 16:04:15: 
+2025-11-14 16:04:15:  ✓ Starting...
+2025-11-14 16:04:15:  ✓ Ready in 1194ms
+2025-11-14 16:04:57: Tenant API Debug: {
+2025-11-14 16:04:57:   tokenId: '131b5a68-a74f-434c-a06e-3872a20eae54',
+2025-11-14 16:04:57:   tokenTenantId: 'fb790742-bb89-4d71-87c7-34100d704156',
+2025-11-14 16:04:57:   isSuperAdmin: false,
+2025-11-14 16:04:57:   requestedTenantId: 'fb790742-bb89-4d71-87c7-34100d704156',
+2025-11-14 16:04:57:   canAccess: true
+2025-11-14 16:04:57: }
+2025-11-14 16:46:41: Tenant API Debug: {
+2025-11-14 16:46:41:   tokenId: '131b5a68-a74f-434c-a06e-3872a20eae54',
+2025-11-14 16:46:41:   tokenTenantId: 'fb790742-bb89-4d71-87c7-34100d704156',
+2025-11-14 16:46:41:   isSuperAdmin: false,
+2025-11-14 16:46:41:   requestedTenantId: 'fb790742-bb89-4d71-87c7-34100d704156',
+2025-11-14 16:46:41:   canAccess: true
+2025-11-14 16:46:41: }
+2025-11-14 17:13:39:    ▲ Next.js 15.3.3
+2025-11-14 17:13:39:    - Local:        http://localhost:3000
+2025-11-14 17:13:39:    - Network:      http://109.123.243.155:3000
+2025-11-14 17:13:39: 
+2025-11-14 17:13:39:  ✓ Starting...
+2025-11-14 17:13:40:  ✓ Ready in 426ms
+2025-11-14 17:15:12:    ▲ Next.js 15.3.3
+2025-11-14 17:15:12:    - Local:        http://localhost:3000
+2025-11-14 17:15:12:    - Network:      http://109.123.243.155:3000
+2025-11-14 17:15:12: 
+2025-11-14 17:15:12:  ✓ Starting...
+2025-11-14 17:15:12:  ✓ Ready in 490ms
+2025-11-14 17:20:55: Tenant API Debug: {
+2025-11-14 17:20:55:   tokenId: '33e5058c-c96d-456c-91da-68d9efb4364f',
+2025-11-14 17:20:55:   tokenTenantId: '35e0bde5-c78a-4fe6-8249-93dbaf96dc73',
+2025-11-14 17:20:55:   isSuperAdmin: false,
+2025-11-14 17:20:55:   requestedTenantId: '35e0bde5-c78a-4fe6-8249-93dbaf96dc73',
+2025-11-14 17:20:55:   canAccess: true
+2025-11-14 17:20:55: }
+2025-11-14 18:23:01:    ▲ Next.js 15.3.3
+2025-11-14 18:23:01:    - Local:        http://localhost:3000
+2025-11-14 18:23:01:    - Network:      http://109.123.243.155:3000
+2025-11-14 18:23:01: 
+2025-11-14 18:23:01:  ✓ Starting...
+2025-11-14 18:23:01:  ✓ Ready in 754ms
+2025-11-14 18:25:11: Tenant API Debug: {
+2025-11-14 18:25:11:   tokenId: '33e5058c-c96d-456c-91da-68d9efb4364f',
+2025-11-14 18:25:11:   tokenTenantId: '35e0bde5-c78a-4fe6-8249-93dbaf96dc73',
+2025-11-14 18:25:11:   isSuperAdmin: false,
+2025-11-14 18:25:11:   requestedTenantId: '35e0bde5-c78a-4fe6-8249-93dbaf96dc73',
+2025-11-14 18:25:11:   canAccess: true
+2025-11-14 18:25:11: }
+2025-11-14 18:34:05:    ▲ Next.js 15.3.3
+2025-11-14 18:34:05:    - Local:        http://localhost:3000
+2025-11-14 18:34:05:    - Network:      http://109.123.243.155:3000
+2025-11-14 18:34:05: 
+2025-11-14 18:34:05:  ✓ Starting...
+2025-11-14 18:34:05:  ✓ Ready in 492ms
+2025-11-14 18:34:52: Tenant API Debug: {
+2025-11-14 18:34:52:   tokenId: '33e5058c-c96d-456c-91da-68d9efb4364f',
+2025-11-14 18:34:52:   tokenTenantId: '35e0bde5-c78a-4fe6-8249-93dbaf96dc73',
+2025-11-14 18:34:52:   isSuperAdmin: false,
+2025-11-14 18:34:52:   requestedTenantId: '35e0bde5-c78a-4fe6-8249-93dbaf96dc73',
+2025-11-14 18:34:52:   canAccess: true
+2025-11-14 18:34:52: }
+2025-11-14 18:58:31:    ▲ Next.js 15.3.3
+2025-11-14 18:58:31:    - Local:        http://localhost:3000
+2025-11-14 18:58:31:    - Network:      http://109.123.243.155:3000
+2025-11-14 18:58:31: 
+2025-11-14 18:58:31:  ✓ Starting...
+2025-11-14 18:58:31:  ✓ Ready in 395ms
+2025-11-14 19:15:58:    ▲ Next.js 15.3.3
+2025-11-14 19:15:58:    - Local:        http://localhost:3000
+2025-11-14 19:15:58:    - Network:      http://109.123.243.155:3000
+2025-11-14 19:15:58:    - Environments: .env
+2025-11-14 19:15:58: 
+2025-11-14 19:15:58:  ✓ Starting...
+2025-11-14 19:16:01:    Reload env: .env.production
+2025-11-14 19:16:01:  ✓ Ready in 3.3s
+2025-11-14 19:16:02:  ○ Compiling /[tenant] ...
+2025-11-14 19:16:17:  ✓ Compiled /middleware in 691ms (539 modules)
+2025-11-14 19:16:21:  GET /cYZG 500 in 9668ms
+2025-11-14 19:16:28:  ○ Compiling /signup ...
+2025-11-14 19:16:31:  GET /cYZG 500 in 8788ms
+2025-11-14 19:16:47:  GET /api/admin/subscription-requests/count 404 in 24ms
+2025-11-14 19:16:47:  GET /api/admin/subscription-requests/count 404 in 25ms
+2025-11-14 19:16:47:  GET / 500 in 23791ms
+2025-11-14 19:16:50:  GET /login 500 in 23052ms
+2025-11-14 19:16:50:  GET /signup 500 in 23046ms
+2025-11-14 19:16:50:  GET /api/auth/session 500 in 22318ms
+2025-11-14 19:16:50:  GET / 500 in 18388ms
+2025-11-14 19:16:50:  POST /api/auth/_log 500 in 103ms
+2025-11-14 19:17:09:  GET /api/admin/subscription-requests/count 404 in 3ms
+2025-11-14 19:17:39:  GET /api/admin/subscription-requests/count 404 in 2ms
+2025-11-14 19:18:09:  GET /api/admin/subscription-requests/count 404 in 3ms
+2025-11-14 19:18:39:  GET /api/admin/subscription-requests/count 404 in 2ms
+2025-11-14 19:19:09:  GET /api/admin/subscription-requests/count 404 in 4ms
+2025-11-14 19:19:40:  GET /api/admin/subscription-requests/count 404 in 42ms
+2025-11-14 19:20:09:  GET /api/admin/subscription-requests/count 404 in 4ms
+2025-11-14 19:20:39:  GET /api/admin/subscription-requests/count 500 in 8ms
+2025-11-14 19:21:09:  GET /api/admin/subscription-requests/count 404 in 6ms
+2025-11-14 19:21:39:  GET /api/admin/subscription-requests/count 404 in 5ms
+2025-11-14 19:22:10:  GET /api/admin/subscription-requests/count 404 in 29ms
+2025-11-14 19:22:39:  GET /api/admin/subscription-requests/count 404 in 6ms
+2025-11-14 19:23:09:  GET /api/admin/subscription-requests/count 404 in 36ms
+2025-11-14 19:23:39:  GET /api/admin/subscription-requests/count 404 in 6ms
+2025-11-14 19:24:09:  GET /api/admin/subscription-requests/count 404 in 6ms
+2025-11-14 19:24:11:  GET /robots.txt 500 in 39ms
+2025-11-14 19:24:12:  GET / 500 in 34ms
+2025-11-14 19:24:26:  GET / 500 in 29ms
+2025-11-14 19:24:39:  GET /api/admin/subscription-requests/count 404 in 1ms
+2025-11-14 19:25:10:  GET /api/admin/subscription-requests/count 404 in 27ms
+2025-11-14 19:25:40:  GET /api/admin/subscription-requests/count 404 in 8ms
+2025-11-14 19:26:09:  GET /api/admin/subscription-requests/count 404 in 6ms
+2025-11-14 19:26:30:    ▲ Next.js 15.3.3
+2025-11-14 19:26:30:    - Local:        http://localhost:3000
+2025-11-14 19:26:30:    - Network:      http://109.123.243.155:3000
+2025-11-14 19:26:30:    - Environments: .env
+2025-11-14 19:26:30: 
+2025-11-14 19:26:30:  ✓ Starting...
+2025-11-14 19:26:33:    Reload env: .env.production
+2025-11-14 19:26:34:  ✓ Ready in 4.1s
+2025-11-14 19:26:35:  ○ Compiling / ...
+2025-11-14 19:26:45:  ✓ Compiled /middleware in 775ms (433 modules)
+2025-11-14 19:26:58:  ○ Compiling /_error ...
+2025-11-14 19:27:05:  GET /_next/static/webpack/eb94a1253e703a2f.webpack.hot-update.json 500 in 30629ms
+2025-11-14 19:27:05:  GET /api/admin/subscription-requests/count 404 in 34ms
+2025-11-14 19:27:05:  GET / 500 in 30695ms
+2025-11-14 19:27:05:  GET / 500 in 19054ms
+2025-11-14 19:27:05:  GET / 500 in 1497ms
+2025-11-14 19:27:05:  GET / 500 in 527ms
+2025-11-14 19:27:09:  GET /api/admin/subscription-requests/count 404 in 2ms
+2025-11-14 19:27:39:  GET /api/admin/subscription-requests/count 404 in 1ms
+2025-11-14 19:28:09:  GET /api/admin/subscription-requests/count 404 in 2ms
+2025-11-14 19:28:40:  GET /api/admin/subscription-requests/count 404 in 3ms
+2025-11-14 19:29:10:  GET /api/admin/subscription-requests/count 404 in 6ms
+2025-11-14 19:29:40:  GET /api/admin/subscription-requests/count 404 in 1ms
+2025-11-14 19:30:10:  GET /api/admin/subscription-requests/count 404 in 4ms
+2025-11-14 19:30:40:  GET /api/admin/subscription-requests/count 404 in 0ms
+2025-11-14 19:31:10:  GET /api/admin/subscription-requests/count 404 in 6ms
+2025-11-14 19:31:40:  GET /api/admin/subscription-requests/count 404 in 2ms
+2025-11-14 19:32:10:  GET /api/admin/subscription-requests/count 404 in 4ms
+2025-11-14 19:32:40:  GET /api/admin/subscription-requests/count 404 in 1ms
+2025-11-14 19:33:10:  GET /api/admin/subscription-requests/count 404 in 2ms
+2025-11-14 19:33:40:  GET /api/admin/subscription-requests/count 404 in 5ms
+2025-11-14 19:34:10:  GET /api/admin/subscription-requests/count 404 in 1ms
+2025-11-14 19:34:15:  GET /_next/static/webpack/7fae6859190952f1.webpack.hot-update.json 500 in 4309ms
+2025-11-14 19:34:16:  POST /hello.world?%ADd+allow_url_include%3d1+%ADd+auto_prepend_file%3dphp://input 500 in 4825ms
+2025-11-14 19:34:16:  POST /?%ADd+allow_url_include%3d1+%ADd+auto_prepend_file%3dphp://input 500 in 289ms
+2025-11-14 19:34:16:  GET / 500 in 18ms
+2025-11-14 19:34:16:  GET /vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php 500 in 5ms
+2025-11-14 19:34:16:  GET /vendor/phpunit/phpunit/Util/PHP/eval-stdin.php 500 in 5ms
+2025-11-14 19:34:16:  GET /vendor/phpunit/src/Util/PHP/eval-stdin.php 500 in 8ms
+2025-11-14 19:34:16:  GET /vendor/phpunit/Util/PHP/eval-stdin.php 500 in 6ms
+2025-11-14 19:34:16:  GET /vendor/phpunit/phpunit/LICENSE/eval-stdin.php 500 in 8ms
+2025-11-14 19:34:16:  GET /_next/static/chunks/fallback/webpack.js 500 in 10ms
+2025-11-14 19:34:16:  GET /vendor/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php 500 in 4ms
+2025-11-14 19:34:16:  GET /_next/static/chunks/fallback/react-refresh.js 500 in 7ms
+2025-11-14 19:34:17:  GET /phpunit/phpunit/src/Util/PHP/eval-stdin.php 500 in 7ms
+2025-11-14 19:34:17:  GET /_next/static/chunks/fallback/main.js 500 in 6ms
+2025-11-14 19:34:17:  GET /_next/static/chunks/fallback/pages/_app.js 500 in 16ms
+2025-11-14 19:34:17:  GET /phpunit/phpunit/Util/PHP/eval-stdin.php 500 in 26ms
+2025-11-14 19:34:17:  GET /_next/static/chunks/fallback/pages/_error.js 500 in 8ms
+2025-11-14 19:34:17:  GET /phpunit/src/Util/PHP/eval-stdin.php 500 in 10ms
+2025-11-14 19:34:17:  GET /phpunit/Util/PHP/eval-stdin.php 500 in 5ms
+2025-11-14 19:34:17:  GET /lib/phpunit/phpunit/src/Util/PHP/eval-stdin.php 500 in 7ms
+2025-11-14 19:34:18:  GET /lib/phpunit/phpunit/Util/PHP/eval-stdin.php 500 in 22ms
+2025-11-14 19:34:18:  GET /lib/phpunit/src/Util/PHP/eval-stdin.php 500 in 16ms
+2025-11-14 19:34:18:  GET /lib/phpunit/Util/PHP/eval-stdin.php 500 in 60ms
+2025-11-14 19:34:18:  GET /lib/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php 500 in 30ms
+2025-11-14 19:34:18:  GET /laravel/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php 500 in 5ms
+2025-11-14 19:34:19:  GET /www/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php 500 in 14ms
+2025-11-14 19:34:19:  GET /ws/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php 500 in 6ms
+2025-11-14 19:34:19:  GET /yii/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php 500 in 14ms
+2025-11-14 19:34:19:  GET /zend/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php 500 in 6ms
+2025-11-14 19:34:20:  GET /ws/ec/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php 500 in 57ms
+2025-11-14 19:34:20:  GET /V2/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php 500 in 8ms
+2025-11-14 19:34:20:  GET /tests/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php 500 in 10ms
+2025-11-14 19:34:20:  GET /test/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php 500 in 48ms
+2025-11-14 19:34:20:  GET /testing/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php 500 in 19ms
+2025-11-14 19:34:21:  GET /api/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php 500 in 5ms
+2025-11-14 19:34:29:  GET /login 500 in 670ms
+2025-11-14 19:34:40:  GET /api/admin/subscription-requests/count 404 in 1ms
+2025-11-14 19:35:10:  GET /api/admin/subscription-requests/count 404 in 2ms
+2025-11-14 19:35:40:  GET /api/admin/subscription-requests/count 404 in 5ms
+2025-11-14 19:36:10:  GET /api/admin/subscription-requests/count 404 in 3ms
+2025-11-14 19:36:40:  GET /api/admin/subscription-requests/count 404 in 1ms
+2025-11-14 19:37:10:  GET /api/admin/subscription-requests/count 404 in 14ms
+2025-11-14 19:37:40:  GET /api/admin/subscription-requests/count 404 in 1ms
+2025-11-14 19:38:10:  GET /api/admin/subscription-requests/count 404 in 1ms
+2025-11-14 19:38:40:  GET /api/admin/subscription-requests/count 404 in 4ms
+2025-11-14 19:39:10:  GET /api/admin/subscription-requests/count 404 in 2ms
+2025-11-14 19:39:40:  GET /api/admin/subscription-requests/count 404 in 2ms
+2025-11-14 19:40:10:  GET /api/admin/subscription-requests/count 404 in 6ms
+2025-11-14 19:40:40:  GET /api/admin/subscription-requests/count 404 in 2ms
+2025-11-14 19:41:10:  GET /api/admin/subscription-requests/count 404 in 1ms
+2025-11-14 19:41:40:  GET /api/admin/subscription-requests/count 404 in 3ms
+2025-11-14 19:42:10:  GET /api/admin/subscription-requests/count 500 in 3ms
+2025-11-14 19:42:40:  GET /api/admin/subscription-requests/count 404 in 1ms
+2025-11-14 19:43:09: [?25h
+2025-11-14 19:43:10:    ▲ Next.js 15.3.3
+2025-11-14 19:43:10:    - Local:        http://localhost:3000
+2025-11-14 19:43:10:    - Network:      http://109.123.243.155:3000
+2025-11-14 19:43:10:    - Environments: .env
+2025-11-14 19:43:10: 
+2025-11-14 19:43:10:  ✓ Starting...
+2025-11-14 19:43:13:    Reload env: .env.production
+2025-11-14 19:43:14:  ✓ Ready in 3.6s
+2025-11-14 19:43:21:  ○ Compiling /middleware ...
+2025-11-14 19:43:23:  ✓ Compiled /middleware in 1869ms (261 modules)
+2025-11-14 19:43:23:  ○ Compiling /_error ...
+2025-11-14 19:43:26:  ✓ Compiled /_error in 3s (460 modules)
+2025-11-14 19:43:26:  GET /api/admin/subscription-requests/count 404 in 3ms
+2025-11-14 19:43:27:  ○ Compiling /_not-found ...
+2025-11-14 19:43:47:  GET / 500 in 14960ms
+2025-11-14 19:43:50:  GET /api/admin/subscription-requests/count 404 in 11ms
+2025-11-14 19:43:57:  GET / 500 in 20ms
+2025-11-14 19:44:10:  GET /api/admin/subscription-requests/count 404 in 4ms
+2025-11-14 19:44:18:  GET /api/admin/subscription-requests/count 404 in 7ms
+2025-11-14 19:44:32:  GET / 500 in 46ms
+2025-11-14 19:44:40:  GET /api/admin/subscription-requests/count 404 in 8ms
+2025-11-14 19:45:04:  GET /api/admin/subscription-requests/count 404 in 31ms
+2025-11-14 19:45:10:  GET /api/admin/subscription-requests/count 404 in 7ms
+2025-11-14 19:45:40:  GET /api/admin/subscription-requests/count 404 in 3ms
+2025-11-14 19:46:10:  GET /api/admin/subscription-requests/count 404 in 15ms
+2025-11-14 19:46:40:  GET /api/admin/subscription-requests/count 404 in 3ms
+2025-11-14 19:47:10:  GET /api/admin/subscription-requests/count 404 in 1ms
+2025-11-14 19:47:40:  GET /api/admin/subscription-requests/count 404 in 3ms
+2025-11-14 19:48:10:  GET /api/admin/subscription-requests/count 404 in 3ms
+2025-11-14 19:48:40:  GET /api/admin/subscription-requests/count 404 in 1ms
+2025-11-14 19:49:10:  GET /api/admin/subscription-requests/count 404 in 6ms
+2025-11-14 19:49:40:  GET /api/admin/subscription-requests/count 404 in 3ms
+2025-11-14 19:50:10:  GET /api/admin/subscription-requests/count 404 in 1ms
+2025-11-14 19:50:40:  GET /api/admin/subscription-requests/count 404 in 1ms
+2025-11-14 19:51:10:  GET /api/admin/subscription-requests/count 404 in 24ms
+2025-11-14 19:51:40:  GET /api/admin/subscription-requests/count 404 in 2ms
+2025-11-14 19:52:10:  GET /api/admin/subscription-requests/count 404 in 1ms
+2025-11-14 19:52:39:  GET / 500 in 88ms
+2025-11-14 19:52:40:  GET /api/admin/subscription-requests/count 404 in 3ms
+2025-11-14 19:52:54:  GET /_next/static/webpack/cc9a17696d0b1177.webpack.hot-update.json 500 in 4141ms
+2025-11-14 19:52:54:  GET / 500 in 4987ms
+2025-11-14 19:52:54:  GET / 500 in 3993ms
+2025-11-14 19:52:54:  GET / 500 in 26ms
+2025-11-14 19:53:04: [?25h
+2025-11-14 19:53:04:    ▲ Next.js 15.3.3
+2025-11-14 19:53:04:    - Local:        http://localhost:3000
+2025-11-14 19:53:04:    - Network:      http://109.123.243.155:3000
+2025-11-14 19:53:04: 
+2025-11-14 19:53:04:  ✓ Starting...
+2025-11-14 19:53:05:    ▲ Next.js 15.3.3
+2025-11-14 19:53:05:    - Local:        http://localhost:3000
+2025-11-14 19:53:05:    - Network:      http://109.123.243.155:3000
+2025-11-14 19:53:05: 
+2025-11-14 19:53:05:  ✓ Starting...
+2025-11-14 19:53:06:    ▲ Next.js 15.3.3
+2025-11-14 19:53:06:    - Local:        http://localhost:3000
+2025-11-14 19:53:06:    - Network:      http://109.123.243.155:3000
+2025-11-14 19:53:06: 
+2025-11-14 19:53:06:  ✓ Starting...
+2025-11-14 19:53:06:    ▲ Next.js 15.3.3
+2025-11-14 19:53:06:    - Local:        http://localhost:3000
+2025-11-14 19:53:06:    - Network:      http://109.123.243.155:3000
+2025-11-14 19:53:06: 
+2025-11-14 19:53:06:  ✓ Starting...
+2025-11-14 19:53:07:    ▲ Next.js 15.3.3
+2025-11-14 19:53:07:    - Local:        http://localhost:3000
+2025-11-14 19:53:07:    - Network:      http://109.123.243.155:3000
+2025-11-14 19:53:07: 
+2025-11-14 19:53:07:  ✓ Starting...
+2025-11-14 19:53:07:    ▲ Next.js 15.3.3
+2025-11-14 19:53:07:    - Local:        http://localhost:3000
+2025-11-14 19:53:07:    - Network:      http://109.123.243.155:3000
+2025-11-14 19:53:07: 
+2025-11-14 19:53:07:  ✓ Starting...
+2025-11-14 19:53:08:    ▲ Next.js 15.3.3
+2025-11-14 19:53:08:    - Local:        http://localhost:3000
+2025-11-14 19:53:08:    - Network:      http://109.123.243.155:3000
+2025-11-14 19:53:08: 
+2025-11-14 19:53:08:  ✓ Starting...
+2025-11-14 19:53:09:    ▲ Next.js 15.3.3
+2025-11-14 19:53:09:    - Local:        http://localhost:3000
+2025-11-14 19:53:09:    - Network:      http://109.123.243.155:3000
+2025-11-14 19:53:09: 
+2025-11-14 19:53:09:  ✓ Starting...
+2025-11-14 19:53:09:    ▲ Next.js 15.3.3
+2025-11-14 19:53:09:    - Local:        http://localhost:3000
+2025-11-14 19:53:09:    - Network:      http://109.123.243.155:3000
+2025-11-14 19:53:09: 
+2025-11-14 19:53:09:  ✓ Starting...
+2025-11-14 19:53:10:    ▲ Next.js 15.3.3
+2025-11-14 19:53:10:    - Local:        http://localhost:3000
+2025-11-14 19:53:10:    - Network:      http://109.123.243.155:3000
+2025-11-14 19:53:10: 
+2025-11-14 19:53:10:  ✓ Starting...
+2025-11-14 19:53:10:    ▲ Next.js 15.3.3
+2025-11-14 19:53:10:    - Local:        http://localhost:3000
+2025-11-14 19:53:10:    - Network:      http://109.123.243.155:3000
+2025-11-14 19:53:10: 
+2025-11-14 19:53:10:  ✓ Starting...
+2025-11-14 19:53:11:    ▲ Next.js 15.3.3
+2025-11-14 19:53:11:    - Local:        http://localhost:3000
+2025-11-14 19:53:11:    - Network:      http://109.123.243.155:3000
+2025-11-14 19:53:11: 
+2025-11-14 19:53:11:  ✓ Starting...
+2025-11-14 19:53:12:    ▲ Next.js 15.3.3
+2025-11-14 19:53:12:    - Local:        http://localhost:3000
+2025-11-14 19:53:12:    - Network:      http://109.123.243.155:3000
+2025-11-14 19:53:12: 
+2025-11-14 19:53:12:  ✓ Starting...
+2025-11-14 19:53:12:    ▲ Next.js 15.3.3
+2025-11-14 19:53:12:    - Local:        http://localhost:3000
+2025-11-14 19:53:12:    - Network:      http://109.123.243.155:3000
+2025-11-14 19:53:12: 
+2025-11-14 19:53:12:  ✓ Starting...
+2025-11-14 19:53:13:    ▲ Next.js 15.3.3
+2025-11-14 19:53:13:    - Local:        http://localhost:3000
+2025-11-14 19:53:13:    - Network:      http://109.123.243.155:3000
+2025-11-14 19:53:13: 
+2025-11-14 19:53:13:  ✓ Starting...
+2025-11-14 19:53:14:    ▲ Next.js 15.3.3
+2025-11-14 19:53:14:    - Local:        http://localhost:3000
+2025-11-14 19:53:14:    - Network:      http://109.123.243.155:3000
+2025-11-14 19:53:14: 
+2025-11-14 19:53:14:  ✓ Starting...
+2025-11-14 20:11:13:    ▲ Next.js 15.3.3
+2025-11-14 20:11:13:    - Local:        http://localhost:3000
+2025-11-14 20:11:13:    - Network:      http://109.123.243.155:3000
+2025-11-14 20:11:13: 
+2025-11-14 20:11:13:  ✓ Starting...
+2025-11-14 20:11:13:  ✓ Ready in 510ms
+2025-11-14 20:12:01: Tenant API Debug: {
+2025-11-14 20:12:01:   tokenId: '33e5058c-c96d-456c-91da-68d9efb4364f',
+2025-11-14 20:12:01:   tokenTenantId: '35e0bde5-c78a-4fe6-8249-93dbaf96dc73',
+2025-11-14 20:12:01:   isSuperAdmin: false,
+2025-11-14 20:12:01:   requestedTenantId: '35e0bde5-c78a-4fe6-8249-93dbaf96dc73',
+2025-11-14 20:12:01:   canAccess: true
+2025-11-14 20:12:01: }
