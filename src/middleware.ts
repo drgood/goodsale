@@ -56,23 +56,36 @@ export default withAuth(
   {
     callbacks: {
       authorized: ({ token, req }) => {
+        const path = req.nextUrl.pathname;
+
+        // Base auth routes (/login, /signup) must NEVER be redirected to admin login
+        if (path === '/login' || path === '/signup') {
+          return true;
+        }
+
         // Protect /admin routes - require isSuperAdmin
-        if (req.nextUrl.pathname.startsWith('/admin')) {
+        if (path.startsWith('/admin')) {
           return token?.isSuperAdmin === true;
         }
 
         // Protect /api/admin routes - require isSuperAdmin
-        if (req.nextUrl.pathname.startsWith('/api/admin')) {
+        if (path.startsWith('/api/admin')) {
           return token?.isSuperAdmin === true;
         }
 
-        // Protect cron endpoint - always allow (will be protected by secret header in route)
-        if (req.nextUrl.pathname.startsWith('/api/cron')) {
+        // Allow all other API routes (e.g. /api/tenants/by-subdomain, /api/subscription/status)
+        // so they are never redirected to admin login.
+        if (path.startsWith('/api/')) {
           return true;
         }
 
-        // Allow tenant login page without auth
-        if (req.nextUrl.pathname.match(/^\/[^\/]+\/login$/)) {
+        // Protect cron endpoint - always allow (will be protected by secret header in route)
+        if (path.startsWith('/api/cron')) {
+          return true;
+        }
+
+        // Allow tenant login page without auth (e.g. /gshop/login)
+        if (path.match(/^\/[^\/]+\/login$/)) {
           return true;
         }
 

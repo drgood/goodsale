@@ -55,7 +55,15 @@ export function Header() {
 
   const handleLogout = async () => {
     await signOut({ redirect: false });
-    router.push('/login');
+
+    // Always send tenant users back to their tenant login page
+    const tenant = typeof tenantId === 'string' ? tenantId : Array.isArray(tenantId) ? tenantId[0] : '';
+    if (tenant) {
+      router.push(`/${tenant}/login`);
+    } else {
+      // Fallback: base login
+      router.push('/login');
+    }
   };
 
   const handleMarkAllAsRead = async () => {

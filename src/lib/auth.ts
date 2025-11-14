@@ -9,8 +9,9 @@ export const authOptions: NextAuthOptions = {
     strategy: 'jwt',
   },
   pages: {
-    signIn: '/login',
-    error: '/login',
+    // Use admin login as the NextAuth sign-in page; base /login stays tenant/general.
+    signIn: '/admin/login',
+    error: '/admin/login',
   },
   providers: [
     CredentialsProvider({
@@ -75,6 +76,25 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
+    async redirect({ url, baseUrl }) {
+      try {
+        const base = new URL(baseUrl);
+        const host = base.host;
+
+        // If URL is already on our origin, honor it.
+        if (url.startsWith(baseUrl)) return url;
+
+        // Admin host: always land on admin dashboard after auth.
+        if (host.startsWith('admin.')) {
+          return `${baseUrl}/admin/dashboard`;
+        }
+
+        // Default: go to base URL (landing or tenant host root).
+        return baseUrl;
+      } catch {
+        return baseUrl;
+      }
+    },
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;

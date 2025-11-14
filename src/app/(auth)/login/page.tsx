@@ -37,53 +37,51 @@ export default function LoginPage() {
           description: "Invalid email or password.",
         });
         setIsLoading(false);
-      } else {
+        return;
+      }
+
+      toast({
+        title: "Login Successful",
+        description: "Redirecting to your shop...",
+      });
+
+      // Force session refresh to get user data
+      await fetch('/api/auth/session');
+      const sessionResponse = await fetch('/api/auth/session');
+      const session = await sessionResponse.json();
+
+      const tenantId = session.user?.tenantId;
+      if (!tenantId) {
         toast({
-          title: "Login Successful",
-          description: "Redirecting...",
+          variant: "destructive",
+          title: "Error",
+          description: "Unable to determine tenant.",
         });
-        
-        // Force session refresh to get user data
-        await fetch('/api/auth/session');
-        const sessionResponse = await fetch('/api/auth/session');
-        const session = await sessionResponse.json();
-        
-        // Fetch tenant name using tenantId
-        const tenantId = session.user?.tenantId;
-        if (!tenantId) {
-          toast({
-            variant: "destructive",
-            title: "Error",
-            description: "Unable to determine tenant.",
-          });
-          setIsLoading(false);
-          return;
-        }
-        
-        const tenantResponse = await fetch(`/api/tenants/${tenantId}`);
-        if (!tenantResponse.ok) {
-          toast({
-            variant: "destructive",
-            title: "Error",
-            description: "Unable to fetch tenant details.",
-          });
-          setIsLoading(false);
-          return;
-        }
-        
-        const tenant = await tenantResponse.json();
-        const tenantSlug = tenant.subdomain;
-        
-        // Redirect to tenant's subdomain dashboard
-        // In production, redirect to subdomain URL
-        // In dev, use path-based routing
-        if (process.env.NODE_ENV === 'production') {
-          const protocol = window.location.protocol;
-          window.location.href = `${protocol}//${tenantSlug}.goodsale.online/dashboard`;
-        } else {
-          router.push(`/${tenantSlug}/dashboard`);
-          router.refresh();
-        }
+        setIsLoading(false);
+        return;
+      }
+
+      const tenantResponse = await fetch(`/api/tenants/${tenantId}`);
+      if (!tenantResponse.ok) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Unable to fetch tenant details.",
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      const tenant = await tenantResponse.json();
+      const tenantSlug = tenant.subdomain;
+
+      // Redirect to tenant's dashboard
+      if (process.env.NODE_ENV === 'production') {
+        const protocol = window.location.protocol;
+        window.location.href = `${protocol}//${tenantSlug}.goodsale.online/dashboard`;
+      } else {
+        router.push(`/${tenantSlug}/dashboard`);
+        router.refresh();
       }
     } catch (error) {
       console.error('Login error:', error);
@@ -92,6 +90,7 @@ export default function LoginPage() {
         title: "Login Failed",
         description: "An error occurred. Please try again.",
       });
+    } finally {
       setIsLoading(false);
     }
   }

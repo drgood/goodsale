@@ -94,7 +94,13 @@ export function TenantSidebar() {
 
   const handleLogout = async () => {
     await signOut({ redirect: false });
-    router.push('/login');
+
+    // Always send tenant users back to their tenant-specific login page
+    if (tenantSubdomain) {
+      router.push(`/${tenantSubdomain}/login`);
+    } else {
+      router.push('/login');
+    }
   };
 
   const isActive = (href: string) => {
@@ -172,54 +178,23 @@ export function TenantSidebar() {
       </SidebarContent>
       <SidebarFooter className="border-t border-sidebar-border">
         {['Owner', 'Manager'].includes(userRole) && (
-            <SidebarMenu>
-                {bottomMenuItems.filter(item => item.roles.includes(userRole)).map((item) => (
-                    <SidebarMenuItem key={item.label}>
-                    <Link href={`/${tenantSubdomain}/${item.href}`}>
-                        <SidebarMenuButton
-                        isActive={isActive(item.href)}
-                        tooltip={item.label}
-                        className="justify-start"
-                        >
-                        <item.icon />
-                        <span>{item.label}</span>
-                        </SidebarMenuButton>
-                    </Link>
-                    </SidebarMenuItem>
-                ))}
-            </SidebarMenu>
+          <SidebarMenu>
+            {bottomMenuItems.filter(item => item.roles.includes(userRole)).map((item) => (
+              <SidebarMenuItem key={item.label}>
+                <Link href={`/${tenantSubdomain}/${item.href}`}>
+                  <SidebarMenuButton
+                    isActive={isActive(item.href)}
+                    tooltip={item.label}
+                    className="justify-start"
+                  >
+                    <item.icon />
+                    <span>{item.label}</span>
+                  </SidebarMenuButton>
+                </Link>
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
         )}
-
-        <div className="flex items-center gap-3 p-3 mt-auto">
-            {currentUser ? (
-              <>
-                <Avatar className="h-10 w-10">
-                    <AvatarImage src={currentUser.avatarUrl || undefined} data-ai-hint="person portrait" />
-                    <AvatarFallback>{currentUser.name.charAt(0)}</AvatarFallback>
-                </Avatar>
-                <div className="flex flex-col text-sm">
-                    <span className="font-semibold text-sidebar-foreground">{currentUser.name}</span>
-                    <span className="text-xs text-sidebar-foreground/70">{currentUser.role}</span>
-                </div>
-              </>
-            ) : (
-                <div className="flex items-center gap-3">
-                    <Skeleton className="h-10 w-10 rounded-full" />
-                    <div className="space-y-2">
-                        <Skeleton className="h-4 w-[100px]" />
-                        <Skeleton className="h-3 w-[50px]" />
-                    </div>
-                </div>
-            )}
-        </div>
-        <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton tooltip="Log Out" className="justify-start" onClick={handleLogout}>
-                <LogOut />
-                <span>Log Out</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-        </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
   );

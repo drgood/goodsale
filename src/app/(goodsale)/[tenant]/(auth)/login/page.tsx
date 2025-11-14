@@ -33,14 +33,21 @@ export default function TenantLoginPage() {
     const fetchTenantInfo = async () => {
       try {
         const response = await fetch(`/api/tenants/by-subdomain/${tenantSlug}`);
-        if (response.ok) {
+        const contentType = response.headers.get('content-type') || '';
+        const isJson = contentType.includes('application/json');
+
+        if (response.ok && isJson) {
           const tenant = await response.json();
           setTenantInfo(tenant);
         } else {
+          console.error('Unexpected tenant response', {
+            status: response.status,
+            contentType,
+          });
           toast({
             variant: "destructive",
             title: "Tenant Not Found",
-            description: "This shop doesn't exist.",
+            description: "This shop doesn't exist or could not be loaded.",
           });
           router.push('/login');
         }
