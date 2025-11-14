@@ -1,4 +1,4 @@
-import { db, subscriptions } from '@/db';
+import { db, subscriptions, tenants } from '@/db';
 import { eq, and } from 'drizzle-orm';
 
 /**
@@ -79,11 +79,35 @@ export async function getTrialDaysRemaining(tenantId: string): Promise<number | 
 export async function getSubscriptionStatus(
   tenantId: string
 ): Promise<{
-  status: 'trial' | 'active' | 'expired' | 'canceled' | 'not_found';
+  status: 'trial' | 'active' | 'expired' | 'canceled' | 'suspended' | 'not_found';
   daysRemaining: number | null;
   endDate: Date | null;
 }> {
   try {
+    // First, check the tenant record for a suspended status.
+    const [tenant] = await db
+      .select()
+      .from(tenants)
+      .where(eq(tenants.id, tenantId))
+      .limit(1);
+
+    if (!tenant) {
+      return {
+        status: 'not_found',
+        daysRemaining: null,
+        endDate: null,
+      };
+    }
+
+    if (tenant.status === 'suspended') {
+      // Short-circuit: a suspended tenant is treated as suspended regardless of subscription row.
+      return {
+        status: 'suspended',
+        daysRemaining: null,
+        endDate: null,
+      };
+    }
+
     const [subscription] = await db
       .select()
       .from(subscriptions)
@@ -98,7 +122,7 @@ export async function getSubscriptionStatus(
       };
     }
 
-    let status = subscription.status as 'trial' | 'active' | 'expired' | 'canceled';
+    let status = subscription.status as 'trial' | 'active' | 'expired' | 'canceled' | 'suspended';
     let daysRemaining: number | null = null;
 
     if (subscription.status === 'trial') {

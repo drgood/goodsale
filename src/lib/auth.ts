@@ -1,7 +1,7 @@
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { compare } from 'bcryptjs';
-import { db, users, superAdmins } from '@/db';
+import { db, users, superAdmins, tenants } from '@/db';
 import { eq } from 'drizzle-orm';
 
 export const authOptions: NextAuthOptions = {
@@ -61,6 +61,17 @@ export const authOptions: NextAuthOptions = {
         const isPasswordValid = await compare(credentials.password, user.password);
 
         if (!isPasswordValid) {
+          return null;
+        }
+
+        // Enforce tenant suspension: block login if the tenant is suspended
+        const [tenant] = await db
+          .select()
+          .from(tenants)
+          .where(eq(tenants.id, user.tenantId))
+          .limit(1);
+
+        if (!tenant || tenant.status === 'suspended') {
           return null;
         }
 

@@ -40,7 +40,7 @@ export default withAuth(
 
         if (res.ok) {
           const subscriptionStatus = await res.json();
-          if (subscriptionStatus.status === 'expired') {
+          if (subscriptionStatus.status === 'expired' || subscriptionStatus.status === 'suspended') {
             const tenant = req.nextUrl.pathname.split('/')[1];
             return NextResponse.redirect(new URL(`/${tenant}/trial-expired`, req.url));
           }

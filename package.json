@@ -19,7 +19,8 @@
     "db:migrate": "drizzle-kit migrate",
     "db:drop": "drizzle-kit drop",
     "db:seed:admin": "tsx scripts/seed-super-admin.ts",
-    "db:seed:test": "tsx scripts/seed-test-data.ts"
+    "db:seed:test": "tsx scripts/seed-test-data.ts",
+    "db:seed:odogu": "tsx scripts/seed-tenant-odogu-enterprice.ts"
   },
   "dependencies": {
     "@genkit-ai/google-genai": "^1.20.0",
