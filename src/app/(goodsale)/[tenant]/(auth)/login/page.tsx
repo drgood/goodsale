@@ -89,12 +89,7 @@ export default function TenantLoginPage() {
           title: "Login Successful",
           description: "Redirecting...",
         });
-        
-        // Force session refresh to get user data
-        await fetch('/api/auth/session');
-        const sessionResponse = await fetch('/api/auth/session');
-        const session = await sessionResponse.json();
-        
+
         // Redirect to dashboard
         router.push(`/${tenantSlug}/dashboard`);
         router.refresh();

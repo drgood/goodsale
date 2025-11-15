@@ -34,7 +34,6 @@ import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { useUserContext } from "@/context/user-context";
 import { Skeleton } from "./ui/skeleton";
 import { useSession, signOut } from "next-auth/react";
 

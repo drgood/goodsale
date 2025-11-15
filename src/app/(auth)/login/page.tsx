@@ -9,7 +9,7 @@ import { GoodSaleLogo } from "@/components/goodsale-logo"
 import Link from "next/link";
 import { useRouter } from "next/navigation"
 import { useToast } from '@/hooks/use-toast';
-import { signIn, useSession } from 'next-auth/react';
+import { signIn } from 'next-auth/react';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -45,8 +45,7 @@ export default function LoginPage() {
         description: "Redirecting to your shop...",
       });
 
-      // Force session refresh to get user data
-      await fetch('/api/auth/session');
+      // Get updated session to determine tenant
       const sessionResponse = await fetch('/api/auth/session');
       const session = await sessionResponse.json();
 
@@ -75,14 +74,18 @@ export default function LoginPage() {
       const tenant = await tenantResponse.json();
       const tenantSlug = tenant.subdomain;
 
-      // Redirect to tenant's dashboard
-      if (process.env.NODE_ENV === 'production') {
-        const protocol = window.location.protocol;
-        window.location.href = `${protocol}//${tenantSlug}.goodsale.online/dashboard`;
-      } else {
-        router.push(`/${tenantSlug}/dashboard`);
-        router.refresh();
+      if (!tenantSlug) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Tenant configuration is missing a subdomain.",
+        });
+        return;
       }
+
+      // Redirect to tenant's dashboard using path-based routing
+      router.push(`/${tenantSlug}/dashboard`);
+      router.refresh();
     } catch (error) {
       console.error('Login error:', error);
       toast({

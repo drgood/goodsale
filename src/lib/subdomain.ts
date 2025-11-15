@@ -1,6 +1,10 @@
 import { headers } from 'next/headers';
 
 /**
+ * NOTE: Subdomain helpers are currently dormant.
+ * Runtime routing now uses path-based tenant URLs only.
+ * These utilities are kept for a potential future re-introduction of subdomain routing.
+ * They MUST NOT be imported by core auth, middleware, or POS/dashboard code.
  * Extract subdomain from the host header
  * @param host - The host header value (e.g., "gshop.goodsale.online")
  * @returns The subdomain or null if not found

@@ -3,7 +3,6 @@ import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { Header } from "@/components/header";
 import { TenantSidebar } from "@/components/tenant-sidebar";
 import { ShiftProvider } from "@/components/shift-manager";
-import { UserProvider } from "@/context/user-context";
 import { usePathname } from 'next/navigation';
 
 export default function TenantLayout({
@@ -25,16 +24,14 @@ export default function TenantLayout({
 
   // Regular layout for authenticated pages
   return (
-    <UserProvider>
-      <SidebarProvider defaultOpen>
-        <ShiftProvider>
-          <TenantSidebar />
-          <SidebarInset>
-            <Header />
-            <main className="p-4 lg:p-6">{children}</main>
-          </SidebarInset>
-        </ShiftProvider>
-      </SidebarProvider>
-    </UserProvider>
+    <SidebarProvider defaultOpen>
+      <ShiftProvider>
+        <TenantSidebar />
+        <SidebarInset>
+          <Header />
+          <main className="p-4 lg:p-6">{children}</main>
+        </SidebarInset>
+      </ShiftProvider>
+    </SidebarProvider>
   );
 }

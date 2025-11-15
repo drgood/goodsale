@@ -55,6 +55,37 @@ export default function POSPage() {
   const tenantId = params.tenant as string;
   const { data: session } = useSession();
   const currentUser = session?.user;
+
+  // Guard against missing tenant or session for POS
+  if (!tenantId) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <Card className="w-full max-w-md text-center">
+          <CardHeader>
+            <CardTitle className="font-headline text-2xl">Tenant Not Found</CardTitle>
+            <CardDescription>
+              We couldn't determine which shop this POS belongs to. Please access POS from your tenant dashboard.
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      </div>
+    );
+  }
+
+  if (!currentUser) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <Card className="w-full max-w-md text-center">
+          <CardHeader>
+            <CardTitle className="font-headline text-2xl">Not Signed In</CardTitle>
+            <CardDescription>
+              You must be signed in to use the Point of Sale. Please log in and try again.
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      </div>
+    );
+  }
   const shiftContext = useShiftContext();
   const isOnline = useOnlineStatus();
   
