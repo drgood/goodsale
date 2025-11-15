@@ -14,7 +14,7 @@ import { Separator } from '@/components/ui/separator';
 import { Loader2 } from 'lucide-react';
 
 export default function AdminProfilePage() {
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
   const router = useRouter();
   const { toast } = useToast();
   const userAvatar = PlaceHolderImages.find(img => img.id === 'user-avatar-3')?.imageUrl || '';
@@ -57,6 +57,12 @@ export default function AdminProfilePage() {
       toast({
         title: "Profile Updated",
         description: "Your profile information has been successfully updated.",
+      });
+
+      // Update the admin session so header and other places reflect changes immediately
+      await update({
+        name,
+        email,
       });
     } catch (error) {
       toast({

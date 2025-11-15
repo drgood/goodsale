@@ -24,7 +24,9 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 export function AdminHeader() {
   const router = useRouter();
   const { data: session } = useSession();
-  const userAvatar = PlaceHolderImages.find(img => img.id === 'user-avatar-3')?.imageUrl || '';
+  const fallbackAvatar = PlaceHolderImages.find(img => img.id === 'user-avatar-3')?.imageUrl || '';
+  const currentUser = session?.user;
+  const userAvatar = currentUser?.avatarUrl || fallbackAvatar;
 
   const handleLogout = async () => {
     await signOut({ redirect: true, callbackUrl: '/admin/login' });
@@ -75,7 +77,7 @@ export function AdminHeader() {
             <Button variant="ghost" size="icon" className="rounded-full">
                <Avatar className="h-8 w-8">
                   <AvatarImage src={userAvatar} data-ai-hint="person portrait" />
-                  <AvatarFallback>SA</AvatarFallback>
+                  <AvatarFallback>{(currentUser?.name || 'SA').charAt(0)}</AvatarFallback>
               </Avatar>
               <span className="sr-only">User menu</span>
             </Button>

@@ -46,8 +46,12 @@ export default function ProfilePage() {
         setName(updated.name);
         setEmail(updated.email);
         setAvatar(updated.avatarUrl);
-        // Refresh session to pick up new data
-        await update();
+        // Refresh session and propagate updated fields (including avatar) to the header
+        await update({
+          name: updated.name,
+          email: updated.email,
+          avatarUrl: updated.avatarUrl,
+        });
         toast({
           title: "Profile Updated",
           description: "Your profile information has been successfully updated.",

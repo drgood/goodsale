@@ -138,6 +138,22 @@ export default function POSPage() {
     fetchSettings();
   }, []);
 
+  // Refetch products when coming back to the tab so product image/price changes are reflected
+  useEffect(() => {
+    const handleFocus = () => {
+      fetchProducts();
+    };
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, []);
+
+  // If we regain connectivity, refresh products to get latest images and stock
+  useEffect(() => {
+    if (isOnline) {
+      fetchProducts();
+    }
+  }, [isOnline]);
+
   const fetchProducts = async () => {
     try {
       setIsLoadingProducts(true);

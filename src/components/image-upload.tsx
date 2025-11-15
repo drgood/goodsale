@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Upload, X, Loader2 } from 'lucide-react';
 import Image from 'next/image';
@@ -28,6 +28,15 @@ export function ImageUpload({
   const [preview, setPreview] = useState<string | undefined>(value);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+
+  // Keep preview in sync with value from parent (e.g. after saves or initial load)
+  useEffect(() => {
+    if (value) {
+      setPreview(value);
+    } else {
+      setPreview(undefined);
+    }
+  }, [value]);
 
   const sizeClasses = {
     sm: 'w-40 h-40',
@@ -102,6 +111,8 @@ export function ImageUpload({
 
       const data = await response.json();
       onChange(data.url);
+      // Immediately switch preview to the final server URL rather than the temporary data URL
+      setPreview(data.url);
       
       toast({
         title: 'Image uploaded',
