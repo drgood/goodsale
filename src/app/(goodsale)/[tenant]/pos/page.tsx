@@ -55,37 +55,6 @@ export default function POSPage() {
   const tenantId = params.tenant as string;
   const { data: session } = useSession();
   const currentUser = session?.user;
-
-  // Guard against missing tenant or session for POS
-  if (!tenantId) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <Card className="w-full max-w-md text-center">
-          <CardHeader>
-            <CardTitle className="font-headline text-2xl">Tenant Not Found</CardTitle>
-            <CardDescription>
-              We couldn't determine which shop this POS belongs to. Please access POS from your tenant dashboard.
-            </CardDescription>
-          </CardHeader>
-        </Card>
-      </div>
-    );
-  }
-
-  if (!currentUser) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <Card className="w-full max-w-md text-center">
-          <CardHeader>
-            <CardTitle className="font-headline text-2xl">Not Signed In</CardTitle>
-            <CardDescription>
-              You must be signed in to use the Point of Sale. Please log in and try again.
-            </CardDescription>
-          </CardHeader>
-        </Card>
-      </div>
-    );
-  }
   const shiftContext = useShiftContext();
   const isOnline = useOnlineStatus();
   
@@ -723,68 +692,98 @@ export default function POSPage() {
     setIsCustomerSelectOpen(false);
   };
   
-    const handleAddCustomer = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        const formData = new FormData(event.currentTarget);
-        const name = formData.get("name") as string;
-        const email = formData.get("email") as string;
-        const phone = formData.get("phone") as string;
-        
-        try {
-          const response = await fetch('/api/customers', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, email, phone })
-          });
+  const handleAddCustomer = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const name = formData.get("name") as string;
+    const email = formData.get("email") as string;
+    const phone = formData.get("phone") as string;
+    
+    try {
+      const response = await fetch('/api/customers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, phone })
+      });
 
-          if (!response.ok) {
-            throw new Error('Failed to create customer');
-          }
+      if (!response.ok) {
+        throw new Error('Failed to create customer');
+      }
 
-          const newCustomer = await response.json();
-          
-          // Refresh customers list
-          const customersRes = await fetch('/api/customers');
-          if (customersRes.ok) {
-            const customersData = await customersRes.json();
-            setCustomers(customersData);
-          }
-          
-          setSelectedCustomer(newCustomer);
-          setIsAddCustomerDialogOpen(false);
-          event.currentTarget.reset();
-          toast({ title: "Customer Added", description: `"${newCustomer.name}" has been added and selected for this sale.` });
-        } catch (error) {
-          console.error('Error adding customer:', error);
-          toast({
-            variant: 'destructive',
-            title: 'Error',
-            description: 'Failed to add customer.'
-          });
-        }
-    };
-
-    if (!shiftContext?.activeShift) {
-        return (
-            <div className="flex items-center justify-center h-full">
-                <Card className="w-full max-w-md text-center">
-                    <CardHeader>
-                        <Clock className="mx-auto h-12 w-12 text-muted-foreground" />
-                        <CardTitle className="font-headline text-2xl mt-4">No Active Shift</CardTitle>
-                        <CardDescription>
-                            You must start a shift before you can access the Point of Sale.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <p className="text-sm text-muted-foreground">
-                            Please use the Shift Manager in the header to start your shift.
-                        </p>
-                    </CardContent>
-                </Card>
-            </div>
-        )
+      const newCustomer = await response.json();
+      
+      // Refresh customers list
+      const customersRes = await fetch('/api/customers');
+      if (customersRes.ok) {
+        const customersData = await customersRes.json();
+        setCustomers(customersData);
+      }
+      
+      setSelectedCustomer(newCustomer);
+      setIsAddCustomerDialogOpen(false);
+      event.currentTarget.reset();
+      toast({ title: "Customer Added", description: `"${newCustomer.name}" has been added and selected for this sale.` });
+    } catch (error) {
+      console.error('Error adding customer:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to add customer.'
+      });
     }
+  };
 
+  // Guards after all hooks are declared
+  if (!tenantId) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <Card className="w-full max-w-md text-center">
+          <CardHeader>
+            <CardTitle className="font-headline text-2xl">Tenant Not Found</CardTitle>
+            <CardDescription>
+              We couldn't determine which shop this POS belongs to. Please access POS from your tenant dashboard.
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      </div>
+    );
+  }
+
+  if (!currentUser) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <Card className="w-full max-w-md text-center">
+          <CardHeader>
+            <CardTitle className="font-headline text-2xl">Not Signed In</CardTitle>
+            <CardDescription>
+              You must be signed in to use the Point of Sale. Please log in and try again.
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      </div>
+    );
+  }
+
+  if (!shiftContext?.activeShift) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <Card className="w-full max-w-md text-center">
+          <CardHeader>
+            <Clock className="mx-auto h-12 w-12 text-muted-foreground" />
+            <CardTitle className="font-headline text-2xl mt-4">No Active Shift</CardTitle>
+            <CardDescription>
+              You must start a shift before you can access the Point of Sale.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">
+              Please use the Shift Manager in the header to start your shift.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <>

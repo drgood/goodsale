@@ -24,22 +24,6 @@ export default function DashboardPage() {
   const { data: session } = useSession();
   const currentUser = session?.user;
 
-  // Basic guards for missing tenant or session to avoid fragile assumptions
-  if (!tenantSubdomain) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <p className="text-muted-foreground">Unable to determine tenant. Please access the dashboard via your tenant URL.</p>
-      </div>
-    );
-  }
-
-  if (!currentUser) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <p className="text-muted-foreground">You must be signed in to view this dashboard. Please log in again.</p>
-      </div>
-    );
-  }
   const [sales, setSales] = useState<Sale[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [users, setUsers] = useState<User[]>([]);
@@ -282,6 +266,23 @@ export default function DashboardPage() {
 
   }, [sales, products, users, customers, timeframe]);
   
+  // Guards after all hooks
+  if (!tenantSubdomain) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <p className="text-muted-foreground">Unable to determine tenant. Please access the dashboard via your tenant URL.</p>
+      </div>
+    );
+  }
+
+  if (!currentUser) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <p className="text-muted-foreground">You must be signed in to view this dashboard. Please log in again.</p>
+      </div>
+    );
+  }
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
