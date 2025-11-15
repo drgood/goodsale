@@ -9,9 +9,9 @@ export const authOptions: NextAuthOptions = {
     strategy: 'jwt',
   },
 
-  // Pages
+  // Pages - base login is the general entry point; admin uses /admin/login via middleware
   pages: {
-    signIn: '/login',    // general login page
+    signIn: '/login',
     error: '/login',
   },
 
@@ -106,27 +106,4 @@ export const authOptions: NextAuthOptions = {
     },
   },
 
-  // Configure cookies for subdomain support
-  cookies: {
-    sessionToken: {
-      name: 'next-auth.session-token',
-      options: {
-        httpOnly: true,
-        sameSite: 'lax',
-        path: '/',
-        secure: process.env.NODE_ENV === 'production',
-        domain: '.goodsale.online', // important: allows all subdomains
-      },
-    },
-    csrfToken: {
-      name: 'next-auth.csrf-token',
-      options: {
-        httpOnly: false,
-        sameSite: 'lax',
-        path: '/',
-        secure: process.env.NODE_ENV === 'production',
-        domain: '.goodsale.online', // important for cross-subdomain
-      },
-    },
-  },
 };

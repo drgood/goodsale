@@ -1,7 +1,6 @@
 import { withAuth } from 'next-auth/middleware';
 import { NextResponse } from 'next/server';
 import type { NextRequestWithAuth } from 'next-auth/middleware';
-import { extractSubdomain } from '@/lib/subdomain';
 
 export const config = {
   matcher: [
@@ -10,7 +9,7 @@ export const config = {
     '/api/admin/:path*',
     '/api/cron/:path*',
 
-    // Tenant protected routes
+    // Tenant protected routes (path-based)
     '/:tenant/dashboard/:path*',
     '/:tenant/products/:path*',
     '/:tenant/customers/:path*',
@@ -22,10 +21,7 @@ export const config = {
 
 export default withAuth(
   async function middleware(req: NextRequestWithAuth) {
-    const host = req.headers.get('host');
-    const subdomain = extractSubdomain(host);
-
-    // No DB calls here — keep middleware light
+    // Keep middleware light; auth is enforced via callbacks below.
     return;
   },
   {
@@ -54,9 +50,9 @@ export default withAuth(
       },
     },
 
-    // Default login page for missing auth
+    // Default login page for missing auth on protected routes
     pages: {
-      signIn: '/login', // NOT /admin/login
+      signIn: '/admin/login',
     },
   }
 );
